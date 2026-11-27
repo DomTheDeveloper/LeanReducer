@@ -9,18 +9,20 @@ open DirichletCharacter Filter Real
 
 namespace SampledGRH
 
-/-- One arithmetic hypothesis at factorial moduli, for a single residue class of
-auxiliary primes and one prescribed exponent at each level, only at fourth powers. -/
-def Estimates : Prop :=
-  ∀ (k : ℕ) (d : Nat.Primes),
+/-- At a chosen level, use one exponent and one residue class of auxiliary primes. -/
+def EstimateAt (k : ℕ) : Prop :=
+  ∀ d : Nat.Primes,
     d.val % LeanReducer.factorialLevel k = 9240 * (k+1).factorial - 1 →
     ∀ᶠ n : ℕ in atTop, primeError d.val (LeanReducer.factorialLevel k) ((n:ℝ)^4) ≤
       ((n:ℝ)^4)^(-(1/2:ℝ) + (1/((k:ℝ)+1))/4)
 
+/-- The good levels can be arbitrarily sparse as long as they are unbounded. -/
+def Estimates : Prop := ∀ lower : ℕ, ∃ k, lower ≤ k ∧ EstimateAt k
+
 theorem nonvanishing (samples : Estimates) : DirichletLNonvanishingRightOfHalf := by
   change ∀ (q : ℕ) [NeZero q], LeanReducer.ZeroFreeAt q (1/2)
-  apply LeanReducer.factorial_iff.mpr
-  intro k χ s hs pole zero
+  apply LeanReducer.of_unbounded_factorial (Good := EstimateAt) samples
+  intro k atLevel χ s hs pole zero
   let q := (k+1).factorial
   let r := 9240*q-1
   have hq : 0 < q := Nat.factorial_pos _
@@ -37,7 +39,7 @@ theorem nonvanishing (samples : Estimates) : DirichletLNonvanishingRightOfHalf :
     have congruent := ((ZMod.natCast_eq_natCast_iff' _ _ _).mp hc).trans (Nat.mod_eq_of_lt hr)
     refine ⟨AuxiliaryResidue.class_properties q d.val hq congruent, ?_⟩
     exact FourthPowers.extend (PrimeErrorFourthPowers.step d.val (LeanReducer.factorialLevel k))
-      (a := -(1/2:ℝ)+δ/4) (by linarith) (by linarith) (by linarith) (samples k d congruent)
+      (a := -(1/2:ℝ)+δ/4) (by linarith) (by linarith) (by linarith) (atLevel d congruent)
   apply entireL_ne_zero_of_primeError_le (β := 1/2+δ) (by linarith) unit bounds s hs χ
   rw [entireL]
   split_ifs with h

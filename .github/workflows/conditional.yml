@@ -1,7 +1,7 @@
-name: Verify the one-exponent conditional RH and GRH proof
+name: Verify the unbounded-level conditional RH and GRH proof
 on:
   push:
-    branches: [one-exponent-grh]
+    branches: [cofinal-sampled-grh]
   workflow_dispatch:
 permissions:
   contents: read
@@ -27,7 +27,7 @@ jobs:
           lake build
           cat > "$RUNNER_TEMP/ConditionalAudit.lean" <<'LEAN'
           import SampledGRH
-          example : SampledGRH.Estimates → RiemannHypothesis ∧ RiemannZetaZerosOnLine ∧
+          example : (∀ lower : ℕ, ∃ k, lower ≤ k ∧ SampledGRH.EstimateAt k) → RiemannHypothesis ∧ RiemannZetaZerosOnLine ∧
               DirichletLNonvanishingRightOfHalf ∧ DirichletLZerosOnLine ∧
               PrimitiveDirichletLZerosOnLine := SampledGRH.five_endpoints
           #print axioms SampledGRH.five_endpoints
