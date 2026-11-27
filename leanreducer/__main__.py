@@ -10,6 +10,7 @@ import tempfile
 
 from . import agents
 from .inlining import straight_line
+from .planning import replacement_plan
 from .patches import apply_reviewed
 from .patterns import import_audit, repeated_commands
 from .source import Corpus, bodies, metrics
@@ -168,6 +169,8 @@ def main():
     analysis.add_argument('--import-audit', action='store_true', help='report redundant direct module imports')
     analysis.add_argument('--repetitions', action='store_true', help='find repeated seal/unseal commands and shared imports')
     analysis.add_argument('--cut',action='append',default=[])
+    analysis.add_argument('--plan-cut', metavar='MODEL',
+                          help='ask the architecture agent for an unverified mathematical replacement of one cut')
     analysis.add_argument('--target',type=int,default=50000)
     analysis.add_argument('--json',type=Path)
     reduce = commands.add_parser('reduce', help='try shorter proof bodies in an isolated checkout')
@@ -190,6 +193,12 @@ def main():
     if args.command == 'analyze':
         corpus = Corpus(args.source.resolve(),args.external)
         report = corpus.report(args.entry,args.cut)
+        if args.plan_cut:
+            if len(args.cut) != 1:
+                raise ValueError('--plan-cut requires exactly one --cut')
+            cut = args.cut[0]
+            report['replacement_plan'] = replacement_plan(
+                corpus, args.entry, cut, report['cuts'][cut], args.target, args.plan_cut)
         if args.import_audit:
             report['import_audit'] = import_audit(corpus, args.entry)
         if args.repetitions:

@@ -15,6 +15,8 @@ python3 -m leanreducer analyze /path/to/grh-compact/src --entry Main --cut New.E
 
 Add `--import-audit` to find direct imports available through another project dependency. Add `--repetitions` to find repeated `seal` or `unseal` commands and the nearest module their sites already share.
 
+To search for a different mathematical argument, add `--plan-cut MODEL` to an analysis with one `--cut` and set `OPENAI_API_KEY`. The architecture agent receives the selected source, bounded excerpts from up to four callers, and the exact replacement budget. Its JSON proposal gives the statement to replace, outstanding proof obligations, dependencies to check, and a first Lean experiment. Implementations can be audited with `reduce --patch`. [Architecture prompt](agents/architect.md)
+
 A cut means removing that module and following all remaining import paths from the entry. The output counts the modules used exclusively through the cut. Any new code needed to prove a substitute theorem must be added back. Project-owned modules are counted before pinned external packages. The initial external namespaces are Mathlib, Lean, Std and Init. Add a package with `--external` if it belongs outside your source budget. Supply every project-owned dependency under the source root for a complete count.
 
 ## Try a reduction
