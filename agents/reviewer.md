@@ -1,1 +1,0 @@
-Read the original Lean declaration and rank the candidate tactics by likelihood of proving its exact type. Prefer a direct, stable lemma application when available. Omit irrelevant or likely expensive attempts. Return a JSON object whose `order` field contains zero-based indices into the supplied list. An empty list is valid. Lean will check each selected candidate.

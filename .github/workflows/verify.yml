@@ -1,0 +1,38 @@
+name: Check the bounded factorial criterion
+on:
+  workflow_dispatch:
+  push:
+    branches: [bounded-factorial-check]
+permissions:
+  contents: read
+jobs:
+  boxes:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      LEAN_NUM_THREADS: 2
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install the pinned Lean toolchain
+        run: |
+          set -euo pipefail
+          curl --proto '=https' -fsSL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          "$HOME/.elan/bin/lean" --version
+      - name: Build and replay the criterion
+        run: |
+          set -euo pipefail
+          lake exe cache get
+          lake build
+          cat > BoxAudit.lean <<'LEAN'
+          import FactorialBoxes
+          open LeanReducer DirichletCharacter
+          example (test : ∀ k, CriticalBox k) (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q)
+              (s : ℂ) (right : 1/2 < s.re) (pole : χ ≠ 1 ∨ s ≠ 1) : LFunction χ s ≠ 0 :=
+            (factorial_critical_boxes_iff.mpr test) q χ s right pole
+          #print axioms LeanReducer.factorial_critical_boxes_iff
+          LEAN
+          lake env lean BoxAudit.lean | tee "$RUNNER_TEMP/box-axioms.txt"
+          grep -Fx "'LeanReducer.factorial_critical_boxes_iff' depends on axioms: [propext, Classical.choice, Quot.sound]" "$RUNNER_TEMP/box-axioms.txt"
+          lake env leanchecker FactorialLevels
+          lake env leanchecker FactorialBoxes
