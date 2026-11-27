@@ -36,8 +36,9 @@ jobs:
           cat > "$RUNNER_TEMP/ConditionalAudit.lean" <<'LEAN'
           import SampledGRH
           open Filter Real
+          open scoped Classical
           example (S : Set ℕ) : DivergentPrimes S ↔
-              ¬ Summable (fun n : ℕ ↦ (@ite ℝ (n.Prime ∧ n ∈ S) (Classical.propDecidable _) (Real.log n) 0) / n) := Iff.rfl
+              ¬ Summable (fun n : ℕ ↦ (if n.Prime ∧ n ∈ S then Real.log n else 0) / n) := Iff.rfl
           example (M : ℕ) [NeZero M] (δ : ℝ) : SampledGRH.EstimateAt M δ ↔
               ∃ S : Set ℕ, DivergentPrimes S ∧
               ∀ d : Nat.Primes, d.val ∈ S → (d.val % 8 = 7 ∧ M.Coprime d.val) ∧
