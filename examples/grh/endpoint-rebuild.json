@@ -54,5 +54,19 @@
     "older_dependency_New_Main_olean_sha256": "e501742e3f8aee02319dfee1a7240b5b2cea277231fee7bf78d7f63872cb80bd",
     "output_sha256": "2c7b168860c39a4b4afd417a327bbbd8a2a0615372655c5d4bd329fb06e7f3d5",
     "lean_exit": 0
+  },
+  "clean_build_result": {
+    "conclusion": "success",
+    "workflow_run_id": 45983909693,
+    "job_id": 140454505103,
+    "project_modules": 794,
+    "public_endpoint_types_and_axioms_checked": 5,
+    "distinct_changed_modules_replayed": 23,
+    "kernel_replay": "native leanchecker",
+    "axioms_for_each_endpoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ]
   }
 }
