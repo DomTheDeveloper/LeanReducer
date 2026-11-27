@@ -1,12 +1,12 @@
 # Ordinary Riemann Hypothesis in Lean
 
-The entry point is `FixedClassRH.ordinaryRH : RiemannHypothesis` in `src/RHOnly.lean`. Its complete project import closure has **76,046 code lines** and **112,721 physical lines** in 793 modules. The previous ordinary-RH entry used 76,054 code lines and 112,736 physical lines. The count includes all project dependencies above the pinned Lean and Mathlib toolchain, and excludes blank and comment-only lines.
+The entry point is `FixedClassRH.ordinaryRH : RiemannHypothesis` in `src/RHOnly.lean`. Its complete project import closure has **76,045 code lines** and **112,720 physical lines** in 793 modules. The previous ordinary-RH entry used 76,054 code lines and 112,736 physical lines. The count includes all project dependencies above the pinned Lean and Mathlib toolchain, and excludes blank and comment-only lines.
 
-The proof takes a basis for the span of the chosen translates and applies the lower covolume bound to that basis directly. Its dimension bound is the usual subspace inequality. The original theorem packaging the family for other callers is still available in `New.Endgame.LongForms`. The five original public conclusions share the same prime-error bound.
+The proof takes a basis for the span of the chosen translates and applies the lower covolume bound to that basis directly. The filling theorem already gives positive row dimension, and the dimension of the selected span is bounded by the ambient dimension. The original theorem packaging the family for other callers is still available in `New.Endgame.LongForms`. The five original public conclusions share the same prime-error bound.
 
 Run `lake exe cache get` and `lake build RHOnly` to build the ordinary proof from source. The linked check rebuilt the changed modules over pinned compiled dependencies, checked the precise Mathlib theorem and its three standard axioms, and replayed the changed modules with Lean's kernel.
 
-[Verified reduction](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/46055096113) · [Previous ordinary-RH entry](https://github.com/DomTheDeveloper/LeanReducer/blob/817d82e311949408f8876d7b352df4d173776ec8/examples/grh/strategy/RHOnly.lean) · [Clean build of the 76,072-line five-theorem base](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45983909693)
+[Verified reduction](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/46058702829) · [Previous ordinary-RH entry](https://github.com/DomTheDeveloper/LeanReducer/blob/817d82e311949408f8876d7b352df4d173776ec8/examples/grh/strategy/RHOnly.lean) · [Clean build of the 76,072-line five-theorem base](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45983909693)
 
 ## Upstream edition notes
 
