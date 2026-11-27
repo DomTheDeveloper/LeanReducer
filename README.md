@@ -44,7 +44,7 @@ The checker builds a fresh checkout, verifies the endpoint types with Lean, read
 | [Four intermediate results](examples/grh/artifacts/GRH-milestones.zip) | Auxiliary data, a determinant bound, filling moments and a one-sided analytic criterion | 31,714 | 49,230 |
 | [Short conditional proof](https://github.com/DomTheDeveloper/LeanReducer/archive/440ee79d9a051dedbd983495a6557ef4bcca4c68.zip) | The five original statements given the sampled prime-error estimate | **920** | **944** |
 
-Counts include every local import above the pinned Lean and Mathlib. The complete 76,072-line revision passed a clean Lean 4.35 build. All five public theorem types matched, each used only `propext`, `Classical.choice` and `Quot.sound`, and `leanchecker` replayed all 23 changed modules. [Complete build and kernel replay](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45983909693)
+Counts include every local import above the pinned Lean and Mathlib. The complete 76,072-line revision passed a clean Lean 4.35 build. All five public theorem types matched, each used only `propext`, `Classical.choice` and `Quot.sound`, and `leanchecker` replayed all 23 changed modules. [Complete build and kernel replay](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45983909693) · [Verification record](examples/grh/verification-results.json)
 
 In the short project, a separate 46-line test file brings all checked-in Lean source to **990 physical lines**. Lean 4.35 compiled and replayed the 17 project modules. LeanReducer also checked the expanded arithmetic hypothesis against the five conclusion types. [Short proof build](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45997603687) · [Independent reducer audit](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45997641927)
 
@@ -52,7 +52,7 @@ The 50,000-code-line unconditional target requires another **26,072 lines** of r
 
 The original archive contained 15,531,759 code lines and 17,374,215 physical lines. All 175,187 project modules were reachable from its public entry. The study follows the readable and compact rewrites, the later source changes, the intermediate results under 50,000 physical lines, and the earlier conditional estimates. [Historical measurements](examples/grh/edition-measurements.json) · [Original reduction experiments](examples/grh/RESULTS.md) · [Bounded-height criterion](examples/grh/FactorialBoxes.lean)
 
-To reproduce the short proof's audit from the LeanReducer root:
+Run the following commands from the LeanReducer root to reproduce the short proof’s audit.
 
 ```sh
 git clone --single-branch --branch auxiliary-multiples-grh https://github.com/DomTheDeveloper/LeanReducer.git multiples-proof

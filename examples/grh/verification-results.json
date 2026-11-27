@@ -1,0 +1,174 @@
+{
+  "toolchain": "leanprover/lean4:v4.35.0",
+  "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+  "cases": {
+    "compatibility": {
+      "standalone_source_revision": "30ee9e9c89c9fd7539251d86c7881d480ae0e677",
+      "workflow_revision": "2392d6eda972c2fdfc80fe22dd96d9e55208cc47",
+      "workflow_run": 45981813632,
+      "workflow_job": 140447326273,
+      "url": "https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45981813632",
+      "started": "2026-11-27T10:24:21Z",
+      "completed": "2026-11-27T13:05:48Z",
+      "conclusion": "success",
+      "project_source": {
+        "modules": 794,
+        "code": 76075,
+        "physical": 112775
+      },
+      "lake_build_message": "Build completed successfully (9843 jobs).",
+      "axioms": {
+        "riemannHypothesis": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "riemannZeta_eq_zero_re": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "LFunction_ne_zero_of_half_lt_re": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "LFunction_eq_zero_re": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "LFunction_eq_zero_re_of_isPrimitive": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      "frozen_statement_check": "The original public statement and endpoint sources are unchanged. The run checked the five axiom lists after the full build.",
+      "kernel_replay": [
+        "Lib.Cohomology.Duality.Contraction",
+        "Lib.Cohomology.Etale.FilteredColimits",
+        "Lib.Cohomology.Etale.RelativeChains",
+        "Lib.Cohomology.Hodge.CupProduct",
+        "Lib.Cohomology.Hodge.DiagonalClass",
+        "Lib.Cohomology.Hodge.GrothendieckSymbol",
+        "Lib.Cohomology.Hodge.Kunneth",
+        "Lib.Cohomology.Kunneth.LerayHirschBasis",
+        "Lib.Cohomology.PointClass.PointClassProduct",
+        "Lib.Cohomology.PointClass.ProjectivePointClass",
+        "Lib.Cohomology.ProjectiveLine.LineChernClass",
+        "Lib.Cohomology.ProjectiveLine.NormalizationPullback",
+        "Lib.Cohomology.ProperBaseChange.FieldExtension",
+        "Lib.General.Algebra.CechDescent",
+        "Lib.General.Algebra.TensorCohomology",
+        "Lib.PadicComparison.CrystallineFrobenius.CrystallineCohomology",
+        "Lib.PadicComparison.Descent.VDescent",
+        "Lib.PadicComparison.Duality.IntegrationOverLine",
+        "Lib.PadicComparison.HodgeTate.HodgeTateMap",
+        "Lib.PadicComparison.HodgeTate.HodgeTateVectors",
+        "Lib.PadicComparison.Primitive.PrimitiveComparison",
+        "Main"
+      ]
+    },
+    "combined": {
+      "standalone_source_revision": "41bbac1c78e806eced8fd373f6cb55e77a045af5",
+      "workflow_revision": "dc479f261042c78df71881d242eb9a29995b07a0",
+      "workflow_run": 45983909693,
+      "workflow_job": 140454505103,
+      "url": "https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45983909693",
+      "started": "2026-11-27T10:39:18Z",
+      "completed": "2026-11-27T13:14:23Z",
+      "conclusion": "success",
+      "project_source": {
+        "modules": 794,
+        "code": 76072,
+        "physical": 112770
+      },
+      "lake_build_message": "Build completed successfully (9843 jobs).",
+      "axioms": {
+        "riemannHypothesis": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "riemannZeta_eq_zero_re": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "LFunction_ne_zero_of_half_lt_re": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "LFunction_eq_zero_re": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "LFunction_eq_zero_re_of_isPrimitive": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      "frozen_statement_check": "The run elaborated an example at each of the five types in examples/grh/case.json.",
+      "kernel_replay": [
+        "Lib.Cohomology.Duality.Contraction",
+        "Lib.Cohomology.Etale.FilteredColimits",
+        "Lib.Cohomology.Etale.RelativeChains",
+        "Lib.Cohomology.Hodge.CupProduct",
+        "Lib.Cohomology.Hodge.DiagonalClass",
+        "Lib.Cohomology.Hodge.GrothendieckSymbol",
+        "Lib.Cohomology.Hodge.Kunneth",
+        "Lib.Cohomology.Kunneth.LerayHirschBasis",
+        "Lib.Cohomology.PointClass.PointClassProduct",
+        "Lib.Cohomology.PointClass.ProjectivePointClass",
+        "Lib.Cohomology.ProjectiveLine.LineChernClass",
+        "Lib.Cohomology.ProjectiveLine.NormalizationPullback",
+        "Lib.Cohomology.ProperBaseChange.FieldExtension",
+        "Lib.General.Algebra.CechDescent",
+        "Lib.General.Algebra.TensorCohomology",
+        "Lib.PadicComparison.CrystallineFrobenius.CrystallineCohomology",
+        "Lib.PadicComparison.Descent.VDescent",
+        "Lib.PadicComparison.Duality.IntegrationOverLine",
+        "Lib.PadicComparison.HodgeTate.HodgeTateMap",
+        "Lib.PadicComparison.HodgeTate.HodgeTateVectors",
+        "Lib.PadicComparison.Primitive.PrimitiveComparison",
+        "Main",
+        "New.Main"
+      ]
+    },
+    "conditional": {
+      "standalone_source_revision": "440ee79d9a051dedbd983495a6557ef4bcca4c68",
+      "workflow_revision": "440ee79d9a051dedbd983495a6557ef4bcca4c68",
+      "workflow_run": 45997603687,
+      "workflow_job": 140500824781,
+      "url": "https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45997603687",
+      "started": "2026-11-27T12:19:00Z",
+      "completed": "2026-11-27T12:24:19Z",
+      "conclusion": "success",
+      "project_source": {
+        "modules": 17,
+        "code": 920,
+        "physical": 944
+      },
+      "lake_build_message": "Build completed successfully (9064 jobs).",
+      "axioms": {
+        "SampledGRH.five_endpoints": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      "frozen_statement_check": "The run expanded the sampled arithmetic definition and checked the implication to the five original types.",
+      "kernel_replay": "Every one of the 17 project modules.",
+      "tracked_lean_physical_including_compatibility_tests": 990,
+      "expanded_contract_audit": {
+        "url": "https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45997641927",
+        "result": "success",
+        "record": "examples/grh/multiples-case.json"
+      }
+    }
+  }
+}
