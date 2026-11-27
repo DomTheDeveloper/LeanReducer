@@ -2,7 +2,7 @@ import RHCutoffCompatibility
 import RHWindowSupply
 import RHNormalizedSupply
 import RHOnly
-import RHFiniteGain
+import RHGainBlocks
 
 example : FixedClassRH.WindowComparison → RiemannHypothesis := FixedClassRH.ofWindow
 example : RiemannHypothesis := FixedClassRH.fromCovolumeWindow
@@ -27,3 +27,4 @@ example : RiemannHypothesis :=
 #print axioms FixedClassRH.finiteGain_iff_normalized
 #print axioms FixedClassRH.ofFiniteGain
 #print axioms FixedClassRH.lower_bound_from_subset
+#print axioms FixedClassRH.weightedGain_eq_blocks

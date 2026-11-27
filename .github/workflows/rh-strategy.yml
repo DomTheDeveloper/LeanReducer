@@ -22,7 +22,7 @@ jobs:
           unzip -q examples/grh/artifacts/GRH-76072.zip -d "$RUNNER_TEMP"
           cd "$RUNNER_TEMP/GRH-76072"
           rm src/Main.lean src/New/Main.lean src/Statements.lean
-          cp "$GITHUB_WORKSPACE"/examples/grh/{fixed-class,strategy}/*.lean src/
+          cp "$GITHUB_WORKSPACE"/examples/grh/fixed-class/*.lean "$GITHUB_WORKSPACE"/examples/grh/strategy/RH*.lean src/
           curl -fsSL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
           export PATH="$HOME/.elan/bin:$PATH"
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
@@ -46,7 +46,7 @@ jobs:
         if: '!cancelled()'
         run: |
           cd "$RUNNER_TEMP/GRH-76072"
-          bash "$GITHUB_WORKSPACE/examples/grh/strategy/check.sh" RHNormalized RHFiniteGain
+          bash "$GITHUB_WORKSPACE/examples/grh/strategy/check.sh" RHNormalized RHFiniteGain RHGainBlocks
       - name: Check the covolume proof of the normalized estimate
         if: '!cancelled()'
         run: |
@@ -72,7 +72,7 @@ jobs:
           import os
           from pathlib import Path
           from leanreducer.verify import check_axioms
-          names = ['Cutoff.exists_auxiliary_data', 'Cutoff.exists_data_of_cutoff', 'estimate_of_window', 'ofWindow', 'window_of_covolume', 'fromCovolumeWindow', 'ofNormalized', 'fromNormalizedCovolume', 'ordinaryRH', 'finiteGain_iff_normalized', 'ofFiniteGain', 'lower_bound_from_subset']
+          names = ['Cutoff.exists_auxiliary_data', 'Cutoff.exists_data_of_cutoff', 'estimate_of_window', 'ofWindow', 'window_of_covolume', 'fromCovolumeWindow', 'ofNormalized', 'fromNormalizedCovolume', 'ordinaryRH', 'finiteGain_iff_normalized', 'ofFiniteGain', 'lower_bound_from_subset', 'weightedGain_eq_blocks']
           print(check_axioms(Path(os.environ['RUNNER_TEMP'], 'strategy-axioms.log').read_text(),
               {'FixedClassRH.' + name: '' for name in names}, ['propext','Quot.sound','Classical.choice']))
           PY

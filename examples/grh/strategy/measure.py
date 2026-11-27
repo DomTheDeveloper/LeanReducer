@@ -7,7 +7,7 @@ from leanreducer.source import Corpus
 root = Path(sys.argv[1])
 corpus = Corpus(root, ["Mathlib", "Lean", "Std", "Init"])
 for entry in ["New.Data.DataExist", "RHCutoffData", "RHCutoffCompatibility", "FixedClass",
-              "FixedClassSupply", "RHOnly", "RHWindow", "RHNormalized", "RHNormalizedSupply", "RHFiniteGain"]:
+              "FixedClassSupply", "RHOnly", "RHWindow", "RHNormalized", "RHNormalizedSupply", "RHFiniteGain", "RHGainBlocks"]:
     sizes = corpus.size(corpus.walk(entry))
     print(entry, json.dumps(sizes))
 increment = corpus.walk("RHNormalizedSupply") - corpus.walk("RHNormalized")
@@ -15,6 +15,7 @@ print("Additional source in the current normalized proof", json.dumps(corpus.siz
 
 base = corpus.walk("RHFiniteGain")
 for name, modules in {
+    "split_weights": ["RHGainBlocks"],
     "determinant": ["New.Heights.OneDeterminant"],
     "moments": ["New.Filling.Moments"],
     "determinant_and_moments": ["New.Heights.OneDeterminant", "New.Filling.Moments"],
