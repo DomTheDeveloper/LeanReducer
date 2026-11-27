@@ -1,6 +1,6 @@
 # Reducing the ordinary Riemann hypothesis proof
 
-The unconditional entry is `FixedClassRH.ordinaryRH` on the `ordinary-rh-source-reduction` branch. Count every project-owned Lean module imported by the entry, excluding comments and blank lines. Compare the strict limit against 49,999. The compact source descends from Luke Sernau’s rewrite of Levent Alpöge’s proof.
+The shortest verified unconditional entry in this project, `FixedClassRH.ordinaryRH`, went from 76,054 to **76,045** project code lines. Reaching 49,999 still requires a cut of **26,046**. [Unconditional source](https://github.com/DomTheDeveloper/LeanReducer/tree/ffb79990c2f4c584abc37abe4b2709743c86c255) Count every project-owned Lean module imported by the entry, excluding comments and blank lines. Compare the strict limit against 49,999. The compact source descends from Luke Sernau’s rewrite of Levent Alpöge’s proof.
 
 ## The smaller geometric estimate
 
@@ -26,4 +26,18 @@ The complete covolume argument constructs these certificates on the required dat
 
 For a construction, first pick a family whose ratios are nonzero at every required twist. Bound its untwisted size and finite-place index. Prove the inverse-square bound on that same family and charge the cost of its missing dimensions in the stated inequality. The per-row argument is especially relevant if the family lies on a single invariant line, where the determinant can be computed on that line. Its inverse-height estimate must be proved on the line itself. A full-space determinant controls a product of changes in length across rows.
 
-The verification job prints the complete source count for the implication, and the counts after adding candidate imports. The headroom for a supplier includes any new dependencies. Adding the current `New.Rows.RowVolume`, `New.Endgame.ShortAndEnough`, or `New.Selmer.FitTwistsExist` individually takes this route above 50,000. The general determinant and filling-moments lemmas fit inside the budget. [Verification workflow](.github/workflows/half-rank.yml)
+The table counts the union of project source imported by each route. Each optional import is added independently to the same criterion.
+
+| Route | Project code lines | Lines available through 49,999 |
+| --- | ---: | ---: |
+| Height criterion | 17,279 | 32,720 |
+| Single-volume local estimates | 17,302 | 32,697 |
+| Criterion with the general determinant | 17,381 | 32,618 |
+| Criterion with filling moments | 31,821 | 18,178 |
+| Criterion with the crude spanning rows | 37,870 | 12,129 |
+| Criterion with the full row volume | 56,585 | 6,586 over |
+| Criterion with the current short-form construction | 68,367 | 18,368 over |
+| Criterion with the current existence theorem for fit twists | 69,210 | 19,211 over |
+| Certificates supplied by the full geometric construction | 76,363 | 26,364 over |
+
+The strict budget includes the implementation of every new lemma and its project dependencies. The workflow compiles the proof modules over pinned dependencies, replays them with `leanchecker`, checks the ordinary statement against Mathlib, and prints the declaration axioms and the line counts. [Kernel checks and measurements](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/46059974136)
