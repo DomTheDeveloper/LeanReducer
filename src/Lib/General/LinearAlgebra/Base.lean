@@ -1,6 +1,5 @@
--- Modified by LeanReducer to retain only the conditional analytic argument.
+-- Modified by LeanReducer. Module documentation is in SOURCE-NOTES.md.
 import Mathlib
-
 attribute [instance 1100] MonoidHomClass.toMulHomClass RingHomClass.toAddMonoidHomClass
 attribute [instance 900] DivisionRing.toRing AddMonoidWithOne.toAddMonoid AddGroupWithOne.toAddGroup
 attribute [instance high] Pi.locallyCompactSpace_of_finite Pi.borelSpace
@@ -8,10 +7,6 @@ attribute [instance high] Pi.locallyCompactSpace_of_finite Pi.borelSpace
 instance : SecondCountableTopology ℂ := inferInstance
 instance {n} [Fintype n] : BorelSpace (n → ℂ) := inferInstance
 instance {n} [Fintype n] : SecondCountableTopology (n → ℂ) := inferInstance
-
--- Equality is classical: every proposition is decidable (by choice), and the instances that compute
--- equality on the types used as index sets rank below, so that each index set has one instance.
--- `open Calc` brings eight of these computing instances back.
 attribute [instance low] Classical.propDecidable
 attribute [instance 101] Classical.decEq
 attribute [instance 20] instDecidableEqSum instDecidableEqProd instDecidableEqPUnit FinEnum.decEq
@@ -22,7 +17,6 @@ scoped[Calc] attribute [instance] instDecidableEqSum instDecidableEqProd instDec
   instDecidableEqFin Sigma.instDecidableEqSigma Subtype.instDecidableEq Fintype.decidablePiFintype
   ZMod.decidableEq
 scoped[Fint] attribute [instance low] Fintype.ofFinite
--- erases these simp lemmas for every importer; the lemmas are only named in order to be erased
 set_option warning.simp.varHead false in
 attribute [simp ←, simp] Matrix.conjTranspose_eq_transpose_of_trivial MonoidHom.CompTriple.comp_eq
   LinearMap.identityMapOfZeroModuleIsZero LowerAdjoint.closure_le_closed_iff_le smul_left_cancel_iff
@@ -47,7 +41,6 @@ attribute [simp] ZMod.natCast_self Finset.prod_mul_distrib Finset.sum_add_distri
   Matrix.add_mulVec Matrix.blockTriangular_diagonal Matrix.mulVec_smul Matrix.smul_mulVec
   Module.finrank_pi_fintype Matrix.mulVec_add Pi.single_apply sub_eq_zero
   Subgroup.index_ne_zero_of_finite
--- directions of library equivalences, for dot notation; the adjoint of a matrix
 alias ⟨_, Function.Injective.of_ker⟩ := injective_iff_map_eq_zero
 alias ⟨_, Function.Bijective.of_existsUnique⟩ := Function.bijective_iff_existsUnique
 alias ⟨IsCompact.compactSpace, _⟩ := isCompact_iff_compactSpace

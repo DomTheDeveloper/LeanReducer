@@ -1,28 +1,12 @@
--- Modified by LeanReducer to select twists from a set of primes of divergent weight.
+-- Modified by LeanReducer. Module documentation is in SOURCE-NOTES.md.
 import Lib.Analytic.Primes.AuxiliaryPrimes
-
-/-! Known result: Zero density for quadratic twists by mean values over real characters. This file
-only finds one prime in a given class whose quadratic twists have no zero up to a given height right
-of a line beyond the critical line. The proof uses a three-lines argument and a smoothed mean square
-of Jacobi symbol sums. Source: Jutila, On mean values of Dirichlet polynomials with real characters,
-Acta Arith. 27 (1975) 191-198.
-
-This file: Some prime in a class has quadratic twists zero-free on a half-strip; three lines. -/
 seal Finset.univ Finset.sum Finset.prod
-
 open ArithmeticFunction DirichletCharacter Complex Moebius Finset Real ZMod vonMangoldt LSeries
   Filter jacobiSym legendreSym MeasureTheory Nat NumberTheorySymbols
-
-
 variable {N : ℕ} [NeZero N] (ξ : DirichletCharacter ℂ N) (j : Fin 2) {η : ℝ}
-
 omit [NeZero N] in
 lemma norm_mul_moebius_le_one (n : ℕ) : ‖ξ n * μ n‖ ≤ 1 := by by_cases Squarefree n <;> simp [*]
-
 open Set HadamardThreeLines in
-/-- Three lines: for j ≤ 1, some C gives |Γ_j(s)|² ≤ C T^(−2η) whenever χ ≠ 1 is primitive mod q
-≤ T² of parity j, L(s, χ) = 0, 1/2 + 9η ≤ re s ≤ 1, and the integrals `thetaTailIntegral` from 1/T
-of the theta series of χ and μχ total at most T^(2η). -/
 lemma three_lines_bound_of_LFunction_eq_zero : ∃ C,
   ∀ {η T : ℝ} {q} [NeZero q] {χ : DirichletCharacter ℂ q} {s}, 0 < η → χ.IsPrimitive → χ ≠ 1 →
   χ (-1) = (-1) ^ j.1 → 0 < T → q ≤ T ^ 2 → thetaTailIntegral j (χ ·) T⁻¹ + thetaTailIntegral j
@@ -32,7 +16,6 @@ lemma three_lines_bound_of_LFunction_eq_zero : ∃ C,
   have T1 := (one_le_sq_iff₀ hT.le).1 (hq.trans' (by simp [succ_le_iff]))
   obtain ⟨n, X⟩ := norm_mul_moebius_le_one χ,
     one_le_pow₀ (one_le_rpow T1 (by bound : 0 ≤ 2 * η)) (n := 2)
-  -- `mellin f` is the Mellin transform of `f`, the series for `χ μ` cut at `1 / T`; `B` bounds it
   let f := (Ioi T⁻¹).indicator (gaussianTheta j fun n ↦ χ n * μ n)
   obtain ⟨⟨p, _, A⟩, b, _, B⟩ := mellin_differentiableOn_and_bounded
     (norm_gaussianTheta_char_le h1 hp), mellin_differentiableOn_and_bounded (D := 3 * T) (f := f)
@@ -47,14 +30,12 @@ lemma three_lines_bound_of_LFunction_eq_zero : ∃ C,
     ⟨_, forall_mem_image.2 fun z k ↦ norm_sub_le_of_le (by simp; grw [g z k]) (norm_mul_le_of_le
     (A z k) (B z k))⟩ ?_ ?_) (by simp [mellin_gaussianTheta_char, *, show 0 < s.re by bound])) ?_
   any_goals intro z (hz : _ = _)
-  -- on `re z = 1/2`: bound `mellin f` and `Γ_j L` by tail integrals; then use `J`
   · have N r g (k : 0 ≤ r) : _ ≤ thetaTailIntegral j g r := (norm_integral_le_integral_norm fun t ↦
       ofReal t ^ (z - 1) • gaussianTheta j g t).trans_eq (setIntegral_congr_fun (by simp) fun t
       i ↦ by norm_num [hz, rpow_neg, k.trans_lt i, le_of_lt, sqrt_eq_rpow]; ring)
     grw [norm_sub_le, norm_mul, norm_pow, g, e, inter_eq_right.2, N, mellin, N,
       thetaTailIntegral_zero_le_two_mul h1 hp hχ
       hT, two_mul_le_add_sq, pow_add_pow_le, J] <;> norm_num [hz] <;> first | positivity | nlinarith
-  -- on `re z = 2`: `Γ_j² - Γ_j L · mellin f = Γ_j L ∫_0^{1/T} θ^μ(t) t ^ z dt / t`
   · have I := (integrableOn_exp_neg_Ioi 0).const_mul 3
     have P {c} h t k : ‖ofReal t ^ (z - 1) • gaussianTheta j c t‖ ≤ 3 * rexp (-t) :=
       (norm_mul_le_of_le
@@ -68,9 +49,6 @@ lemma three_lines_bound_of_LFunction_eq_zero : ∃ C,
     all_goals simp [hT.le, field] <;> nlinarith
   simp (disch := positivity) [← log_le_log_iff, a, field]
   nlinarith [log_nonneg T1]
-
-/-- If m ≥ 1 and neither m nor 2m is a square, then |∑_{1 ≤ v ≤ X} (−v/m)| ≤ 2√m (1 + log m) for
-all X; the factor at 2 of the Jacobi symbol is the principal character. -/
 lemma norm_sum_jacobiSym_le {m} (hm : m ≠ 0) (h : ¬IsSquare m) (h' : ¬IsSquare (2 * m)) (X : ℕ) :
     ‖∑ v ∈ Ioc 0 X, (J(-v | m) : ℂ)‖ ≤ 2 * √m * (1 + .log m) := by
   choose ψ E using @induction_on_primes (fun b ↦ ∃ ψ : DirichletCharacter ℂ b, b ≠ 0 → ∀ v : ℤ,
@@ -86,9 +64,6 @@ lemma norm_sum_jacobiSym_le {m} (hm : m ≠ 0) (h : ¬IsSquare m) (h' : ¬IsSqua
     have := congr($e (u.1.cast : ℤ))
     rw [changeLevel_eq_cast_of_dvd, ← intCast_cast, quadTwist_apply]
     simp_all [to_jacobiSym, ↓E, mul_right', sq, ← Int.cast_mul]; grind [trichotomy]))]
-
-/-- Mean value estimate. For j ≤ 1, η > 0, t ≥ 1/T > 0, X ≤ T² and |c| ≤ 1: ∑_{1 ≤ v ≤ X} |∑_{n
-≥ 1} c(n) (−v/n) g(nt)|² ≤ C T² t^{−1−2η}, with g = `gaussianMonomial` j and C = C(j, η). -/
 lemma sum_sq_gaussianTheta_jacobiSym_le (hη : 0 < η) : ∃ C, ∀ T > (0 : ℝ), ∀ t ≥ T⁻¹,
     ∀ X : ℕ, X ≤ T ^ 2 → ∀ c : ℕ → ℂ, (∀ n, ‖c n‖ ≤ 1) → ∑ v ∈ Ioc 0 X,
     ‖gaussianTheta j (fun n ↦ c n * J(-v | n)) t‖ ^ 2 ≤ C * (T ^ 2 * t ^ (-1 - 2 * η)) := by
@@ -100,20 +75,17 @@ lemma sum_sq_gaussianTheta_jacobiSym_le (hη : 0 < η) : ∃ C, ∀ T > (0 : ℝ
   obtain ⟨⟨A, _, hA⟩, ⟨B, _, hB⟩, Z, w⟩ := R (1 / 2 + η) (by bound), R (3 / 2 + η) (by bound),
     summable_pnat_iff_summable_nat.2 (summable_nat_rpow.2 (by bound : -1 - η / 2 < _)).norm,
     (fun v ↦ v.mul_norm (v.mul_norm v)) (summable_nat_rpow.2 (by bound : 2 * -(1 / 2 + η) < _)).norm
-  -- the majorant: a sum over the triples `(a, b, u)` with `k n = a b²`, `m = a u²`, and a product
   refine ((summable_sum (s := {1, 2}) fun (k : ℕ+) _ ↦ ((w.hasSum.tsum_fiberwise fun (a, b, u) ↦
     ((b * (b * a) / k).toPNat', (a * u ^ 2).toPNat')).summable.mul_left (A ^ 2 * k ^ (1 / 2 + η))
     ).norm).add ((Z.mul_norm Z).mul_left ((2 * B) ^ 2 * rexp η / η))).imp
     fun K L T hT t h X hX c hc ↦ ?_
   have ht : 0 < t := by grw [h]; bound
-  -- expand the square
   refine .trans (by simpa [mul_conj'] using mod_cast le_norm_self _) ((hasSum_sum
     (s := Ioc 0 X) fun v _ ↦ (fun s ↦ s.hasSum.mul s.hasSum.star (s.norm.mul_norm s.star.norm
     ).of_norm) (@summable_and_norm_gaussianTheta_le j _ t (fun n ↦ mul_one (1 : ℝ) ▸
     norm_mul_le_of_le (hc n) (b (-v) n)) ht).1).norm_le_of_bounded (L.mul_right _) fun (n, m) ↦ ?_)
   conv_lhs => simp [mul_right_comm _ _ (ofReal _), mul_mul_mul_comm _ (Int.cast _), ← Int.cast_mul,
     ← mul_right, ← mul_sum]
-  -- if `k n m` is a square, `k = 1` or `2`, the trivial bound; else Pólya–Vinogradov
   obtain ⟨k, i, r, e⟩ | k := em (∃ k ∈ ({1, 2} : Finset ℕ+), IsSquare (k * (n * m) : ℕ))
   obtain ⟨g, p, u, o, s, f, rfl⟩ := exists_coprime' (by simp : 0 < gcd (k * n) r)
   obtain ⟨a, rfl⟩ : p ∣ g := (s.pow_right 2).dvd_mul_left.1 ⟨m, Nat.mul_left_cancel o (by grind)⟩
@@ -126,9 +98,6 @@ lemma sum_sq_gaussianTheta_jacobiSym_le (hη : 0 < η) : ∃ C, ∀ T > (0 : ℝ
     k.2, show 1 + _ = (rexp 1 * (n * m)).log by simp, log_le_rpow_div (ε := η / 2), ← sum_nonneg])]
   all_goals simp (disch := positivity) [← log_le_log_iff, mul_nonneg] <;>
     linarith [T.log_inv, log_le_log (by bound) h]
-
-/-- For j ≤ 1, η > 0, T > 0, X ≤ T² and |c| ≤ 1: ∑_{1 ≤ v ≤ X} ∫_{1/T}^∞ |∑_{n ≥ 1} c(n) (−v/n)
-g(nt)| dt/√t ≤ C T^{2+η}, with g = `gaussianMonomial` j and C = C(j, η). -/
 lemma sum_thetaTailIntegral_le (hη : 0 < η) : ∃ C, ∀ T > (0 : ℝ), ∀ X : ℕ, X ≤ T ^ 2 → ∀ c : ℕ → ℂ,
     (∀ n, ‖c n‖ ≤ 1) → ∑ v ∈ Ioc 0 X, thetaTailIntegral j (fun n ↦ c n * J(-v | n)) T⁻¹ ≤ C * T ^
   (2 + η) := (sum_sq_gaussianTheta_jacobiSym_le j hη).imp' (√· / η) fun C H T hT X hX c hc ↦ by
@@ -139,12 +108,6 @@ lemma sum_thetaTailIntegral_le (hη : 0 < η) : ∃ C, ∀ T > (0 : ℝ), ∀ X 
     le_sqrt_of_sq_le sq_sum_le_card_mul_sum_sq, show #_ ≤ T ^ 2 by simpa, H T hT t ht.le]
   all_goals simp (disch := positivity) [inv_rpow, rpow_sub, rpow_neg, two_mul, rpow_add, field, *]
   intros; positivity
-
-/-- Zero-density bound for quadratic twists: for ξ mod N, η > 0 and real y, only O(x^{1−η/2})
-primes d ≤ x, d ≡ 7 mod 8, d ∤ N, have a zero of L(s, ξ·(·/d)) with Re s ≥ 1/2 + 9η, |Im s|
-≤ y.
-
-Known result: Zero density for quadratic twists by mean values over real characters. -/
 lemma zero_density_quadTwist (hη : 0 < η) (y : ℝ) : (fun x : ℕ ↦ (#{d ∈ Ioc 0 x |
     ∃ _ : Fact d.Prime, d % 8 = 7 ∧ N.Coprime d ∧ ∃ s, 1 / 2 + 9 * η ≤ re s ∧ |im s| ≤ y ∧
     entireL (quadTwist ξ d) s = 0} : ℝ)) =O[atTop] fun x ↦ (x : ℝ) ^ (1 - η / 2) := by
@@ -172,28 +135,21 @@ lemma zero_density_quadTwist (hη : 0 < η) (y : ℝ) : (fun x : ℕ ↦ (#{d �
   grw [hX, ← rpow_natCast_mul, le_div_comm₀, hc s ⟨⟨by bound, r⟩, abs_le.1 s₁⟩, hK hη _ (h1 ψ) (by
     simpa (disch := omega) [hp, legendreSym.at_neg_one, ↓χ₄_nat_three_mod_four] using
     quadTwist_apply ψ d (-1)) T0 (by simp [hT, mem_Ioc.1 hd])] <;> try bound
-  -- reciprocity and `(2/d) = 1` give `(n/d) = (-d/n)`
   · have E {n : ℕ} (h : n ≠ 0) : quadTwist ψ d n = ψ n * J(-d | n) := by
       let ⟨k, m, hm, e⟩ := exists_eq_two_pow_mul_odd h
       simpa [hm.pos.ne', mul_left, pow_left, at_two, qrSign, mul_right', pow_right, mod_left (-d) 2,
         *, Int.odd_iff.1, jacobiSym.neg, to_jacobiSym, quadratic_reciprocity' hm, ← natCast_mod,
         odd_iff, (by omega : d % 2 = 1 ∧ d % 4 = 3)] using quadTwist_apply ψ d n
     simpa [thetaTailIntegral, gaussianTheta, E, mul_right_comm] using hx.le
-  -- the twist of a primitive character by the Legendre symbol of a new prime is primitive
   clear * - e h h1
   have H B := (conductor_mul_dvd_lcm_conductor (quadTwist ψ d) B⁻¹).trans (Nat.lcm_dvd_mul ..)
   obtain := H (quadTwist 1 d), H (ψ.changeLevel ⟨d, rfl⟩), h1 1,
     (@quadTwist 1 1 d _).conductor_dvd_level, (quadTwist ψ d).conductor_dvd_level.antisymm
   simp_all [quadTwist, dvd_prime Fact.out, mul_comm, h.dvd_mul_left, eq_one_iff_conductor_eq_one,
     h.symm.dvd_mul_left, conductor_inv, h.mul_dvd_of_dvd_of_dvd, conductor_changeLevel, IsPrimitive]
-
 open scoped Classical
-
-/-- The sum of log(p)/p over the primes in S diverges. -/
 def DivergentPrimes (S : Set ℕ) : Prop :=
   ¬ Summable fun n : ℕ ↦ (if n.Prime ∧ n ∈ S then Real.log n else 0) / n
-
-/-- Some prime in S has all twisted L-functions nonvanishing on the specified box. -/
 lemma exists_dense_twist {β} y {S : Set ℕ} (hβ : 1 / 2 < β)
     (hMass : DivergentPrimes S) (H : ∀ d : Primes, d.val ∈ S → d.1 % 8 = 7 ∧ N.Coprime d) :
     ∃ d : Primes, d.val ∈ S ∧ ∀ ξ s, β ≤ re s → |im s| ≤ y →

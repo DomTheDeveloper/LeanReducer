@@ -1,66 +1,27 @@
--- Modified by LeanReducer to retain only the conditional analytic argument.
+-- Modified by LeanReducer. Module documentation is in SOURCE-NOTES.md.
 import Lib.Analytic.Landau.PolarLandau
-
-/-! The remainder `primeError` written as an exact finite prime sum. For an integer a and 0 < z ≤ a,
-the normalised error at z in the class 1 mod M equals the sum over ν ≤ a, ν ≡ 1, of
-Λ(ν)(1−χ_K(ν))(a/ν − a/z)₊, divided by a, less log z/φ(M) and a constant. This standard rewriting of
-a weighted prime sum in a residue class as an exact finite identity turns the divisibility sums
-∑ λ(ν)(a/ν − a/z)₊ over ν ≤ a into `primeError` at a single z ≤ a. Related work: Davenport,
-Multiplicative Number Theory.
-
-Part of: One-sided bound for non-split primes gives a zero-free half-plane (see
-New.Endgame.OneSidedCriterion).
-
-This file: Weighted non-split prime sums; their Mellin transform has poles at zeros of
-L-functions. -/
-
 noncomputable section
-
 open ArithmeticFunction DirichletCharacter Complex Finset Filter MeasureTheory Nat Real vonMangoldt
-
-
 variable (d : ℕ) [Fact d.Prime] (M : ℕ)
-
-/-- The weight λ(ν) = Λ(ν)(1 − (ν/d)) for ν ≡ 1 mod M, and 0 otherwise; Λ is von Mangoldt's
-function and (ν/d) the Legendre symbol. -/
 def lambdaClass ν := @residueClass M 1 ν * (1 - chiK d ν)
-
-/-- The sum y^{−r} ∑_{1≤ν≤y} λ(ν) ν^{r−1}, with λ = `lambdaClass`: for r = 0 it is ∑ λ(ν)/ν, for r
-= 1 it is y⁻¹ ∑ λ(ν). -/
 def lambdaSum r y := (∑ k ∈ Icc 1 ⌊y⌋₊, lambdaClass d M k / k * k ^ r) / y ^ r
-
-/-- The function φ(M)⁻¹(∑_ξ (L̃′/L̃(s, ξ·(·/d)) − L̃′/L̃(s, ξ)) − 1), summed over the characters
-ξ mod M, where L̃ is `entireL`. -/
 def logDerivMean [NeZero M] s :=
   (∑ ξ, (logDeriv (entireL (quadTwist ξ d)) s - logDeriv (@entireL M _ ξ) s) - 1) / φ M
-
-/-- The remainder R_M(x) = ∑_{ν≤x} λ(ν)(1/ν − 1/x) − log x/φ(M) − Re `logDerivMean`(1), where λ(ν)
-= Λ(ν)(1 − (ν/d)) for ν ≡ 1 mod M, else 0. -/
 def primeError [NeZero M]
     x := lambdaSum d M 0 x - lambdaSum d M 1 x - x.log / φ M - (logDerivMean d M 1).re
-
 lemma lambdaClass_nonneg_and_abs_le ν : 0 ≤ lambdaClass d M ν ∧ |lambdaClass d M ν| ≤ 2 * ν := by
   simp [lambdaClass, chiK, Set.indicator, quadraticCharFun, sub_ite]
   grind [vonMangoldt_nonneg, vonMangoldt_le_log, Real.log_le_self]
-
 lemma abs_lambdaSum_exp_le r v : |lambdaSum d M r (rexp v)| ≤ 2 * rexp v := by
   grw [lambdaSum, abs_div, abs_sum_le_sum_abs, sum_le_card_nsmul _ _ (2 * v.exp ^ r)] <;> simp
     +contextual [abs_div, le_floor_iff, exp_nonneg, mul_le_mul, div_le_of_le_mul₀, field,
     lambdaClass_nonneg_and_abs_le, pow_le_pow_left₀, floor_le]
-
 variable [NeZero M] {d M}
-
-/-- For 0 < z ≤ A, `primeError d M z` in terms of the sum ∑_{ν ≤ A} λ(ν)(A/ν − A/z)⁺, where λ is
-`lambdaClass d M`. -/
 lemma primeError_eq_sum (A : ℕ) {z : ℝ} (u : 0 < z) (h : z ≤ A) : primeError d M z = ∑ ν ∈ Icc 1 A,
   lambdaClass d M ν * (A / ν - A / z)⁺ / A - z.log / φ M - re (logDerivMean d M 1) := by
   have := u.trans_le h
   simp [primeError, lambdaSum, sum_div, ← sum_sub_distrib]; apply sum_congr_of_eq_on_inter <;>
     simp +contextual [le_floor_iff u.le, field] <;> rify <;> grind
-
-/-- For d ≡ 7 mod 8 prime to M, v ↦ R_M(e^v) is polar (`IsPolar`) with residue at s equal to
-∑_ξ (ord_s L̃(ξ) − ord_s L̃(ξ(·/d))) / (φ(M) s(1 − s)), ξ over the characters mod M, L̃ =
-`entireL`. -/
 lemma isPolar_primeError (hd : d % 8 = 7) (h : M.Coprime d) : IsPolar (primeError d M ·.exp) fun s ↦
     (∑ ξ, (analyticOrderNatAt (@entireL M _ ξ) s - analyticOrderNatAt (entireL (quadTwist ξ d))
   s : ℂ)) / φ M / (s * (1 - s)) := by
@@ -69,7 +30,6 @@ lemma isPolar_primeError (hd : d % 8 = 7) (h : M.Coprime d) : IsPolar (primeErro
     fun_prop (disch := grind [entireL_ne_zero, zero_re]) [logDerivMean, logDeriv]
   refine ⟨by fun_prop [primeError, lambdaSum], |κ| + 5, fun s ↦ (logDerivMean d M s / s - κ) /
     (s - 1), fun _ ↦ by fun_prop [logDerivMean], fun v a ↦ (abs_sub ..).trans ?_, ?q,
-  -- real on `(2, ∞)`, hence at `1`
   have := @ext _ 0 (by simp [κ]) ((A.mono (by aesop)
     ).im_ofReal.eqOn_zero_of_preconnected_of_eventuallyEq_zero isPreconnected_Ici (by simp) (.mono
     (lt_mem_nhds (lt_add_one _)) fun x u ↦ congr(im $((div_eq_iff (by aesop)).1 (?q x u))).trans

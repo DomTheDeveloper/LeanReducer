@@ -1,22 +1,16 @@
+-- Modified by LeanReducer. Module documentation is in SOURCE-NOTES.md.
 module
 public import Mathlib.NumberTheory.LSeries.DirichletContinuation
 public import Mathlib.Data.Nat.Factorial.Basic
-
 public section
 namespace LeanReducer
 open DirichletCharacter
-
-/-- The nonvanishing statement at a single positive modulus. -/
 abbrev ZeroFreeAt (q : ℕ) [NeZero q] (b : ℝ) : Prop :=
   ∀ (χ : DirichletCharacter ℂ q) (s : ℂ), b < s.re →
     (χ ≠ 1 ∨ s ≠ 1) → LFunction χ s ≠ 0
-
 abbrev factorialLevel (k : ℕ) : ℕ := 18480 * (k + 1).factorial
-
 instance factorialLevel_neZero (k : ℕ) : NeZero (factorialLevel k) :=
   ⟨Nat.mul_ne_zero (by decide) (Nat.factorial_ne_zero _)⟩
-
-/-- Any unbounded set of good factorial levels suffices, regardless of its gaps. -/
 theorem of_unbounded_factorial {Good : ℕ → Prop}
     (unbounded : ∀ lower : ℕ, ∃ k, lower ≤ k ∧ Good k)
     (atLevel : ∀ k, Good k → ZeroFreeAt (factorialLevel k) (1 / 2 + 1 / ((k : ℝ) + 1))) :
@@ -36,7 +30,5 @@ theorem of_unbounded_factorial {Good : ℕ → Prop}
   have lifted := atLevel k good (changeLevel divides χ) s margin pole'
   rw [LFunction_changeLevel divides χ pole] at lifted
   exact left_ne_zero_of_mul lifted
-
 end LeanReducer
-
 #print axioms LeanReducer.of_unbounded_factorial

@@ -1,7 +1,7 @@
-name: Verify conditional RH and GRH from divergent prime sets
+name: Verify the compact 950-line proof from divergent prime sets
 on:
   push:
-    branches: [divergent-prime-grh]
+    branches: [divergent-prime-compact]
   workflow_dispatch:
 permissions:
   contents: read
@@ -17,6 +17,8 @@ jobs:
         run: |
           set -euo pipefail
           sha256sum -c SOURCE.sha256
+          test "$(find src -type f -name '*.lean' | wc -l)" -eq 18
+          test "$(find src -type f -name '*.lean' -print0 | xargs -0 cat | wc -l)" -eq 975
           curl --proto '=https' -fsSL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
           "$HOME/.elan/bin/lean" --version
@@ -27,8 +29,10 @@ jobs:
           lake build
           cat > "$RUNNER_TEMP/ConditionalAudit.lean" <<'LEAN'
           import SampledGRH
+          open scoped Classical
           open Filter in
-          example : (∀ lower : ℕ, ∃ k, lower ≤ k ∧ ∃ S : Set ℕ, DivergentPrimes S ∧
+          example : (∀ lower : ℕ, ∃ k, lower ≤ k ∧ ∃ S : Set ℕ,
+              (¬ Summable fun n : ℕ ↦ (if n.Prime ∧ n ∈ S then Real.log (n : ℝ) else 0) / (n : ℝ)) ∧
               ∀ d : Nat.Primes, d.val ∈ S → (d.val % 8 = 7 ∧ (LeanReducer.factorialLevel k).Coprime d.val) ∧
               ∀ᶠ n : ℕ in atTop, primeError d.val (LeanReducer.factorialLevel k) ((n:ℝ)^4) ≤
                 ((n:ℝ)^4)^(-(1/2:ℝ) + (1/((k:ℝ)+1))/4)) →
