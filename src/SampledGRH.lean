@@ -32,7 +32,7 @@ theorem nonvanishing (samples : Estimates) : DirichletLNonvanishingRightOfHalf :
       ∀ᶠ x : ℝ in atTop, primeError d.val (LeanReducer.factorialLevel k) x ≤ x^(1/2+δ-1) :=
     ⟨(samplesAt d hd).1, FourthPowers.extend (PrimeErrorFourthPowers.step d.val (LeanReducer.factorialLevel k))
       (a := -(1/2:ℝ)+δ/4) (by linarith) (by linarith) (by linarith) (samplesAt d hd).2⟩
-  apply entireL_ne_zero_of_primeError_le (β := 1/2+δ) (by linarith) mass primes bounds s hs χ
+  apply entireL_ne_zero_of_primeError_le (M := LeanReducer.factorialLevel k) (β := 1/2+δ) (by linarith) mass primes bounds s hs χ
   rw [entireL]
   split_ifs with h
   · subst χ
