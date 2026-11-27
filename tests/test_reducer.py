@@ -3,6 +3,7 @@ from tempfile import TemporaryDirectory
 import unittest
 
 from leanreducer import agents
+from leanreducer.patterns import import_audit, repeated_commands
 from leanreducer.source import Corpus, bodies, imports, metrics
 from leanreducer.verify import CheckError, check_axioms
 
@@ -23,6 +24,10 @@ class SourceAndContracts(unittest.TestCase):
             report=corpus.report('Main',['L'])
             self.assertEqual(report['closure']['code'],5)
             self.assertEqual(report['cuts']['L']['exclusive_to_cut']['modules'],1)
+            self.assertEqual(import_audit(corpus, 'Main')['redundant'], [])
+            (root/'Main.lean').write_text('import L\nimport R\nimport B')
+            checked = import_audit(Corpus(root, ['Init']), 'Main')
+            self.assertEqual(checked['redundant'], [{'module': 'Main', 'import': 'B', 'also_via': ['L', 'R']}])
             (root/'B.lean').write_text('import Misspelled.Helper')
             with self.assertRaises(ValueError):
                 Corpus(root,['Init'])
@@ -32,6 +37,22 @@ class SourceAndContracts(unittest.TestCase):
         body,=bodies('A',src)
         self.assertEqual((body.start, body.stop, body.lines),(1,3,2))
         self.assertFalse(list(bodies('A','theorem x : True := by\n  trivial\n')))
+
+    def test_repeated_command_scope_and_host(self):
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            files = {'Main': 'import A\nimport B', 'A': 'import C\nseal X.a\n  X.b',
+                     'B': 'import C\nseal X.a\n  X.b in\nexample : True := trivial', 'C': 'import Init'}
+            for mod, src in files.items():
+                (root / (mod + '.lean')).write_text(src)
+            group, = repeated_commands(Corpus(root, ['Init']), 'Main')
+            self.assertEqual(group['common_modules'], ['C'])
+            self.assertEqual(group['gross_call_site_lines_saved'], 2)
+            self.assertEqual([s['scoped'] for s in group['sites']], [False, True])
+
+    def test_nested_default_is_not_a_theorem_body(self):
+        source = ('theorem withDefault (h : True := by\n  trivial\n  done) : True := by\n  exact h\n')
+        self.assertEqual(list(bodies('A', source)), [])
 
     def test_axioms_fail_closed(self):
         names={'x':'True','y':'True'}

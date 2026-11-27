@@ -13,7 +13,7 @@ open Finset Real
 
 /-- A single cutoff contains all terms needed at the two endpoints and the interior point.
 The weight can include the factor 1/A in the prime-error formula. -/
-noncomputable def error {ι : Type*} (s : Finset ι) (w a : ι → ℝ)
+@[expose] noncomputable def error {ι : Type*} (s : Finset ι) (w a : ι → ℝ)
     (scale φ c x : ℝ) : ℝ :=
   (∑ i ∈ s, w i * max (a i - scale / x) 0) - log x / φ - c
 

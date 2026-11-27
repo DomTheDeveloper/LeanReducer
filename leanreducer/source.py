@@ -190,10 +190,19 @@ def bodies(module, source):
         if not match:
             continue
         end = starts[k+1] if k+1 < len(starts) else len(raw)
+        # This recognizer accepts a simple header only. An assignment inside a
+        # binder may introduce a default value, even when the line ends in 'by'.
+        prefix = []
         for j in range(i, end):
-            if ':=' not in lex[j][1]:
+            before, assignment, _ = lex[j][1].partition(':=')
+            prefix.append(before)
+            if not assignment:
                 continue
-            if not re.search(r':=\s+by\s*$', lex[j][1]):
+            header = '\n'.join(prefix)
+            if (not re.search(r':=\s+by\s*$', lex[j][1])
+                    or any(header.count(left) != header.count(right)
+                           for left, right in [('(', ')'), ('[', ']'), ('{', '}'), ('⦃', '⦄'), ('⟨', '⟩')])
+                    or re.search(r'\b(?:let|have|where|match|do)\b', header)):
                 break
             stop = end
             while stop > j+1 and not lex[stop-1][0].strip():

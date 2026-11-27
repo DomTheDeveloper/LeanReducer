@@ -11,6 +11,7 @@ import tempfile
 from . import agents
 from .inlining import straight_line
 from .patches import apply_reviewed
+from .patterns import import_audit, repeated_commands
 from .source import Corpus, bodies, metrics
 from .verify import CheckError, Checker, git, read_spec, safe_path
 
@@ -75,7 +76,8 @@ def run(args):
     if args.output.exists():
         raise ValueError('choose a new output directory')
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    if args.rounds < 1 or args.trials < 1 or args.timeout < 1 or args.target < 0:
+    timeout = args.timeout if args.timeout is not None else spec.get('timeout_seconds', 18000)
+    if not isinstance(timeout, int) or args.rounds < 1 or args.trials < 1 or timeout < 1 or args.target < 0:
         raise ValueError('use positive resource limits and a nonnegative target')
     with tempfile.TemporaryDirectory(prefix='leanreducer-') as work:
         tmp = Path(work)
@@ -93,7 +95,7 @@ def run(args):
         tree_before = corpus.size(corpus.paths)
         logs = tmp/'logs'
         logs.mkdir()
-        checker = Checker(project, spec, logs, args.timeout)
+        checker = Checker(project, spec, logs, timeout)
         if args.cache:
             checker.run(['lake','exe','cache','get'])
         version_lines = checker.run(['lake','env','lean','--version']).read_text().splitlines()
@@ -111,7 +113,7 @@ def run(args):
                     candidate.size(candidate_closure)['code_chars'] >= before['code_chars'] or
                     candidate.size(candidate.paths)['code'] > corpus.size(corpus.paths)['code']):
                 raise ValueError('patch must shrink the entry closure without growing the source tree')
-            changes.update(changed & candidate.paths.keys())
+            changes.update(changed)
         for _ in range(0 if args.patch else args.rounds):
             if corpus.size(closure)['code'] <= args.target:
                 break
@@ -131,8 +133,8 @@ def run(args):
                         tactics.insert(0, direct)
             trial(checker,corpus,body,tactics,args.trials,changes,history)
         # Rebuild even after rejected trials and check the exact emitted tree.
-        axioms = checker.audit(sorted(changes),comparator=args.paranoid)
         final = Corpus(src, spec['boundary'])
+        axioms = checker.audit(sorted(changes & final.paths.keys()), comparator=args.paranoid)
         after = final.size(final.walk(spec['entry']))
         diff = subprocess.check_output(['git','-C',str(checkout),'diff','--no-ext-diff','HEAD','--',str(src)])
         record = {'revision': rev, 'toolchain': version, 'entry': spec['entry'],
@@ -140,6 +142,7 @@ def run(args):
                   'target': args.target,
                   'target_met': after['code'] <= args.target, 'axioms': axioms,
                   'paranoid_comparator': args.paranoid, 'changes': sorted(changes),
+                  'removed_modules': sorted(changes - final.paths.keys()),
                   'mode': 'reviewed patch' if args.patch else ('AI' if args.ai else 'offline'),
                   'attempts': history, 'checks': checker.checks,
                   'patch_sha256': hashlib.sha256(diff).hexdigest()}
@@ -162,6 +165,8 @@ def main():
     analysis.add_argument('source',type=Path)
     analysis.add_argument('--entry',required=True)
     analysis.add_argument('--external',action='append',default=['Init','Std','Lean','Mathlib'])
+    analysis.add_argument('--import-audit', action='store_true', help='report redundant direct module imports')
+    analysis.add_argument('--repetitions', action='store_true', help='find repeated seal/unseal commands and shared imports')
     analysis.add_argument('--cut',action='append',default=[])
     analysis.add_argument('--target',type=int,default=50000)
     analysis.add_argument('--json',type=Path)
@@ -172,7 +177,7 @@ def main():
     reduce.add_argument('--target',type=int,default=50000)
     reduce.add_argument('--rounds',type=int,default=1)
     reduce.add_argument('--trials',type=int,default=6)
-    reduce.add_argument('--timeout',type=int,default=1800,help='seconds per build or check')
+    reduce.add_argument('--timeout',type=int,help='seconds per build or check, defaults to the case timeout or 18000')
     reduce.add_argument('--cache',action='store_true',help='download the pinned Mathlib cache in the clean checkout')
     reduce.add_argument('--paranoid',action='store_true',help='also require Lake Comparator in the final audit')
     reduce.add_argument('--module')
@@ -185,6 +190,10 @@ def main():
     if args.command == 'analyze':
         corpus = Corpus(args.source.resolve(),args.external)
         report = corpus.report(args.entry,args.cut)
+        if args.import_audit:
+            report['import_audit'] = import_audit(corpus, args.entry)
+        if args.repetitions:
+            report['repeated_commands'] = repeated_commands(corpus, args.entry)
         report['target'] = args.target
         report['gap'] = max(0,report['closure']['code']-args.target)
         if args.json:

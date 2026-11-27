@@ -13,6 +13,8 @@ python3 -m leanreducer analyze /path/to/project/src --entry Main
 python3 -m leanreducer analyze /path/to/grh-compact/src --entry Main --cut New.Endgame.LongForms
 ```
 
+Add `--import-audit` to find direct imports available through another project dependency. Add `--repetitions` to find repeated `seal` or `unseal` commands and the nearest module their sites already share.
+
 A cut means removing that module and following all remaining import paths from the entry. The output counts the modules used exclusively through the cut. Any new code needed to prove a substitute theorem must be added back. Project-owned modules are counted before pinned external packages. The initial external namespaces are Mathlib, Lean, Std and Init. Add a package with `--external` if it belongs outside your source budget. Supply every project-owned dependency under the source root for a complete count.
 
 ## Try a reduction
@@ -32,7 +34,7 @@ The checker builds a fresh checkout, verifies the endpoint types with Lean, read
 
 ## GRH case study
 
-The complete candidate has **76,072 code lines** across 794 modules (**112,770 physical lines**). The independently checked 347-module package contains four intermediate results in **49,230 physical lines**. The full proof still needs a reduction of 26,072 code lines to reach 50,000. [Download the complete candidate](examples/grh/artifacts/GRH-76072.zip) · [Download the four intermediate results](examples/grh/artifacts/GRH-milestones.zip)
+The complete candidate has **76,072 code lines** across 794 modules (**112,770 physical lines**). The independently checked 347-module package contains four intermediate results in **49,230 physical lines**. The full proof still needs a reduction of 26,072 code lines to reach 50,000. [Browse the complete candidate](https://github.com/DomTheDeveloper/LeanReducer/tree/41bbac1c78e806eced8fd373f6cb55e77a045af5) · [Download the complete candidate](examples/grh/artifacts/GRH-76072.zip) · [Download the four intermediate results](examples/grh/artifacts/GRH-milestones.zip)
 
 The study tracks the original 17.37 million lines, the compact rewrite, and the remaining arithmetic obstacle. It includes a Lean-checked theorem reducing the half-plane goal for all Dirichlet characters to one bound at each factorial modulus. [Latest reduction and verification](examples/grh/REDUCTION-STUDY.md) · [Earlier measurements and fourth-power sampling](examples/grh/RESULTS.md)
 
@@ -43,4 +45,4 @@ python3 -m unittest discover -s tests -v
 python3 tests/integration.py
 ```
 
-The integration test uses Lean 4.33.1, Lake, and leanchecker on PATH, or elan with that toolchain installed. It rejects an invalid tactic, accepts a shorter proof, applies the emitted patch to a clean checkout and checks the public theorem again. The GRH case uses Lean 4.35.0.
+The integration test uses Lean 4.33.1, Lake, and leanchecker on PATH, or elan with that toolchain installed. It rejects an invalid tactic, accepts a shorter proof, applies the emitted patch to a clean checkout and checks the public theorem again. The GRH case uses Lean 4.35.0. The default limit is five hours per build or check. Supply `--timeout SECONDS` to override it.
