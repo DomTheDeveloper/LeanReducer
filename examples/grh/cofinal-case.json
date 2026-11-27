@@ -1,0 +1,30 @@
+{
+  "project": ".",
+  "source": "src",
+  "entry": "SampledGRH",
+  "boundary": [
+    "Mathlib",
+    "Init",
+    "Std",
+    "Lean"
+  ],
+  "revision": "ae21d67f172b180b660d9bfa2183e3f806ab0ef2",
+  "toolchain": "leanprover/lean4:v4.35.0",
+  "lean_version": "4.35.0",
+  "protected": [
+    "src/Statements.lean",
+    "src/FactorialLevels.lean",
+    "src/New/Endgame/PrimeError.lean",
+    "src/Lib/Analytic/Landau/PolarLandau.lean",
+    "src/Lib/General/NumberTheory/QuadField.lean",
+    "src/Lib/General/LinearAlgebra/Base.lean"
+  ],
+  "endpoints": {
+    "SampledGRH.five_endpoints": "(∀ lower : ℕ, ∃ k : ℕ, lower ≤ k ∧ ∀ d : Nat.Primes, d.val % LeanReducer.factorialLevel k = 9240 * (k + 1).factorial - 1 → Filter.Eventually (fun n : ℕ => primeError d.val (LeanReducer.factorialLevel k) ((n : ℝ)^4) ≤ ((n : ℝ)^4)^(-(1/2 : ℝ) + (1 / ((k : ℝ) + 1)) / 4)) Filter.atTop) → RiemannHypothesis ∧ RiemannZetaZerosOnLine ∧ DirichletLNonvanishingRightOfHalf ∧ DirichletLZerosOnLine ∧ PrimitiveDirichletLZerosOnLine"
+  },
+  "axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ]
+}

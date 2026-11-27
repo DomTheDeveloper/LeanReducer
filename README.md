@@ -44,6 +44,15 @@ The every-level **conditional proof has 985 code lines**, 1,348 physical lines a
 
 The **976-code-line conditional proof** weakens the arithmetic assumption further. Only an unbounded set of good factorial levels is needed. The entire 19-module source has 1,338 physical lines. Lean checked the explicit implication to all five original conclusions and all 19 modules passed kernel replay. [976-line project ZIP](https://github.com/DomTheDeveloper/LeanReducer/archive/ae21d67f172b180b660d9bfa2183e3f806ab0ef2.zip) · [Build, axiom audit and kernel replay](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45989759982)
 
+The sparse project has its own [reducer case](examples/grh/cofinal-case.json). Its contract spells out the prime inequality and every quantifier independently of `SampledGRH.Estimates`. The case fixes the original five statement definitions, the factorial modulus, and the four source modules defining the weighted prime error. This lets the reducer test changes to the endgame against the same arithmetic premise.
+
+```sh
+git clone --single-branch --branch cofinal-sampled-grh https://github.com/DomTheDeveloper/LeanReducer.git cofinal-proof
+git -C cofinal-proof checkout --detach ae21d67f172b180b660d9bfa2183e3f806ab0ef2
+python3 -m leanreducer reduce --repo cofinal-proof --config examples/grh/cofinal-case.json \
+  --output cofinal-audit --cache --target 1000
+```
+
 A separate two-module project proves an equivalent bounded-height test for nonvanishing. Its 93 code lines restrict the remaining zero search to one bounded region in the critical strip per factorial level. [Bounded-height criterion](examples/grh/FactorialBoxes.lean) · [Pinned build and kernel replay](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45988875281)
 
 ## Tests
