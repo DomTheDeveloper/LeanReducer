@@ -1,0 +1,12 @@
+{
+  "recognized_public_names": 7081,
+  "names_in_duplicate_type_groups": 55,
+  "earlier_project_theorems_of_identical_exported_type": [
+    {
+      "name": "LFunction_ne_zero_of_half_lt_re",
+      "module": "Main",
+      "line": 8,
+      "alternative": "New.grh"
+    }
+  ]
+}

@@ -23,6 +23,8 @@ The shared command saves 38 code lines across 21 uses, counting the new definiti
 
 An audit of the original compact kernel export independently identified the exact-type alias between `New.grh` and `LFunction_ne_zero_of_half_lt_re`. The SHA-256 of the 5,172,274,528-byte uncompressed export matched the published digest. Of 165,589 theorem records, 28,075 occur in 5,623 groups sharing a type node and universe parameters. The export includes Mathlib and generated declarations. A group is a search lead, and by itself establishes no removable project lines. [Streaming analyzer](kernel_types.py) · [Independent proof export](https://math.mit.edu/~drew/shortgrh/)
 
+The source-level cross-check recognized 7,081 explicitly named public theorems and lemmas. Fifty-five occur in a duplicate-type group. Among earlier public declarations visible through the same module or its imports, the only pair the search found was `LFunction_ne_zero_of_half_lt_re` and `New.grh`. The direct-endpoint revision already removes that alias. The check compares exact exported type nodes and universe parameters. It does not explore definitional transformations or alternative proof strategies. [Source comparison](source_aliases.py) · [Measured result](source-aliases.json)
+
 ## Four results that fit below 50,000 physical lines
 
 The standalone package contains the union of all project imports of these four modules from upstream revision `72fead102f663d5c7a407964a13dc0cf9d977207`.
