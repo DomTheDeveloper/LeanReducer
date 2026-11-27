@@ -35,7 +35,8 @@ theorem heightLe_with_completion {θ} (o : D.IsFitFamily θ) :
     rw [dim, add_sub_cancel_left]
     push_cast
     unfold completionCost
-    ring_nf <;> exact le_rfl) fun _ ↦ le_rfl
+    ring_nf
+    exact le_rfl) fun _ ↦ le_rfl
   simpa using (norm_inner_le_one _ _ ⟨j⟩
     (fun g ↦ by erw [D.classAut_eq_bot_of_le_chosenLevel (Subgroup.map_mono fun _ h ↦
     funext fun _ ↦ (h (.inl _) ⟨⟩).2) (by bound [D.card_Y_le .refl])]) a b :)

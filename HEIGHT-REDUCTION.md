@@ -20,6 +20,10 @@ There is also a way to use a smaller family. The height comparison on admissible
 
 `FixedClassRH.ofHeightCertificates` consumes a pair of upper bounds on the heights of a nonzero twisted-volume ratio and its inverse square. The product formula cancels the ratio. The estimate at modulus 18,480 then implies Mathlib’s ordinary `RiemannHypothesis`. The hypothesis quantifies over the admissible data at that modulus. A one-dimensional candidate still needs both height bounds on the same ratio. [HeightCriterion.lean](src/HeightCriterion.lean)
 
+The complete covolume argument constructs these certificates on the required data using its actual twist family. The separate `HeightSupply` module checks this compatibility and exposes the full unconditional consequence. [HeightSupply.lean](src/HeightSupply.lean)
+
+`certificate_of_one_volume` treats a single untwisted Gram value and its twisted counterparts. Bounds at every archimedean conjugate and every finite place give the forward height directly. The remaining inverse-square height must concern these same Gram values. [OneVolume.lean](src/OneVolume.lean)
+
 For a construction, first pick a family whose ratios are nonzero at every required twist. Bound its untwisted size and finite-place index. Prove the inverse-square bound on that same family and charge the cost of its missing dimensions in the stated inequality. The per-row argument is especially relevant if the family lies on a single invariant line, where the determinant can be computed on that line. Its inverse-height estimate must be proved on the line itself. A full-space determinant controls a product of changes in length across rows.
 
 The verification job prints the complete source count for the implication, and the counts after adding candidate imports. The headroom for a supplier includes any new dependencies. Adding the current `New.Rows.RowVolume`, `New.Endgame.ShortAndEnough`, or `New.Selmer.FitTwistsExist` individually takes this route above 50,000. The general determinant and filling-moments lemmas fit inside the budget. [Verification workflow](.github/workflows/half-rank.yml)
