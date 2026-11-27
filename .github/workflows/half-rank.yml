@@ -1,4 +1,4 @@
-name: Check the half-rank covolume comparison
+name: Verify the covolume criterion for ordinary RH
 on:
   push:
     branches: [ordinary-rh-half-rank]
@@ -27,7 +27,15 @@ jobs:
           lake exe cache get
           export PATH="$(lean --print-prefix)/bin:$PATH"
           python3 verification-tools/examples/grh/fixed-class/restore.py
-      - name: Check arithmetic positivity and the rank inequality
+      - name: Rebuild the project covolume modules
+        run: |
+          set -euo pipefail
+          for module in New.Endgame.IntegralForms New.Endgame.LongForms; do
+            path="${module//.//}"
+            lake env lean -R src -DautoImplicit=false -DrelaxedAutoImplicit=false -DmaxHeartbeats=4000000 -DmaxSynthPendingDepth=3 --tstack=400000 -o ".lake/build/lib/lean/$path.olean" "src/$path.lean"
+            lake env leanchecker "$module"
+          done
+      - name: Check the arithmetic, the height criterion and its suppliers
         run: |
           set -euo pipefail
           lake env lean -R src -DautoImplicit=false -DrelaxedAutoImplicit=false -DmaxHeartbeats=4000000 -DmaxSynthPendingDepth=3 --tstack=400000 -o .lake/build/lib/lean/HalfRank.olean src/HalfRank.lean
@@ -38,6 +46,9 @@ jobs:
           lake env lean -R src -DautoImplicit=false -DrelaxedAutoImplicit=false -DmaxHeartbeats=4000000 -DmaxSynthPendingDepth=3 --tstack=400000 -o .lake/build/lib/lean/HeightCriterion.olean src/HeightCriterion.lean
           lake env lean -R src -DautoImplicit=false -DrelaxedAutoImplicit=false -DmaxHeartbeats=4000000 -DmaxSynthPendingDepth=3 --tstack=400000 -o .lake/build/lib/lean/HeightSupply.olean src/HeightSupply.lean
           lake env lean -R src -DautoImplicit=false -DrelaxedAutoImplicit=false -DmaxHeartbeats=4000000 -DmaxSynthPendingDepth=3 --tstack=400000 -o .lake/build/lib/lean/OneVolume.olean src/OneVolume.lean
+      - name: Replay the new modules and check the statements and source counts
+        run: |
+          set -euo pipefail
           lake env leanchecker HalfRank RankFromCovolume CompletionHeight FixedClass RHWindow HeightCriterion HeightSupply OneVolume
           cat > "$RUNNER_TEMP/Audit.lean" <<'LEAN'
           import RankFromCovolume
