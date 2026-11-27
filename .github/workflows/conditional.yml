@@ -43,6 +43,7 @@ jobs:
           LEAN
           lake env lean "$RUNNER_TEMP/ConditionalAudit.lean" | tee "$RUNNER_TEMP/axioms.txt"
           grep -Fx "'SampledGRH.five_endpoints' depends on axioms: [propext, Classical.choice, Quot.sound]" "$RUNNER_TEMP/axioms.txt"
+          lake env lean verification/MassFromClass.lean
           while IFS= read -r f; do
             module="${f#src/}"
             module="${module%.lean}"
