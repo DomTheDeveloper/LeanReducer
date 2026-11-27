@@ -13,7 +13,7 @@ theorem heightLe_one_volume {u₀ : ℂ} (hu₀ : u₀ ≠ 0) {u : PrimePadicIso
     HeightLe (A + δ) (fun ι ↦ u ι / u₀) := by
   refine ⟨u₀, A, e, hu₀, arch, fun ι ↦ ?_, .of_forall fun M ↦ ?_⟩
   · simpa [field, hu₀] using finite ι
-  · exact add_le_add_left (sum _ fun _ hl ↦ (mem_filter.mp hl).2) A
+  · exact add_le_add le_rfl (sum _ fun _ hl ↦ (mem_filter.mp hl).2)
 
 /-- A single nonzero Gram value for each twist supplies the certificate when the local
 integrality, conjugate-size and inverse-height estimates hold for these very same values. -/
