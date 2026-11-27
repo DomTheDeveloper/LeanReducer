@@ -1,0 +1,273 @@
+{
+  "original": {
+    "origin": "https://alpo.ge/lean.tar.gz.part01",
+    "joined_archive_bytes": 239275554,
+    "source": "lean/src",
+    "totals": {
+      "modules": 175187,
+      "bytes": 1030531854,
+      "physical": 17374215,
+      "code": 15531759,
+      "code_chars": 761732353,
+      "import_lines": 909822,
+      "options_open_variable_lines": 778377,
+      "scope_lines": 522749
+    },
+    "module_size_in_code_lines": {
+      "median": 51,
+      "p90": 210,
+      "max": 14814
+    },
+    "modules_at_most": {
+      "25": {
+        "modules": 61407,
+        "code": 808075
+      },
+      "50": {
+        "modules": 86757,
+        "code": 1754558
+      },
+      "100": {
+        "modules": 122549,
+        "code": 4383571
+      },
+      "200": {
+        "modules": 156010,
+        "code": 9129054
+      }
+    },
+    "largest_top_level_paths_by_code": {
+      "Development": 11050038,
+      "Formalism": 2789976,
+      "GroundTheory": 963283,
+      "ReciprocityTheory": 498172,
+      "CompanionTheory": 173982,
+      "PositivityTheory": 47696,
+      "Lemmata": 8561,
+      "Supplements": 17
+    },
+    "archive_sha256": "9631b4f020199e580ba86178cb56c6e9b09f690c2369a80dc4334aa93f49c7fc",
+    "from_Main": {
+      "entry": "Main",
+      "tree": {
+        "modules": 175187,
+        "physical": 17374215,
+        "distinct_direct_project_edges": 753261
+      },
+      "closure": {
+        "modules": 175187,
+        "physical": 17374215,
+        "distinct_direct_project_edges": 753261
+      },
+      "outside_closure": {
+        "modules": 0,
+        "physical": 0,
+        "distinct_direct_project_edges": 0
+      },
+      "outside_by_top_level": {},
+      "external_import_module_counts_by_namespace": {
+        "Lean": 3,
+        "Mathlib": 344,
+        "Batteries": 1
+      }
+    }
+  },
+  "readable": {
+    "repository": "lsernau/grh-lean",
+    "revision": "72fead102f663d5c7a407964a13dc0cf9d977207",
+    "source": "grh/src",
+    "totals": {
+      "modules": 803,
+      "bytes": 30050271,
+      "physical": 477124,
+      "code": 299902,
+      "code_chars": 13851128,
+      "import_lines": 1742,
+      "scope_lines": 6867,
+      "options_open_variable_lines": 5972
+    },
+    "module_size_in_code_lines": {
+      "median": 355,
+      "p90": 630,
+      "max": 1002
+    },
+    "modules_at_most": {
+      "25": {
+        "modules": 5,
+        "code": 60
+      },
+      "50": {
+        "modules": 9,
+        "code": 230
+      },
+      "100": {
+        "modules": 40,
+        "code": 2489
+      },
+      "200": {
+        "modules": 153,
+        "code": 19658
+      }
+    },
+    "largest_top_level_paths_by_code": {
+      "Lib": 177492,
+      "New": 122391,
+      "Statements.lean": 12,
+      "Main.lean": 7
+    },
+    "from_Main": {
+      "entry": "Main",
+      "tree": {
+        "modules": 803,
+        "physical": 477124,
+        "distinct_direct_project_edges": 1733
+      },
+      "closure": {
+        "modules": 803,
+        "physical": 477124,
+        "distinct_direct_project_edges": 1733
+      },
+      "outside_closure": {
+        "modules": 0,
+        "physical": 0,
+        "distinct_direct_project_edges": 0
+      },
+      "outside_by_top_level": {},
+      "external_import_module_counts_by_namespace": {
+        "Mathlib": 7
+      }
+    }
+  },
+  "compact": {
+    "repository": "lsernau/grh-lean",
+    "revision": "72fead102f663d5c7a407964a13dc0cf9d977207",
+    "source": "grh-compact/src",
+    "totals": {
+      "modules": 794,
+      "bytes": 7420187,
+      "physical": 112827,
+      "code": 76149,
+      "code_chars": 4511672,
+      "import_lines": 1400,
+      "options_open_variable_lines": 3857,
+      "scope_lines": 887
+    },
+    "module_size_in_code_lines": {
+      "median": 82,
+      "p90": 181,
+      "max": 464
+    },
+    "modules_at_most": {
+      "25": {
+        "modules": 92,
+        "code": 1513
+      },
+      "50": {
+        "modules": 228,
+        "code": 6866
+      },
+      "100": {
+        "modules": 482,
+        "code": 25681
+      },
+      "200": {
+        "modules": 735,
+        "code": 60501
+      }
+    },
+    "largest_top_level_paths_by_code": {
+      "Lib": 51280,
+      "New": 24850,
+      "Statements.lean": 12,
+      "Main.lean": 7
+    },
+    "from_Main": {
+      "entry": "Main",
+      "tree": {
+        "modules": 794,
+        "physical": 112827,
+        "distinct_direct_project_edges": 1398
+      },
+      "closure": {
+        "modules": 794,
+        "physical": 112827,
+        "distinct_direct_project_edges": 1398
+      },
+      "outside_closure": {
+        "modules": 0,
+        "physical": 0,
+        "distinct_direct_project_edges": 0
+      },
+      "outside_by_top_level": {},
+      "external_import_module_counts_by_namespace": {
+        "Mathlib": 1
+      }
+    }
+  },
+  "current": {
+    "repository": "DomTheDeveloper/LeanReducer",
+    "revision": "41bbac1c78e806eced8fd373f6cb55e77a045af5",
+    "source": "src",
+    "totals": {
+      "modules": 794,
+      "bytes": 7414871,
+      "physical": 112770,
+      "code": 76072,
+      "code_chars": 4505864,
+      "import_lines": 1400,
+      "options_open_variable_lines": 3857,
+      "scope_lines": 887
+    },
+    "module_size_in_code_lines": {
+      "median": 82,
+      "p90": 180,
+      "max": 464
+    },
+    "modules_at_most": {
+      "25": {
+        "modules": 92,
+        "code": 1510
+      },
+      "50": {
+        "modules": 228,
+        "code": 6852
+      },
+      "100": {
+        "modules": 483,
+        "code": 25738
+      },
+      "200": {
+        "modules": 735,
+        "code": 60432
+      }
+    },
+    "largest_top_level_paths_by_code": {
+      "Lib": 51231,
+      "New": 24825,
+      "Statements.lean": 12,
+      "Main.lean": 4
+    },
+    "from_Main": {
+      "entry": "Main",
+      "tree": {
+        "modules": 794,
+        "physical": 112770,
+        "distinct_direct_project_edges": 1398
+      },
+      "closure": {
+        "modules": 794,
+        "physical": 112770,
+        "distinct_direct_project_edges": 1398
+      },
+      "outside_closure": {
+        "modules": 0,
+        "physical": 0,
+        "distinct_direct_project_edges": 0
+      },
+      "outside_by_top_level": {},
+      "external_import_module_counts_by_namespace": {
+        "Mathlib": 1
+      }
+    }
+  }
+}

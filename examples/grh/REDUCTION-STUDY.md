@@ -6,14 +6,34 @@ The combined RH and Dirichlet GRH candidate contains **76,072 code lines and 112
 
 | Source edition | Project modules | Physical lines | Code lines |
 | --- | ---: | ---: | ---: |
-| Original archive | 175,187 | 17,374,215 | Unmeasured here |
+| Original archive | 175,187 | 17,374,215 | 15,531,759 |
 | Sernau and colleagues, readable | 803 | 477,124 | 299,902 |
 | Sernau and colleagues, compact | 794 | 112,827 | 76,149 |
 | EllaZhangCA Astra revision | 794 | 112,791 | 76,113 |
 | Shared Ext command | 794 | 112,775 | 76,075 |
 | Shared Ext command and direct public theorems | 794 | **112,770** | **76,072** |
 
-Physical lines include comments and blank lines. Code lines exclude both and count imports. The compact candidate has 7,414,871 source bytes. All 794 modules are reachable from `Main`. The table counts project sources above the pinned toolchain and Mathlib dependency. The original physical count is from the authors' archive. The later counts are from the versioned sources. [Original archive inventory](https://riemannhypothesissolved.com/proof-in-numbers/) · [Independent verification and source hashes](https://math.mit.edu/~drew/shortgrh/) · [Compact edition](https://github.com/lsernau/grh-lean/tree/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact)
+Physical lines include comments and blank lines. Code lines exclude both and count imports. The compact candidate has 7,414,871 source bytes. All 794 modules are reachable from `Main`. The table counts project sources above the pinned toolchain and Mathlib dependency. All four inventories now use the same lexer. The original archive was rebuilt from the author's 14 parts and matched MIT's published SHA-256. The later counts use pinned releases. [Original archive inventory](https://riemannhypothesissolved.com/proof-in-numbers/) · [Independent verification and source hashes](https://math.mit.edu/~drew/shortgrh/) · [Compact edition](https://github.com/lsernau/grh-lean/tree/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact)
+
+### What changed inside the source
+
+The joined original archive is 239,275,554 bytes, with SHA-256 `9631b4f020199e580ba86178cb56c6e9b09f690c2369a80dc4334aa93f49c7fc`. LeanReducer measured **15,531,759 code lines** and **17,374,215 physical lines** in its 175,187 project modules. Using the same lexer on the 76,072-line combined revision gives a **204.17-fold** reduction in code lines and a **154.07-fold** reduction in physical lines. The original archive pins Lean 4.33.1 and the rewritten editions pin Lean 4.35.0. External libraries are excluded in every column. [Original archive provenance](https://math.mit.edu/~drew/grh/#provenance) · [Machine-readable results](edition-measurements.json)
+
+| Edition | Modules reachable from Main | Median code lines per module | Import lines |
+| --- | ---: | ---: | ---: |
+| Original archive | 175,187 of 175,187 | 51 | 909,822 |
+| Readable rewrite | 803 of 803 | 355 | 1,742 |
+| Compact rewrite | 794 of 794 | 82 | 1,400 |
+| Complete combined revision | 794 of 794 | 82 | 1,400 |
+
+In the original archive 61,407 modules contained 25 code lines or fewer. Its `Development` directory alone contained 11,050,038 code lines. The first rewrite consolidated the development into hundreds of substantially larger modules. The number of import lines fell by 908,080, which accounts numerically for about 6% of the 15,231,857-code-line difference between the original and readable editions. The second rewrite removed another 223,753 code lines with just 342 fewer import lines. All four trees are reachable from their public entry. These measurements describe file structure and source size independently of any proposed mapping of individual arguments. [Line census](edition_census.py) · [Import reachability](edition_imports.py) · [Authors' proof guide](https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact/GUIDE.md)
+
+To reproduce the original counts from the joined archive, run the following at the LeanReducer root.
+
+```sh
+PYTHONPATH=. python3 examples/grh/edition_census.py --original-archive lean.tar.gz
+PYTHONPATH=. python3 examples/grh/edition_imports.py --original-archive lean.tar.gz
+```
 
 ## What produced the reduction
 
