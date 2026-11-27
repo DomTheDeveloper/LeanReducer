@@ -1,6 +1,6 @@
 # From 17.37 million lines to the next proof obligation
 
-The combined RH and Dirichlet GRH candidate contains **76,072 code lines and 112,770 physical lines** in 794 project modules. Reaching 50,000 requires removing another **26,072 code lines** or **62,770 physical lines**, depending on which measure is intended. The 1,000-line goal is open. [Full candidate](artifacts/GRH-76072.zip) · [Machine-readable measurements](combined-metrics.json)
+The combined RH and Dirichlet GRH candidate contains **76,072 code lines and 112,770 physical lines** in 794 project modules. Reaching 50,000 requires removing another **26,072 code lines** or **62,770 physical lines**, depending on which measure is intended. The unconditional 1,000-line goal remains open. The verified implication from prime-error estimates uses 944 physical project lines. [Full candidate](artifacts/GRH-76072.zip) · [Machine-readable measurements](combined-metrics.json)
 
 ## Comparable counts
 
@@ -148,6 +148,25 @@ The selected set may contain any natural numbers if the mass and the bounds both
 The 975-physical-line edition also passed a fresh build, an audit of the summand with all quantifiers expanded, and native kernel replay of all 18 modules. An independent LeanReducer run reproduced both counts. Its separate theorem `OldToDivergent.old_level_implies_divergent` verifies that the older all-primes-in-a-residue-class condition supplies the divergent family, including the coprimality and fourth-power estimates. The downloaded ZIP contained 18 Lean files, with SHA-256 `a165ecaeb97d116f1767b737d2b40b0dd70c53bf732d7c17482651175899647f`. [Compact build and kernel replay](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45995433632) · [Independent checker and compatibility proof](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45996229428) · [Machine-readable verification](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45996229428/artifacts/15196132461)
 
 Keeping this analytic proof leaves **49,050** additional code lines to reach 50,000 and **50** to reach 1,000. Counting every physical line in the compact edition instead gives **49,025** and **25**, respectively. The added lines must establish the displayed prime-error estimates on a divergent admissible family for arbitrarily large levels.
+
+## Choosing the auxiliary modulus freely in 920 code lines
+
+Fix a positive conductor $q$ and an accuracy $\varepsilon>0$. It suffices to find a positive multiple $M$ of $q$, an exponent $0<\delta\leq\min(1,\varepsilon)$, and a set $S$ for which the following conditions hold.
+
+- The sum $\sum_{p\in S,\ p\text{ prime}}\log(p)/p$ diverges.
+- Every prime $d\in S$ is congruent to 7 modulo 8 and coprime to $M$.
+- For each such $d$ and every sufficiently large natural $n$, the upstream weighted error satisfies $R_{d,M}(n^4)\leq(n^4)^{-1/2+\delta/4}$. The threshold may depend on the chosen prime and modulus.
+
+The choice of modulus and exponent may depend on both $q$ and $\varepsilon$. Given a possible zero with real part strictly above one half, choose the accuracy inside that real margin. The one-sided estimate excludes the zero for the character lifted to $M$. The Euler factors in the change-of-level formula transfer nonvanishing back to $q$. This replaces the factorial-level module with a direct argument and allows other choices of auxiliary moduli. [Statement and proof](https://github.com/DomTheDeveloper/LeanReducer/blob/440ee79d9a051dedbd983495a6557ef4bcca4c68/src/SampledGRH.lean)
+
+| Version | Project code | Project physical | All checked-in Lean physical |
+| --- | ---: | ---: | ---: |
+| Free auxiliary moduli and an explicitly prime set | 927 | 951 | 987 |
+| Free auxiliary moduli and a sum restricted to primes | **920** | **944** | **990** |
+
+The second edition has 17 project modules and one separate, 46-line verification file. Three compatibility proofs cover unit residue classes, restricting a set to its primes, and extracting the new choices of modulus and accuracy from the earlier factorial hypothesis. Lean 4.35 built the project and replayed every local module. Its public implication uses only `propext`, `Classical.choice` and `Quot.sound`. An independently written LeanReducer contract expands all arithmetic quantifiers and the prime-mass summand before checking the theorem type. [Complete 920-code-line ZIP](https://github.com/DomTheDeveloper/LeanReducer/archive/440ee79d9a051dedbd983495a6557ef4bcca4c68.zip) · [Build, axioms and module replays](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45997603687) · [Compatibility proofs](https://github.com/DomTheDeveloper/LeanReducer/blob/440ee79d9a051dedbd983495a6557ef4bcca4c68/verification/MassFromClass.lean) · [Expanded contract](multiples-case.json) · [Reducer audit](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45997641927) · [927-line verification](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45995890365)
+
+Keeping this analytic proof leaves **49,080 code lines** for an unconditional derivation of the arithmetic estimates and its dependencies under the 50,000-code-line target, or **80** under 1,000. The physical source budgets are **49,056** and **56**. Counting the independent test file as well leaves ten physical lines under 1,000. The existing covolume proof establishes sufficient estimates with a much larger dependency closure.
 
 ## Reproduce the combined source
 
