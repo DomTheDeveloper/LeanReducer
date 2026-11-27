@@ -62,6 +62,8 @@ The offline reducer was also checked on a Lean 4.35.0 proof of `Nat.succ` inject
 
 ## What would reach 50,000
 
+The statements, public endpoints and proof-specific `New` directory already fit in **24,841 code lines** or **34,943 physical lines** across 221 modules. Their project-owned `Lib` dependency contributes another **51,231 code lines** and **77,827 physical lines** across 573 modules. Together they account for the complete 76,072 code lines. A reader can start with the proof-specific layer while a full source-budget calculation includes both layers. [Directory counts](combined-metrics.json) · [Proof-specific source](https://github.com/DomTheDeveloper/LeanReducer/tree/41bbac1c78e806eced8fd373f6cb55e77a045af5/src/New)
+
 On the combined revision, removing the import path through `New.Endgame.LongForms` removes **58,867 code lines** used exclusively on that path and leaves **17,205**. A new proof and its additional local imports could use at most **32,795 code lines** to finish under the inclusive 50,000-line limit. Using physical lines leaves 28,261 and a replacement budget of 21,739. These are budgets for a replacement that still proves all five endpoints. The module itself uses the upper covolume bound, enough independent forms and the lower bound for integral forms. A shorter derivation of the weighted prime estimate could bypass that comparison. [Exact import cut](combined-metrics.json) · [Upstream proof guide](https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact/GUIDE.md)
 
 ### Keeping the final covolume comparison
