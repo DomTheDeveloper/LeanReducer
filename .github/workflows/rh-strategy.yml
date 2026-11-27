@@ -29,6 +29,10 @@ jobs:
           lake exe cache get
           export PATH="$(lean --print-prefix)/bin:$PATH"
           python3 "$GITHUB_WORKSPACE/examples/grh/fixed-class/restore.py"
+      - name: Measure source dependencies
+        run: |
+          cd "$RUNNER_TEMP/GRH-76072"
+          PYTHONPATH="$GITHUB_WORKSPACE" python3 "$GITHUB_WORKSPACE/examples/grh/strategy/measure.py" src
       - name: Check auxiliary data without the theta input
         run: |
           cd "$RUNNER_TEMP/GRH-76072"
@@ -38,6 +42,16 @@ jobs:
         run: |
           cd "$RUNNER_TEMP/GRH-76072"
           bash "$GITHUB_WORKSPACE/examples/grh/strategy/check.sh" FixedClass RHCovolume RHWindow RHWindowSupply
+      - name: Check the normalized estimate and its arithmetic proof
+        if: '!cancelled()'
+        run: |
+          cd "$RUNNER_TEMP/GRH-76072"
+          bash "$GITHUB_WORKSPACE/examples/grh/strategy/check.sh" RHNormalized RHNormalizedSupply
+      - name: Check the shorter unconditional ordinary RH entry
+        if: '!cancelled()'
+        run: |
+          cd "$RUNNER_TEMP/GRH-76072"
+          bash "$GITHUB_WORKSPACE/examples/grh/strategy/check.sh" RHOnly
       - name: Verify theorem types and axioms
         run: |
           cd "$RUNNER_TEMP/GRH-76072"
@@ -46,7 +60,7 @@ jobs:
           import os
           from pathlib import Path
           from leanreducer.verify import check_axioms
-          names = ['Cutoff.exists_auxiliary_data', 'Cutoff.exists_data_of_cutoff', 'estimate_of_window', 'ofWindow', 'window_of_covolume', 'fromCovolumeWindow']
+          names = ['Cutoff.exists_auxiliary_data', 'Cutoff.exists_data_of_cutoff', 'estimate_of_window', 'ofWindow', 'window_of_covolume', 'fromCovolumeWindow', 'ofNormalized', 'fromNormalizedCovolume', 'ordinaryRH']
           print(check_axioms(Path(os.environ['RUNNER_TEMP'], 'strategy-axioms.log').read_text(),
               {'FixedClassRH.' + name: '' for name in names}, ['propext','Quot.sound','Classical.choice']))
           PY
