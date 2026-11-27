@@ -120,7 +120,7 @@ occurs is below `b`. -/
 
 The inequality (⋆): upper bound for weighted non-split primes. -/
 lemma star_inequality {P} {D : Data P} : D.m * D.remainder ≤ D.logB ^ 2 * D.budget := by
-  obtain ⟨⟨q, q0, B, hB, ⟨S, hS, sp, size⟩, idx⟩, -, -, t, ht, big⟩ :=
+  obtain ⟨⟨q, q0, B, hB, ⟨S, hS, sp, size⟩, idx⟩, -, rows_pos, t, ht, big⟩ :=
     D.short_forms, D.enough_forms
   let Y := Set.image2 (B ·) t S
   obtain ⟨y, hy, -, i⟩ := exists_fun_fin_finrank_span_eq ℂ Y
@@ -129,7 +129,6 @@ lemma star_inequality {P} {D : Data P} : D.m * D.remainder ≤ D.logB ^ 2 * D.bu
   have index := mul_le_mul_of_nonneg_right ht (HasLogBound.pos D : 0 < D.budget).le
   have vol := integral_forms_long i big (idx t _ y (Set.image2_subset_left hS <| hy ·))
     (fun σ ↦ covolumeSq_le (have ⟨s, _, φ, h, e⟩ := hy ·; by simpa [e] using size φ h s σ))
-  have d : (0 : ℝ) < D.rowDim := mod_cast D.finrank_rows_ne_zero.pos
   have small : (finrank ℂ (span ℂ Y) : ℝ) ≤ D.rowDim := mod_cast (span ℂ Y).finrank_le
   let L := D.logB * D.budget
   -- Shift the height per row by a crude bound so that it can be multiplied by n ≤ rowDim.
@@ -138,7 +137,7 @@ lemma star_inequality {P} {D : Data P} : D.m * D.remainder ≤ D.logB ^ 2 * D.bu
     linarith only [(HasLogBound.pos D : 0 < L)]
   field_simp at big
   calc D.m * D.remainder ≤ 4 * L + 4 * D.x ^ 99 + 10 * log (1 + D.b ^ 2) * D.budget := by
-        apply le_of_mul_le_mul_left _ d
+        apply le_of_mul_le_mul_left _ (Nat.cast_pos.mpr rows_pos)
         dsimp only [L] at h ⊢
         linarith only [vol, index, mul_le_mul_of_nonneg_right small h,
           mul_le_mul_of_nonneg_right big (show 0 ≤ D.x ^ 99 by positivity)]
