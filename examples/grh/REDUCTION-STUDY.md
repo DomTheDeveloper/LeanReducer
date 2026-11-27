@@ -141,6 +141,12 @@ Every code-containing line of all 18 published project modules matched between t
 
 The missing unconditional step is a short derivation of the sampled bound on a divergent admissible family at unbounded levels. Keeping the present proof uses 957 project code lines and leaves **49,043** further code lines for this step and its dependencies at 50,000, or **43** at 1,000. With source and documentation arranged as in the 982-physical-line project, the corresponding physical-line allowances are **49,018** and **18** before the independent compatibility test. The existing full source obtains the bound through the covolume comparison. [Frozen reducer contract](divergent-case.json)
 
+### A 950-code-line formulation
+
+The selected set may contain any natural numbers if the mass and the bounds both quantify only over its primes. Intersecting the set with the primes gives the equivalent prime-only formulation above. This removes the separate assertion that every set member is prime. The proof selects a nonexceptional quadratic twist directly from the divergent prime family. The complete source counts **950 code lines in 18 modules**, with **1,304 physical lines** in the annotated edition and **975 physical lines** when standalone comments move to Markdown. All code-containing lines match between these editions, and the challenge statement file is byte-identical. The 950-line annotated project passed a fresh Lean 4.35 build, an axiom audit and native replay of all 18 modules. [Annotated source and completed checks](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45994270811) · [Compact project ZIP](https://github.com/DomTheDeveloper/LeanReducer/archive/39d23a7d38d6d53c3618646c8831cd91fd8295eb.zip) · [Exact arithmetic contract](prime-weight-case.json)
+
+Keeping this analytic proof leaves **49,050** additional code lines to reach 50,000 and **50** to reach 1,000. Counting every physical line in the compact edition instead gives **49,025** and **25**, respectively. The added lines must establish the displayed prime-error estimates on a divergent admissible family for arbitrarily large levels.
+
 ## Reproduce the combined source
 
 From the LeanReducer root, with both named repositories available locally:
