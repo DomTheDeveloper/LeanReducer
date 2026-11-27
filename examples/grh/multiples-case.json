@@ -8,7 +8,7 @@
     "Std",
     "Lean"
   ],
-  "revision": "98b0bf8b1ab128ebf88de4ed1843d38b821b47f6",
+  "revision": "440ee79d9a051dedbd983495a6557ef4bcca4c68",
   "toolchain": "leanprover/lean4:v4.35.0",
   "lean_version": "4.35.0",
   "protected": [
@@ -19,11 +19,14 @@
     "src/Lib/General/LinearAlgebra/Base.lean"
   ],
   "endpoints": {
-    "SampledGRH.five_endpoints": "(∀ (q : ℕ) [NeZero q] (ε : ℝ), 0 < ε → ∃ M : ℕ, ∃ positive : NeZero M, q ∣ M ∧ ∃ δ : ℝ, 0 < δ ∧ δ ≤ 1 ∧ δ ≤ ε ∧ ∃ S : Set ℕ, (¬ Summable (fun n : ℕ => (@ite ℝ (n.Prime ∧ n ∈ S) (Classical.propDecidable _) (Real.log n) 0) / (n : ℝ))) ∧ ∀ d : Nat.Primes, d.val ∈ S → (d.val % 8 = 7 ∧ M.Coprime d.val) ∧ Filter.Eventually (fun n : ℕ => @primeError d.val inferInstance M positive ((n : ℝ)^4) ≤ ((n : ℝ)^4)^(-(1/2 : ℝ) + δ / 4)) Filter.atTop) → RiemannHypothesis ∧ RiemannZetaZerosOnLine ∧ DirichletLNonvanishingRightOfHalf ∧ DirichletLZerosOnLine ∧ PrimitiveDirichletLZerosOnLine"
+    "SampledGRH.five_endpoints": "(∀ (q : ℕ) [NeZero q] (ε : ℝ), 0 < ε → ∃ M : ℕ, ∃ positive : NeZero M, q ∣ M ∧ ∃ δ : ℝ, 0 < δ ∧ δ ≤ 1 ∧ δ ≤ ε ∧ ∃ S : Set ℕ, (¬ Summable (fun n : ℕ => (if n.Prime ∧ n ∈ S then Real.log n else 0) / (n : ℝ))) ∧ ∀ d : Nat.Primes, d.val ∈ S → (d.val % 8 = 7 ∧ M.Coprime d.val) ∧ Filter.Eventually (fun n : ℕ => @primeError d.val inferInstance M positive ((n : ℝ)^4) ≤ ((n : ℝ)^4)^(-(1/2 : ℝ) + δ / 4)) Filter.atTop) → RiemannHypothesis ∧ RiemannZetaZerosOnLine ∧ DirichletLNonvanishingRightOfHalf ∧ DirichletLZerosOnLine ∧ PrimitiveDirichletLZerosOnLine"
   },
   "axioms": [
     "propext",
     "Classical.choice",
     "Quot.sound"
+  ],
+  "open_scoped": [
+    "Classical"
   ]
 }

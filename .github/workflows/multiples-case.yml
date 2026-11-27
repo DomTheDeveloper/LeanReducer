@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4
         with:
-          ref: 98b0bf8b1ab128ebf88de4ed1843d38b821b47f6
+          ref: 440ee79d9a051dedbd983495a6557ef4bcca4c68
           path: proof
       - name: Install Lean and audit the pinned checkout
         run: |
