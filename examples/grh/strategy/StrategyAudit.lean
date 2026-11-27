@@ -10,6 +10,10 @@ example : FixedClassRH.NormalizedEstimate → RiemannHypothesis := FixedClassRH.
 example : RiemannHypothesis := FixedClassRH.fromNormalizedCovolume
 example : RiemannHypothesis := FixedClassRH.ordinaryRH
 example : FixedClassRH.FiniteGainEstimate → RiemannHypothesis := FixedClassRH.ofFiniteGain
+example : FixedClassRH.FiniteGainEstimate :=
+  FixedClassRH.finiteGain_iff_normalized.mpr FixedClassRH.normalized_of_covolume
+example : RiemannHypothesis :=
+  FixedClassRH.ofFiniteGain (FixedClassRH.finiteGain_iff_normalized.mpr FixedClassRH.normalized_of_covolume)
 
 #print axioms FixedClassRH.Cutoff.exists_auxiliary_data
 #print axioms FixedClassRH.Cutoff.exists_data_of_cutoff

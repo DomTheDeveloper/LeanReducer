@@ -65,7 +65,9 @@ theorem window_of_normalized (boundAt : NormalizedEstimate) : WindowComparison :
   have hL : 0 < D.logB := by linarith
   have L_eq : D.logB = D.logX.exp ^ ε := by
     rw [rpow_def_of_pos (exp_pos _), log_exp, mul_comm, ← hlog, exp_log hL]
-  have totalPos : 0 < (towerDeg D.s : ℝ) := by positivity
+  have totalPos : 0 < (towerDeg D.s : ℝ) := by
+    first | exact_mod_cast Nat.pos_of_ne_zero (NeZero.ne (towerDeg D.s))
+          | exact_mod_cast (show 0 < towerDeg D.s by unfold towerDeg; positivity)
   have thickPos : 0 < (#D.thick : ℝ) := (div_pos totalPos hL).trans_le mass
   have weight_le : D.weight ≤ D.logB :=
     (div_le_iff₀ thickPos).2 (by simpa [mul_comm] using (div_le_iff₀ hL).1 mass)
@@ -83,7 +85,7 @@ theorem window_of_normalized (boundAt : NormalizedEstimate) : WindowComparison :
     (mul_le_mul_of_nonneg_left (log_le_log (by linarith) below) (by norm_num)).trans sixth⟩}
   have gap := boundAt D' mass hi good
   have budget := budget_le (exp_pos D.logX) (Nat.cast_nonneg P.N₀.totient) weight_le L_eq hm
-  exact (add_le_add_right (gap.trans budget) _).trans absorb
+  exact (add_le_add (gap.trans budget) (le_refl _)).trans absorb
 
 theorem ofNormalized (boundAt : NormalizedEstimate) : RiemannHypothesis :=
   ofWindow (window_of_normalized boundAt)
