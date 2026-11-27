@@ -29,19 +29,23 @@ jobs:
         run: |
           set -euo pipefail
           lake env lean -R src -DautoImplicit=false -DrelaxedAutoImplicit=false -DmaxHeartbeats=4000000 -DmaxSynthPendingDepth=3 --tstack=400000 -o .lake/build/lib/lean/HalfRank.olean src/HalfRank.lean
-          lake env leanchecker HalfRank
+          lake env lean -R src -DautoImplicit=false -DrelaxedAutoImplicit=false -DmaxHeartbeats=4000000 -DmaxSynthPendingDepth=3 --tstack=400000 -o .lake/build/lib/lean/RankFromCovolume.olean src/RankFromCovolume.lean
+          lake env leanchecker HalfRank RankFromCovolume
           cat > "$RUNNER_TEMP/Audit.lean" <<'LEAN'
-          import HalfRank
+          import RankFromCovolume
           #print axioms FixedClassRH.nominal_primeSum_le
           #print axioms FixedClassRH.dirCost_nonneg
           #print axioms FixedClassRH.half_rank_comparison
+          #print axioms FixedClassRH.half_rank_with_completion
+          #print axioms FixedClassRH.mainHeight_nonneg
+          #print axioms FixedClassRH.star_of_half_rank
           LEAN
           lake env lean "$RUNNER_TEMP/Audit.lean" | tee "$RUNNER_TEMP/axioms.log"
           PYTHONPATH=verification-tools python3 - <<'PY'
           import os
           from pathlib import Path
           from leanreducer.verify import check_axioms
-          names = ['nominal_primeSum_le', 'dirCost_nonneg', 'half_rank_comparison']
+          names = ['nominal_primeSum_le', 'dirCost_nonneg', 'half_rank_comparison', 'half_rank_with_completion', 'mainHeight_nonneg', 'star_of_half_rank']
           print(check_axioms(Path(os.environ['RUNNER_TEMP'], 'axioms.log').read_text(),
               {'FixedClassRH.' + n: '' for n in names}, ['propext', 'Classical.choice', 'Quot.sound']))
           PY

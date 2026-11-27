@@ -1,6 +1,6 @@
 import New.Seesaw.IndexTypes
 
-open Finset Real ArithmeticFunction ArithmeticFunction.vonMangoldt
+open Data Finset Real ArithmeticFunction ArithmeticFunction.vonMangoldt
 
 namespace FixedClassRH
 
@@ -13,7 +13,7 @@ theorem nominal_primeSum_le {P} (D : Data P) (σ : D.Φ) :
   have hx : 0 < D.logX₁ := HasLogBound.pos D
   let C := 2 * D.logX₁ * y
   have C0 : 0 ≤ C := by dsimp [C]; positivity
-  have weight (n : ℕ) : lambdaClass P.d 1 n ≤ 2 * log n := by
+  have weight (n : ℕ) : lambdaClass P.d 1 n ≤ 2 * Real.log (n : ℝ) := by
     simp [lambdaClass, chiK, Set.indicator, quadraticCharFun, sub_ite] <;>
       grind [vonMangoldt_nonneg, vonMangoldt_le_log]
   have bound (n : ℕ) (hn : n ∈ Icc 1 D.a) :
@@ -22,7 +22,7 @@ theorem nominal_primeSum_le {P} (D : Data P) (σ : D.Φ) :
     have n0 : (0 : ℝ) < n := by exact_mod_cast (show 0 < n from (mem_Icc.mp hn).1)
     have w0 := D.nominalWeight_nonneg (D.placeOfInt (-n) * σ)
     split_ifs with h
-    · have ln : log n ≤ D.logX₁ := (log_le_log n0 ((Nat.le_floor_iff' (Nat.ne_of_gt (mem_Icc.mp hn).1)).mp h)).trans_eq (log_exp _)
+    · have ln : Real.log (n : ℝ) ≤ D.logX₁ := (log_le_log n0 ((Nat.le_floor_iff' (Nat.ne_of_gt (mem_Icc.mp hn).1)).mp h)).trans_eq (log_exp _)
       calc _ ≤ (2 * D.logX₁) * (y / n) :=
               mul_le_mul ((weight n).trans (by linarith))
                 (max_le (sub_le_self _ w0) (div_nonneg hy n0.le))
@@ -74,5 +74,15 @@ theorem half_rank_comparison {d n h r L B V : ℝ} (hd : 0 < d)
   nlinarith only [lower, upper, mul_le_mul_of_nonneg_right nd hh,
     mul_le_mul_of_nonneg_right hn hL,
     mul_le_mul_of_nonneg_right hn hB]
+
+/-- Adding a cost for each missing row gives the same comparison if each such cost is
+at most the main height. -/
+theorem half_rank_with_completion {d n h c r L B V : ℝ} (hd : 0 < d)
+    (hn : d / 2 ≤ n) (nd : n ≤ d) (hc : c ≤ h) (hL : 0 ≤ L) (hB : 0 ≤ B)
+    (lower : d * (h - 3 * L) ≤ V + (d - n) * c)
+    (upper : V ≤ n * (h - r + L) + d * B) : r ≤ 7 * L + 2 * B := by
+  apply half_rank_comparison (h := h - c) (V := V - n * c) hd hn nd (sub_nonneg.mpr hc) hL hB
+  · linarith only [lower]
+  · linarith only [upper]
 
 end FixedClassRH
