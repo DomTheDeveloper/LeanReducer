@@ -194,3 +194,5 @@ Each declaration below adapts or closely follows, in whole or in part and with c
 | `Mathlib/Topology/Maps/Proper/Basic.lean` | Copyright (c) 2023 Anatole Dedecker. All rights reserved. | Authors: Anatole Dedecker, Etienne Marion |
 
 The divergent-prime project adapts the zero-density step from the original compact proof. It replaces the use of a complete residue class with the divergent-mass hypothesis and specializes the one-sided criterion accordingly.
+
+The free-modulus edition uses a direct change of level for each queried conductor and accuracy, replacing the fixed factorial sequence.

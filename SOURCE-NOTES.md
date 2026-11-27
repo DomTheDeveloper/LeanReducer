@@ -2,20 +2,6 @@
 
 Sections give the original source locations. Executable lines and inline comments stay in the Lean files.
 
-## src/FactorialLevels.lean
-
-Original lines 9–9
-
-```lean
-/-- The nonvanishing statement at a single positive modulus. -/
-```
-
-Original lines 19–19
-
-```lean
-/-- Any unbounded set of good factorial levels suffices, regardless of its gaps. -/
-```
-
 ## src/FourthPowers.lean
 
 Original lines 12–12
@@ -740,19 +726,19 @@ Original lines 20–20
 
 ## src/SampledGRH.lean
 
-Original lines 11–11
+Original lines 10–10
 
 ```lean
-/-- A divergent family of admissible primes satisfies the one prescribed fourth-power bound. -/
+/-- A divergent set of admissible primes meets one sampled bound at this modulus. -/
 ```
 
-Original lines 19–19
+Original lines 16–16
 
 ```lean
-/-- The good levels can be arbitrarily sparse as long as they are unbounded. -/
+/-- Each conductor and accuracy request may use its own auxiliary multiple and exponent. -/
 ```
 
-Original lines 43–44
+Original lines 46–47
 
 ```lean
 /-- The final functional-equation arguments are adapted from Alpöge and Claude,

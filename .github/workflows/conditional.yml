@@ -1,7 +1,7 @@
-name: Verify the physical-line divergent-prime conditional RH and GRH proof
+name: Verify the free-modulus conditional RH and GRH proof
 on:
   push:
-    branches: [divergent-primes-physical]
+    branches: [auxiliary-multiples-grh]
   workflow_dispatch:
 permissions:
   contents: read
@@ -23,7 +23,7 @@ jobs:
           files = subprocess.check_output(["git", "ls-files", "*.lean"], text=True).splitlines()
           physical = sum(len(Path(f).read_bytes().splitlines()) for f in files)
           print(f"{len(files)} Lean files contain {physical} physical lines")
-          assert physical == 1000 and physical <= 1000
+          assert physical == 987 and physical <= 1000
           PYTHON
           curl --proto '=https' -fsSL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
@@ -38,15 +38,14 @@ jobs:
           open Filter Real
           example (S : Set ℕ) : DivergentPrimeMass S ↔
               ¬ Summable (fun n : ℕ ↦ @ite ℝ (n ∈ S) (Classical.propDecidable _) (Real.log n / n) 0) := Iff.rfl
-          example (k : ℕ) : SampledGRH.EstimateAt k ↔
+          example (M : ℕ) [NeZero M] (δ : ℝ) : SampledGRH.EstimateAt M δ ↔
               ∃ S : Set ℕ, DivergentPrimeMass S ∧ (∀ n ∈ S, n.Prime) ∧
-                ∀ d : Nat.Primes, d.val ∈ S →
-                  (d.val % 8 = 7 ∧ (LeanReducer.factorialLevel k).Coprime d.val) ∧
-                  ∀ᶠ n : ℕ in atTop, primeError d.val (LeanReducer.factorialLevel k) ((n:ℝ)^4) ≤
-                    ((n:ℝ)^4)^(-(1/2:ℝ) + (1/((k:ℝ)+1))/4) := Iff.rfl
-          example : (∀ lower : ℕ, ∃ k, lower ≤ k ∧ SampledGRH.EstimateAt k) → RiemannHypothesis ∧ RiemannZetaZerosOnLine ∧
-              DirichletLNonvanishingRightOfHalf ∧ DirichletLZerosOnLine ∧
-              PrimitiveDirichletLZerosOnLine := SampledGRH.five_endpoints
+              ∀ d : Nat.Primes, d.val ∈ S → (d.val % 8 = 7 ∧ M.Coprime d.val) ∧
+              ∀ᶠ n : ℕ in atTop, primeError d.val M ((n:ℝ)^4) ≤ ((n:ℝ)^4)^(-(1/2:ℝ) + δ/4) := Iff.rfl
+          example : (∀ (q : ℕ) [NeZero q] (ε : ℝ), 0 < ε → ∃ M : ℕ, ∃ pos : NeZero M,
+              q ∣ M ∧ ∃ δ : ℝ, 0 < δ ∧ δ ≤ 1 ∧ δ ≤ ε ∧ @SampledGRH.EstimateAt M pos δ) →
+              RiemannHypothesis ∧ RiemannZetaZerosOnLine ∧ DirichletLNonvanishingRightOfHalf ∧
+              DirichletLZerosOnLine ∧ PrimitiveDirichletLZerosOnLine := SampledGRH.five_endpoints
           #print axioms SampledGRH.five_endpoints
           LEAN
           lake env lean "$RUNNER_TEMP/ConditionalAudit.lean" | tee "$RUNNER_TEMP/axioms.txt"

@@ -3,39 +3,42 @@ import Statements
 import New.Endgame.OneSidedCriterion
 import PrimeErrorFourthPowers
 import FourthPowers
-import FactorialLevels
 open DirichletCharacter Filter Real
 
 namespace SampledGRH
 
-def EstimateAt (k : ℕ) : Prop :=
+def EstimateAt (M : ℕ) [NeZero M] (δ : ℝ) : Prop :=
   ∃ S : Set ℕ, DivergentPrimeMass S ∧ (∀ n ∈ S, n.Prime) ∧
-    ∀ d : Nat.Primes, d.val ∈ S →
-      (d.val % 8 = 7 ∧ (LeanReducer.factorialLevel k).Coprime d.val) ∧
-      ∀ᶠ n : ℕ in atTop, primeError d.val (LeanReducer.factorialLevel k) ((n:ℝ)^4) ≤
-        ((n:ℝ)^4)^(-(1/2:ℝ) + (1/((k:ℝ)+1))/4)
-def Estimates : Prop := ∀ lower : ℕ, ∃ k, lower ≤ k ∧ EstimateAt k
+    ∀ d : Nat.Primes, d.val ∈ S → (d.val % 8 = 7 ∧ M.Coprime d.val) ∧
+      ∀ᶠ n : ℕ in atTop, primeError d.val M ((n:ℝ)^4) ≤ ((n:ℝ)^4)^(-(1/2:ℝ) + δ/4)
+def Estimates : Prop :=
+  ∀ (q : ℕ) [NeZero q] (ε : ℝ), 0 < ε → ∃ M : ℕ, ∃ positive : NeZero M,
+    q ∣ M ∧ ∃ δ : ℝ, 0 < δ ∧ δ ≤ 1 ∧ δ ≤ ε ∧ @EstimateAt M positive δ
 
 theorem nonvanishing (samples : Estimates) : DirichletLNonvanishingRightOfHalf := by
-  change ∀ (q : ℕ) [NeZero q], LeanReducer.ZeroFreeAt q (1/2)
-  apply LeanReducer.of_unbounded_factorial (Good := EstimateAt) samples
-  intro k atLevel χ s hs pole zero
-  obtain ⟨S, mass, primes, samplesAt⟩ := atLevel
-  let δ : ℝ := 1 / ((k:ℝ)+1)
-  have hδ : 0 < δ := by dsimp [δ]; positivity
-  have h1 : δ ≤ 1 := by dsimp [δ]; rw [div_le_iff₀ (by positivity)]; simp
+  intro q _ χ s right pole
+  obtain ⟨M, positive, divides, δ, hδ, h1, small, S, mass, primes, samplesAt⟩ :=
+    samples q ((s.re - 1/2)/2) (by linarith)
+  letI : NeZero M := positive
   have bounds (d : Nat.Primes) (hd : d.val ∈ S) :
-      (d.val % 8 = 7 ∧ (LeanReducer.factorialLevel k).Coprime d.val) ∧
-      ∀ᶠ x : ℝ in atTop, primeError d.val (LeanReducer.factorialLevel k) x ≤ x^(1/2+δ-1) :=
-    ⟨(samplesAt d hd).1, FourthPowers.extend (PrimeErrorFourthPowers.step d.val (LeanReducer.factorialLevel k))
+      (d.val % 8 = 7 ∧ M.Coprime d.val) ∧
+      ∀ᶠ x : ℝ in atTop, primeError d.val M x ≤ x^(1/2+δ-1) :=
+    ⟨(samplesAt d hd).1, FourthPowers.extend (PrimeErrorFourthPowers.step d.val M)
       (a := -(1/2:ℝ)+δ/4) (by linarith) (by linarith) (by linarith) (samplesAt d hd).2⟩
-  apply entireL_ne_zero_of_primeError_le (M := LeanReducer.factorialLevel k) (β := 1/2+δ) (by linarith) mass primes bounds s hs χ
-  rw [entireL]
-  split_ifs with h
-  · subst χ
-    have hs1 := pole.resolve_left (fun h ↦ h rfl)
-    simp [LFunctionTrivChar₁, Function.update_of_ne hs1, LFunctionTrivChar, zero]
-  · exact zero
+  have entire := entireL_ne_zero_of_primeError_le (M := M) (β := 1/2+δ)
+    (by linarith) mass primes bounds s (by linarith) (changeLevel divides χ)
+  have lifted : LFunction (changeLevel divides χ) s ≠ 0 := by
+    intro zero
+    apply entire
+    have pole' := pole.imp (fun h ↦ h ∘ (changeLevel_eq_one_iff divides).mp) id
+    rw [entireL]
+    split_ifs with trivial
+    · rw [trivial] at zero pole'
+      have hs1 := pole'.resolve_left (fun ne ↦ ne rfl)
+      simp [LFunctionTrivChar₁, Function.update_of_ne hs1, LFunctionTrivChar, zero]
+    · exact zero
+  rw [LFunction_changeLevel divides χ pole] at lifted
+  exact left_ne_zero_of_mul lifted
 
 theorem five_endpoints (samples : Estimates) :
     RiemannHypothesis ∧ RiemannZetaZerosOnLine ∧ DirichletLNonvanishingRightOfHalf ∧
