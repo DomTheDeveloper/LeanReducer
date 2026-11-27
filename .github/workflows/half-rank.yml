@@ -34,12 +34,15 @@ jobs:
           lake env lean -R src -DautoImplicit=false -DrelaxedAutoImplicit=false -DmaxHeartbeats=4000000 -DmaxSynthPendingDepth=3 --tstack=400000 -o .lake/build/lib/lean/FixedClass.olean src/FixedClass.lean
           lake env lean -R src -DautoImplicit=false -DrelaxedAutoImplicit=false -DmaxHeartbeats=4000000 -DmaxSynthPendingDepth=3 --tstack=400000 -o .lake/build/lib/lean/RHWindow.olean src/RHWindow.lean
           lake env lean -R src -DautoImplicit=false -DrelaxedAutoImplicit=false -DmaxHeartbeats=4000000 -DmaxSynthPendingDepth=3 --tstack=400000 -o .lake/build/lib/lean/HeightCriterion.olean src/HeightCriterion.lean
-          lake env leanchecker HalfRank RankFromCovolume CompletionHeight FixedClass RHWindow HeightCriterion
+          lake env lean -R src -DautoImplicit=false -DrelaxedAutoImplicit=false -DmaxHeartbeats=4000000 -DmaxSynthPendingDepth=3 --tstack=400000 -o .lake/build/lib/lean/HeightSupply.olean src/HeightSupply.lean
+          lake env leanchecker HalfRank RankFromCovolume CompletionHeight FixedClass RHWindow HeightCriterion HeightSupply
           cat > "$RUNNER_TEMP/Audit.lean" <<'LEAN'
           import RankFromCovolume
           import CompletionHeight
-          import HeightCriterion
-          example := FixedClassRH.ofHeightCertificates
+          import HeightSupply
+          example : RiemannHypothesis := FixedClassRH.ordinaryRH_from_height_certificates
+          #print axioms FixedClassRH.ordinaryRH_from_height_certificates
+          #print axioms FixedClassRH.heightCertificate_of_covolume
           #print axioms FixedClassRH.ofHeightCertificates
           #print axioms FixedClassRH.lower_of_relaxed_rank
           #print axioms FixedClassRH.relaxed_rank_of_original
@@ -64,7 +67,12 @@ jobs:
           from leanreducer.source import Corpus
           corpus = Corpus(Path('src'), ['Mathlib', 'Lean', 'Std', 'Init'])
           print('Conditional height criterion', corpus.size(corpus.walk('HeightCriterion')))
-          names = ['ofHeightCertificates', 'lower_of_relaxed_rank', 'relaxed_rank_of_original', 'lower_with_completion', 'nominal_primeSum_le', 'dirCost_nonneg', 'half_rank_comparison', 'half_rank_with_completion', 'mainHeight_nonneg', 'star_of_half_rank', 'nominal_gain_le_jet', 'thick_le_dirCost', 'positive_rank_comparison', 'mainHeight_margin', 'star_of_positive_rank']
+          base = corpus.walk('HeightCriterion')
+          for name in ['New.Heights.OneDeterminant', 'New.Filling.Moments', 'New.Exchange.CrudeRows', 'New.Rows.RowVolume', 'New.Endgame.ShortAndEnough', 'New.Selmer.FitTwistsExist']:
+              size = corpus.size(base | corpus.walk(name))['code']
+              print('Criterion with', name, size, 'headroom', 49_999 - size)
+          print('With the full geometric supplier', corpus.size(corpus.walk('HeightSupply')))
+          names = ['ordinaryRH_from_height_certificates', 'heightCertificate_of_covolume', 'ofHeightCertificates', 'lower_of_relaxed_rank', 'relaxed_rank_of_original', 'lower_with_completion', 'nominal_primeSum_le', 'dirCost_nonneg', 'half_rank_comparison', 'half_rank_with_completion', 'mainHeight_nonneg', 'star_of_half_rank', 'nominal_gain_le_jet', 'thick_le_dirCost', 'positive_rank_comparison', 'mainHeight_margin', 'star_of_positive_rank']
           print(check_axioms(Path(os.environ['RUNNER_TEMP'], 'axioms.log').read_text(),
               {'FixedClassRH.' + n: '' for n in names}, ['propext', 'Classical.choice', 'Quot.sound']))
           PY
