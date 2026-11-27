@@ -50,9 +50,9 @@ theorem lower_with_completion :
     (Data.heightLe_volume_ratio_sq o)).mono le_rfl (by simp [field]; simp [(Z _).1])).nonneg
   linarith only [formula]
 
+omit i I hV in
 /-- The existing completion construction pays at most twice the squared crude-row size per
 missing dimension. -/
-omit i I hV in
 theorem completionCost_le (D : Data P) : completionCost D ≤ 2 * (D.x₁ ^ 2 * D.b ^ 2) := by
   have rest : D.x ^ 99 + (2 * (D.m : ℝ) * D.m) * (2 * D.t * D.x ^ 999) ≤
       D.x₁ ^ 2 * D.b ^ 2 := D.le_of_hasLogBound
@@ -75,8 +75,8 @@ theorem lower_of_relaxed_rank
     (Nat.cast_nonneg D.rowDim : (0 : ℝ) ≤ D.rowDim)
   linarith only [lower_with_completion i I hV, charge, budget]
 
-/-- The original filling estimate implies the relaxed rank requirement on the admissible scales. -/
 omit i I hV in
+/-- The original filling estimate implies the relaxed rank requirement on the admissible scales. -/
 theorem relaxed_rank_of_original {n : ℕ}
     (rank : (1 - 4 / D.b ^ 2) * D.rowDim ≤ n) :
     (D.rowDim - (n : ℝ)) * (D.x₁ ^ 2 * D.b) ≤ D.rowDim := by
