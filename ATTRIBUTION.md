@@ -196,3 +196,5 @@ Each declaration below adapts or closely follows, in whole or in part and with c
 The divergent-prime project adapts the zero-density step from the original compact proof. It replaces the use of a complete residue class with the divergent-mass hypothesis and specializes the one-sided criterion accordingly.
 
 The free-modulus edition uses a direct change of level for each queried conductor and accuracy, replacing the fixed factorial sequence.
+
+The prime-weight formulation of the twist and one-sided criteria is taken from the verified LeanReducer revision ad1ddf4fa04e459f11bdc7524a26141799ea86f0.

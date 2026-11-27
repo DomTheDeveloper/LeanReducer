@@ -339,7 +339,7 @@ Known result: A prime in a long window (weak form of the Siegel-Walfisz theorem)
 Original lines 1–1
 
 ```lean
--- Modified by LeanReducer to allow any admissible family with divergent prime mass.
+-- Modified by LeanReducer to select twists from a set of primes of divergent weight.
 ```
 
 Original lines 4–8
@@ -449,17 +449,16 @@ Original lines 182–182
   -- the twist of a primitive character by the Legendre symbol of a new prime is primitive
 ```
 
-Original lines 190–190
+Original lines 192–192
 
 ```lean
-/-- Divergence of the logarithmically weighted reciprocal sum on a set of natural numbers. -/
+/-- The sum of log(p)/p over the primes in S diverges. -/
 ```
 
-Original lines 195–196
+Original lines 196–196
 
 ```lean
-/-- A set of admissible primes with divergent mass contains a twist that is
-zero-free up to the chosen height. The exceptional twists have power-saving density. -/
+/-- Some prime in S has all twisted L-functions nonvanishing on the specified box. -/
 ```
 
 ## src/Lib/General/Algebra/SumOverUnits.lean
@@ -612,11 +611,10 @@ Original lines 20–20
 This file: One-sided bound gives a zero-free half-plane; small value in every long window. -/
 ```
 
-Original lines 24–25
+Original lines 24–24
 
 ```lean
-/-- A divergent family of admissible auxiliary primes with the one-sided
-error bound suffices for a zero-free half-plane. -/
+/-- Prime-error bounds on a set of auxiliary primes of divergent weight imply nonvanishing. -/
 ```
 
 ## src/New/Endgame/PrimeError.lean

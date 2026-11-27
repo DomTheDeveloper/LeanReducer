@@ -3,8 +3,8 @@ import SampledGRH
 open ArithmeticFunction ArithmeticFunction.vonMangoldt
 
 /-- Dirichlet's theorem supplies the required divergent mass for every unit residue class. -/
-theorem divergentPrimeMass_of_unit {M : ℕ} [NeZero M] {a : ZMod M} (unit : IsUnit a) :
-    DivergentPrimeMass {n : ℕ | n.Prime ∧ (n : ZMod M) = a} := by
+theorem divergentPrimes_of_unit {M : ℕ} [NeZero M] {a : ZMod M} (unit : IsUnit a) :
+    DivergentPrimes {n : ℕ | (n : ZMod M) = a} := by
   classical
   intro summable
   apply not_summable_residueClass_prime_div unit
@@ -15,7 +15,17 @@ theorem divergentPrimeMass_of_unit {M : ℕ} [NeZero M] {a : ZMod M} (unit : IsU
       simp [prime, congruent, residueClass, Set.indicator, vonMangoldt_apply_prime]
   · simp [prime]
 
-#print axioms divergentPrimeMass_of_unit
+#print axioms divergentPrimes_of_unit
+
+/-- The old divergence condition on a set consisting only of primes gives the prime-weight condition. -/
+theorem divergentPrimes_of_prime_set (S : Set ℕ) (prime : ∀ n ∈ S, n.Prime)
+    (mass : ¬ Summable (fun n : ℕ ↦ @ite ℝ (n ∈ S) (Classical.propDecidable _) (Real.log n / n) 0)) :
+    DivergentPrimes S := by
+  classical
+  refine fun summable ↦ mass (summable.congr fun n ↦ ?_)
+  by_cases mem : n ∈ S
+  · simp [mem, prime n mem]
+  · simp [mem]
 
 /-- The former factorial-level hypothesis supplies the free choice of modulus and precision. -/
 theorem estimates_of_factorial_levels

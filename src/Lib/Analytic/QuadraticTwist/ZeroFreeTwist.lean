@@ -147,27 +147,20 @@ lemma zero_density_quadTwist (hη : 0 < η) (y : ℝ) : (fun x : ℕ ↦ (#{d �
     (@quadTwist 1 1 d _).conductor_dvd_level, (quadTwist ψ d).conductor_dvd_level.antisymm
   simp_all [quadTwist, dvd_prime Fact.out, mul_comm, h.dvd_mul_left, eq_one_iff_conductor_eq_one,
     h.symm.dvd_mul_left, conductor_inv, h.mul_dvd_of_dvd_of_dvd, conductor_changeLevel, IsPrimitive]
-noncomputable def DivergentPrimeMass (S : Set ℕ) : Prop := by
-  classical
-  exact ¬ Summable fun n : ℕ ↦ if n ∈ S then Real.log n / n else 0
-lemma exists_entireL_quadTwist_ne_zero_of_mass {β} y {S : Set ℕ} (hβ : 1 / 2 < β)
-    (mass : DivergentPrimeMass S) (primes : ∀ n ∈ S, n.Prime)
-    (H : ∀ d : Primes, d.val ∈ S → d.val % 8 = 7 ∧ N.Coprime d.val) :
+open scoped Classical
+def DivergentPrimes (S : Set ℕ) : Prop :=
+  ¬ Summable fun n : ℕ ↦ (if n.Prime ∧ n ∈ S then Real.log n else 0) / n
+lemma exists_dense_twist {β} y {S : Set ℕ} (hβ : 1 / 2 < β)
+    (hMass : DivergentPrimes S) (H : ∀ d : Primes, d.val ∈ S → d.1 % 8 = 7 ∧ N.Coprime d) :
     ∃ d : Primes, d.val ∈ S ∧ ∀ ξ s, β ≤ re s → |im s| ≤ y →
-      entireL (@quadTwist N ξ d _) s ≠ 0 := by
-  classical
-  obtain ⟨η, hη, h⟩ := exists_pos_mul_lt (lt_min one_pos (sub_pos.2 hβ)) 9
+      entireL (@quadTwist N ξ d _) s ≠ 0 := (exists_pos_mul_lt (lt_min one_pos (sub_pos.2 hβ)) 9).elim fun η ⟨hη, h⟩ ↦ by
   by_contra!
-  apply mass
-  refine (LSeriesSummable_logMul_of_lt_re (s := 1)
-    ((LSeriesSummable_of_sum_norm_bigO (s := 1 - η / 2 / 2) (f := fun n ↦ ite (n ∈ S) 1 0)
+  refine hMass ((LSeriesSummable_logMul_of_lt_re (s := 1)
+    ((LSeriesSummable_of_sum_norm_bigO (s := 1 - η / 2 / 2) (f := fun n ↦ ite (n.Prime ∧ n ∈ S) 1 0)
     (.trans (.of_norm_le fun x ↦ ?_) (.fun_sum (s := ⊤) fun ξ _ ↦ @zero_density_quadTwist N _ ξ _ hη
     y)) (by grind) (by simpa)).abscissaOfAbsConv_le.trans_lt (mod_cast by simpa))
-    ).norm.of_norm_bounded (by
-      intro n
-      by_cases hn : n ∈ S
-      · simp [hn, term, (primes n hn).ne_zero, ← Complex.natCast_log]
-      · simp [hn, term])
+    ).norm.of_norm_bounded (by simp +contextual [Set.indicator, term, apply_ite, ite_and,
+    ← natCast_log, vonMangoldt_apply_prime]))
   simp [apply_ite norm, ← cast_sum]
   grw [← card_biUnion_le, card_le_card]
   simp_all [Primes, subset_iff]; grind

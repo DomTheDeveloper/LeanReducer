@@ -8,7 +8,7 @@ open DirichletCharacter Filter Real
 namespace SampledGRH
 
 def EstimateAt (M : ℕ) [NeZero M] (δ : ℝ) : Prop :=
-  ∃ S : Set ℕ, DivergentPrimeMass S ∧ (∀ n ∈ S, n.Prime) ∧
+  ∃ S : Set ℕ, DivergentPrimes S ∧
     ∀ d : Nat.Primes, d.val ∈ S → (d.val % 8 = 7 ∧ M.Coprime d.val) ∧
       ∀ᶠ n : ℕ in atTop, primeError d.val M ((n:ℝ)^4) ≤ ((n:ℝ)^4)^(-(1/2:ℝ) + δ/4)
 def Estimates : Prop :=
@@ -17,7 +17,7 @@ def Estimates : Prop :=
 
 theorem nonvanishing (samples : Estimates) : DirichletLNonvanishingRightOfHalf := by
   intro q _ χ s right pole
-  obtain ⟨M, positive, divides, δ, hδ, h1, small, S, mass, primes, samplesAt⟩ :=
+  obtain ⟨M, positive, divides, δ, hδ, h1, small, S, mass, samplesAt⟩ :=
     samples q ((s.re - 1/2)/2) (by linarith)
   letI : NeZero M := positive
   have bounds (d : Nat.Primes) (hd : d.val ∈ S) :
@@ -25,8 +25,8 @@ theorem nonvanishing (samples : Estimates) : DirichletLNonvanishingRightOfHalf :
       ∀ᶠ x : ℝ in atTop, primeError d.val M x ≤ x^(1/2+δ-1) :=
     ⟨(samplesAt d hd).1, FourthPowers.extend (PrimeErrorFourthPowers.step d.val M)
       (a := -(1/2:ℝ)+δ/4) (by linarith) (by linarith) (by linarith) (samplesAt d hd).2⟩
-  have entire := entireL_ne_zero_of_primeError_le (M := M) (β := 1/2+δ)
-    (by linarith) mass primes bounds s (by linarith) (changeLevel divides χ)
+  have entire := entireL_ne_zero_of_divergent_primeError_le (M := M) (β := 1/2+δ)
+    (by linarith) mass bounds s (by linarith) (changeLevel divides χ)
   have lifted : LFunction (changeLevel divides χ) s ≠ 0 := by
     intro zero
     apply entire
