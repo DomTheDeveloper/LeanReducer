@@ -1,0 +1,426 @@
+{
+  "export_sha256": "ab7b4223b9bd748a1aa68bdb63afb6d6264121fc834aadba7ba3d3796c32115b",
+  "declaration_records": {
+    "inductive": 2419,
+    "quot": 4,
+    "def": 36489,
+    "thm": 165589,
+    "axiom": 3,
+    "opaque": 79
+  },
+  "absent_name_candidates": [
+    {
+      "path": "Lib/Adelic/Adeles/AdeleIdempotent.lean",
+      "line": 13,
+      "name": "finAdele_add_apply",
+      "code_lines": 1,
+      "spelling_occurrences": 1
+    },
+    {
+      "path": "Lib/Adelic/Adeles/AdeleIdempotent.lean",
+      "line": 15,
+      "name": "finAdele_sub_apply",
+      "code_lines": 1,
+      "spelling_occurrences": 1
+    },
+    {
+      "path": "Lib/Adelic/Adeles/AdeleIdempotent.lean",
+      "line": 17,
+      "name": "finAdele_neg_apply",
+      "code_lines": 1,
+      "spelling_occurrences": 1
+    },
+    {
+      "path": "Lib/Adelic/Adeles/AdeleIdempotent.lean",
+      "line": 19,
+      "name": "finAdele_one_apply",
+      "code_lines": 1,
+      "spelling_occurrences": 1
+    },
+    {
+      "path": "Lib/Adelic/Adeles/AdeleIdempotent.lean",
+      "line": 21,
+      "name": "finAdele_pow_apply",
+      "code_lines": 1,
+      "spelling_occurrences": 1
+    },
+    {
+      "path": "Lib/Adelic/Adeles/AdeleIdempotent.lean",
+      "line": 23,
+      "name": "finAdele_natCast_apply",
+      "code_lines": 1,
+      "spelling_occurrences": 1
+    },
+    {
+      "path": "Lib/Adelic/Adeles/AdeleIdempotent.lean",
+      "line": 25,
+      "name": "finAdele_zero_apply",
+      "code_lines": 1,
+      "spelling_occurrences": 1
+    },
+    {
+      "path": "Lib/Adelic/Adeles/AdeleTopology.lean",
+      "line": 103,
+      "name": "finAdele_mul_apply",
+      "code_lines": 1,
+      "spelling_occurrences": 3
+    },
+    {
+      "path": "Lib/Adelic/Adeles/AdeleTopology.lean",
+      "line": 114,
+      "name": "coe_algebraMap_Ô",
+      "code_lines": 1,
+      "spelling_occurrences": 3
+    },
+    {
+      "path": "Lib/Adelic/Adeles/AdeleTopology.lean",
+      "line": 153,
+      "name": "finAdele_star_apply",
+      "code_lines": 1,
+      "spelling_occurrences": 2
+    },
+    {
+      "path": "Lib/Adelic/Adeles/CoprimeValuation.lean",
+      "line": 209,
+      "name": "coe_star_ringOfIntegers",
+      "code_lines": 1,
+      "spelling_occurrences": 10
+    },
+    {
+      "path": "Lib/Adelic/Adeles/IdeleHilbert90.lean",
+      "line": 99,
+      "name": "star_eq_adeleMap",
+      "code_lines": 1,
+      "spelling_occurrences": 4
+    },
+    {
+      "path": "Lib/Adelic/Adeles/IdeleHilbert90.lean",
+      "line": 113,
+      "name": "algebraMap_eq_finAdeleIncl",
+      "code_lines": 1,
+      "spelling_occurrences": 4
+    },
+    {
+      "path": "Lib/Adelic/Unitary/SpaceDefs.lean",
+      "line": 94,
+      "name": "Gf.coe_mul'",
+      "code_lines": 1,
+      "spelling_occurrences": 1
+    },
+    {
+      "path": "Lib/Adelic/Unitary/SpaceDefs.lean",
+      "line": 228,
+      "name": "G.mat_fst",
+      "code_lines": 1,
+      "spelling_occurrences": 3
+    },
+    {
+      "path": "Lib/Adelic/Unitary/SpaceDefs.lean",
+      "line": 230,
+      "name": "G.mat_snd",
+      "code_lines": 1,
+      "spelling_occurrences": 3
+    },
+    {
+      "path": "Lib/Adelic/Witt/SpaceOperations.lean",
+      "line": 143,
+      "name": "U.block_val",
+      "code_lines": 2,
+      "spelling_occurrences": 1
+    },
+    {
+      "path": "Lib/Adelic/Witt/SpaceOperations.lean",
+      "line": 176,
+      "name": "G.mat_reindex",
+      "code_lines": 1,
+      "spelling_occurrences": 1
+    },
+    {
+      "path": "Lib/CM/KroneckerLimit/LogTheta.lean",
+      "line": 134,
+      "name": "mv_constantCoeff_eq",
+      "code_lines": 2,
+      "spelling_occurrences": 1
+    },
+    {
+      "path": "Lib/CM/Sigma/PadicSeriesDefs.lean",
+      "line": 127,
+      "name": "seriesToCp_smul",
+      "code_lines": 2,
+      "spelling_occurrences": 2
+    },
+    {
+      "path": "Lib/ClassField/GaloisCohomology/DiscreteUnits.lean",
+      "line": 227,
+      "name": "_root_.DiscreteUnits.val_ofNeZero",
+      "code_lines": 1,
+      "spelling_occurrences": 1
+    },
+    {
+      "path": "Lib/ClassField/GaloisCohomology/DiscreteUnits.lean",
+      "line": 232,
+      "name": "_root_.DiscreteUnits.val_unitsRep",
+      "code_lines": 2,
+      "spelling_occurrences": 2
+    },
+    {
+      "path": "Lib/ClassField/GaloisCohomology/DiscreteUnits.lean",
+      "line": 235,
+      "name": "_root_.DiscreteUnits.val_ofBase",
+      "code_lines": 2,
+      "spelling_occurrences": 1
+    },
+    {
+      "path": "Lib/ClassField/HeckeCharacter/CharacterDefs.lean",
+      "line": 14,
+      "name": "circleChar_inv_apply",
+      "code_lines": 1,
+      "spelling_occurrences": 4
+    },
+    {
+      "path": "Lib/ClassField/HeckeCharacter/CharacterDefs.lean",
+      "line": 46,
+      "name": "coe_divStar",
+      "code_lines": 1,
+      "spelling_occurrences": 12
+    },
+    {
+      "path": "Lib/Cohomology/Etale/RelativeChains.lean",
+      "line": 113,
+      "name": "π_map",
+      "code_lines": 1,
+      "spelling_occurrences": 3
+    },
+    {
+      "path": "Lib/Cohomology/Hodge/GrothendieckSymbol.lean",
+      "line": 52,
+      "name": "pi_comp_detCocycle",
+      "code_lines": 1,
+      "spelling_occurrences": 1
+    },
+    {
+      "path": "Lib/GaloisRep/BaseChange/BaseChangePlaces.lean",
+      "line": 124,
+      "name": "atPlace_baseChangeGf",
+      "code_lines": 2,
+      "spelling_occurrences": 5
+    },
+    {
+      "path": "Lib/General/Geometry/ProjectiveSpace.lean",
+      "line": 107,
+      "name": "LineBundle.picClass_mul",
+      "code_lines": 1,
+      "spelling_occurrences": 1
+    },
+    {
+      "path": "Lib/General/Groups/ArtinDefs.lean",
+      "line": 25,
+      "name": "abelianLift_mk",
+      "code_lines": 1,
+      "spelling_occurrences": 1
+    },
+    {
+      "path": "Lib/General/Groups/ValuationPair.lean",
+      "line": 133,
+      "name": "coe_diagGL",
+      "code_lines": 1,
+      "spelling_occurrences": 2
+    },
+    {
+      "path": "Lib/General/LinearAlgebra/ElementOfMatrix.lean",
+      "line": 17,
+      "name": "G.mat_ofMat",
+      "code_lines": 1,
+      "spelling_occurrences": 1
+    },
+    {
+      "path": "Lib/General/NumberTheory/QuadField.lean",
+      "line": 120,
+      "name": "coe_c₀",
+      "code_lines": 1,
+      "spelling_occurrences": 1
+    },
+    {
+      "path": "Lib/PadicHodge/Crystalline/RegularityFrobenius.lean",
+      "line": 33,
+      "name": "coefEnd_tmul",
+      "code_lines": 1,
+      "spelling_occurrences": 2
+    },
+    {
+      "path": "Lib/PadicHodge/WachGamma/KisinModuleDefs.lean",
+      "line": 66,
+      "name": "pair_mk",
+      "code_lines": 2,
+      "spelling_occurrences": 1
+    },
+    {
+      "path": "Lib/PadicHodge/WachGamma/KisinModuleDefs.lean",
+      "line": 87,
+      "name": "FrobGroup.snd_φ",
+      "code_lines": 1,
+      "spelling_occurrences": 1
+    },
+    {
+      "path": "Lib/PadicHodge/WachGamma/Letters.lean",
+      "line": 53,
+      "name": "S_smul",
+      "code_lines": 1,
+      "spelling_occurrences": 8
+    },
+    {
+      "path": "Lib/Shimura/HeckeTower/GroupRingOperators.lean",
+      "line": 23,
+      "name": "asAlgebraHom_eq_sum_support",
+      "code_lines": 2,
+      "spelling_occurrences": 5
+    },
+    {
+      "path": "Lib/Shimura/Uniformisation/LieExponential.lean",
+      "line": 109,
+      "name": "riemannForm_pullForm",
+      "code_lines": 1,
+      "spelling_occurrences": 3
+    },
+    {
+      "path": "Lib/Weil/Construction/Model.lean",
+      "line": 138,
+      "name": "modelInner_apply",
+      "code_lines": 1,
+      "spelling_occurrences": 2
+    },
+    {
+      "path": "Lib/Weil/DualPair/PairSplitting.lean",
+      "line": 77,
+      "name": "matToVec_vecToMat",
+      "code_lines": 1,
+      "spelling_occurrences": 1
+    },
+    {
+      "path": "Lib/Weil/DualPair/PairSplitting.lean",
+      "line": 79,
+      "name": "matToVec_add",
+      "code_lines": 1,
+      "spelling_occurrences": 2
+    },
+    {
+      "path": "Lib/Weil/DualPair/PairSplitting.lean",
+      "line": 81,
+      "name": "matToVec_zero",
+      "code_lines": 1,
+      "spelling_occurrences": 1
+    },
+    {
+      "path": "Lib/Weil/DualPair/PairSplitting.lean",
+      "line": 85,
+      "name": "matToVec_smul",
+      "code_lines": 2,
+      "spelling_occurrences": 4
+    },
+    {
+      "path": "Lib/Weil/DualPair/PairSplitting.lean",
+      "line": 100,
+      "name": "G.mat_onHom",
+      "code_lines": 1,
+      "spelling_occurrences": 2
+    },
+    {
+      "path": "Lib/Weil/DualPair/PairSplitting.lean",
+      "line": 109,
+      "name": "G.onHom_eq",
+      "code_lines": 2,
+      "spelling_occurrences": 4
+    },
+    {
+      "path": "Lib/Weil/DualPair/PairSumNegation.lean",
+      "line": 34,
+      "name": "G.onHom_atPlace",
+      "code_lines": 2,
+      "spelling_occurrences": 1
+    },
+    {
+      "path": "Lib/Weil/DualPair/PairSumNegation.lean",
+      "line": 190,
+      "name": "normNegOne_inv",
+      "code_lines": 1,
+      "spelling_occurrences": 3
+    },
+    {
+      "path": "Lib/Weil/Fock/FockAction.lean",
+      "line": 25,
+      "name": "unitary_smul_eq_mulVec",
+      "code_lines": 1,
+      "spelling_occurrences": 1
+    },
+    {
+      "path": "Lib/Weil/Fock/FockTensor.lean",
+      "line": 170,
+      "name": "piTensor_apply",
+      "code_lines": 1,
+      "spelling_occurrences": 1
+    },
+    {
+      "path": "Lib/Weil/GaussSum/ShearInvariance.lean",
+      "line": 115,
+      "name": "submatrix_id_mul",
+      "code_lines": 2,
+      "spelling_occurrences": 3
+    },
+    {
+      "path": "Lib/Weil/Lift/Arrow.lean",
+      "line": 34,
+      "name": "coe_conjForm",
+      "code_lines": 1,
+      "spelling_occurrences": 1
+    },
+    {
+      "path": "Lib/Weil/Periods/FiniteBesselGroup.lean",
+      "line": 130,
+      "name": "Space.ratCoordMatrix_eq",
+      "code_lines": 1,
+      "spelling_occurrences": 7
+    },
+    {
+      "path": "New/Data/Different.lean",
+      "line": 262,
+      "name": "coe_zetaInt",
+      "code_lines": 1,
+      "spelling_occurrences": 2
+    },
+    {
+      "path": "New/Data/WeilDataOfE.lean",
+      "line": 26,
+      "name": "coe_galOfPlaceInt",
+      "code_lines": 1,
+      "spelling_occurrences": 1
+    },
+    {
+      "path": "New/Exchange/BlockPartners.lean",
+      "line": 44,
+      "name": "mul_firstCols",
+      "code_lines": 1,
+      "spelling_occurrences": 3
+    },
+    {
+      "path": "New/Filling/Setup.lean",
+      "line": 326,
+      "name": "coe_ratToFin",
+      "code_lines": 1,
+      "spelling_occurrences": 3
+    },
+    {
+      "path": "New/RealPlace/Size.lean",
+      "line": 36,
+      "name": "weylRatio_inv",
+      "code_lines": 1,
+      "spelling_occurrences": 2
+    },
+    {
+      "path": "New/Seesaw/NamesAtSplitLevel.lean",
+      "line": 37,
+      "name": "residueOverN_apply",
+      "code_lines": 2,
+      "spelling_occurrences": 1
+    }
+  ]
+}

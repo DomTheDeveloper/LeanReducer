@@ -1,0 +1,169 @@
+{
+  "entry": "Main",
+  "tree": {
+    "modules": 794,
+    "physical": 112791,
+    "code": 76113,
+    "code_chars": 4509941,
+    "bytes": 7417833
+  },
+  "closure": {
+    "modules": 794,
+    "physical": 112791,
+    "code": 76113,
+    "code_chars": 4509941,
+    "bytes": 7417833
+  },
+  "groups": {
+    "Lib": {
+      "modules": 573,
+      "physical": 77843,
+      "code": 51269,
+      "code_chars": 3049633,
+      "bytes": 5024911
+    },
+    "Main": {
+      "modules": 1,
+      "physical": 13,
+      "code": 7,
+      "code_chars": 419,
+      "bytes": 519
+    },
+    "New": {
+      "modules": 219,
+      "physical": 34919,
+      "code": 24825,
+      "code_chars": 1459365,
+      "bytes": 2391620
+    },
+    "Statements": {
+      "modules": 1,
+      "physical": 16,
+      "code": 12,
+      "code_chars": 524,
+      "bytes": 783
+    }
+  },
+  "external_imports": [
+    "Mathlib"
+  ],
+  "cuts": {
+    "New.Endgame.LongForms": {
+      "own_closure": {
+        "modules": 785,
+        "physical": 111792,
+        "code": 75474,
+        "code_chars": 4472800,
+        "bytes": 7348276
+      },
+      "exclusive_to_cut": {
+        "modules": 582,
+        "physical": 84525,
+        "code": 58905,
+        "code_chars": 3499205,
+        "bytes": 5701263
+      },
+      "remaining_before_replacement": {
+        "modules": 212,
+        "physical": 28266,
+        "code": 17208,
+        "code_chars": 1010736,
+        "bytes": 1716570
+      }
+    },
+    "New.Endgame.ShortAndEnough": {
+      "own_closure": {
+        "modules": 710,
+        "physical": 101304,
+        "code": 67670,
+        "code_chars": 4008258,
+        "bytes": 6595756
+      },
+      "exclusive_to_cut": {
+        "modules": 4,
+        "physical": 684,
+        "code": 480,
+        "code_chars": 29183,
+        "bytes": 50804
+      },
+      "remaining_before_replacement": {
+        "modules": 790,
+        "physical": 112107,
+        "code": 75633,
+        "code_chars": 4480758,
+        "bytes": 7367029
+      }
+    },
+    "New.Data.DataExist": {
+      "own_closure": {
+        "modules": 209,
+        "physical": 28040,
+        "code": 17131,
+        "code_chars": 1006862,
+        "bytes": 1703206
+      },
+      "exclusive_to_cut": {
+        "modules": 6,
+        "physical": 773,
+        "code": 562,
+        "code_chars": 33267,
+        "bytes": 56193
+      },
+      "remaining_before_replacement": {
+        "modules": 788,
+        "physical": 112018,
+        "code": 75551,
+        "code_chars": 4476674,
+        "bytes": 7361640
+      }
+    },
+    "New.Endgame.OneSidedCriterion": {
+      "own_closure": {
+        "modules": 18,
+        "physical": 1894,
+        "code": 1251,
+        "code_chars": 75239,
+        "bytes": 122647
+      },
+      "exclusive_to_cut": {
+        "modules": 5,
+        "physical": 665,
+        "code": 477,
+        "code_chars": 28800,
+        "bytes": 48754
+      },
+      "remaining_before_replacement": {
+        "modules": 789,
+        "physical": 112126,
+        "code": 75636,
+        "code_chars": 4481141,
+        "bytes": 7369079
+      }
+    },
+    "New.Endgame.PrimeError": {
+      "own_closure": {
+        "modules": 8,
+        "physical": 1028,
+        "code": 649,
+        "code_chars": 39221,
+        "bytes": 61449
+      },
+      "exclusive_to_cut": {
+        "modules": 1,
+        "physical": 111,
+        "code": 68,
+        "code_chars": 3972,
+        "bytes": 7062
+      },
+      "remaining_before_replacement": {
+        "modules": 793,
+        "physical": 112680,
+        "code": 76045,
+        "code_chars": 4505969,
+        "bytes": 7410771
+      }
+    }
+  },
+  "target": 50000,
+  "gap": 26113
+}

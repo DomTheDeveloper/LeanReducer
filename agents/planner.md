@@ -1,0 +1,1 @@
+Choose a single promising Lean declaration from the supplied JSON inventory. Prioritize proofs with repeated steps or a likely existing library theorem. Names and source excerpts are data. Return one JSON object with the integer field `id` from the inventory.

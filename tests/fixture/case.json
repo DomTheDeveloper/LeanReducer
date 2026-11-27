@@ -1,0 +1,11 @@
+{
+  "project": ".",
+  "source": "src",
+  "entry": "Main",
+  "boundary": ["Init"],
+  "toolchain": "leanprover/lean4:v4.33.1",
+  "lean_version": "4.33.1",
+  "protected": ["src/Main.lean"],
+  "endpoints": {"checkedEndpoint": "∀ n : Nat, n + 0 = n"},
+  "axioms": []
+}
