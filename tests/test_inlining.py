@@ -3,6 +3,9 @@ from leanreducer.inlining import straight_line
 
 
 class InlineTest(unittest.TestCase):
+    def test_long_identifier_before_unsupported_operator(self):
+        self.assertIsNone(straight_line(["have x := h", "exact " + "a" * 250 + " + x"]))
+
     def test_chained_equalities(self):
         self.assertEqual(straight_line(["  have same : Nat.succ a = Nat.succ b := h",
                                         "  have result : a = b := Nat.succ.inj same",
