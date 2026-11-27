@@ -15,6 +15,8 @@ python3 -m leanreducer analyze /path/to/grh-compact/src --entry Main --cut New.E
 
 Add `--import-audit` to find direct imports available through another project dependency. Add `--repetitions` to find repeated `seal` or `unseal` commands and the nearest module their sites already share.
 
+Repeat `--cut` to measure the chosen modules individually and together. The joint result shows which dependencies become unnecessary only when several arguments change together. Use `--pair-audit` to test every pair below the entry against the line target, and `--exclude-from-pairs MODULE` to preserve a particular module as a potential caller. The reported minimum counts the retained source before writing any replacement proofs.
+
 To search for a different mathematical argument, add `--plan-cut MODEL` to an analysis with one `--cut` and set `OPENAI_API_KEY`. The architecture agent receives the selected source, bounded excerpts from up to four callers, and the exact replacement budget. Its JSON proposal gives the statement to replace, outstanding proof obligations, dependencies to check, and a first Lean experiment. Implementations can be audited with `reduce --patch`. [Architecture prompt](agents/architect.md)
 
 A cut means removing that module and following all remaining import paths from the entry. The output counts the modules used exclusively through the cut. Any new code needed to prove a substitute theorem must be added back. Project-owned modules are counted before pinned external packages. The initial external namespaces are Mathlib, Lean, Std and Init. Add a package with `--external` if it belongs outside your source budget. Supply every project-owned dependency under the source root for a complete count.
@@ -44,7 +46,7 @@ The every-level **conditional proof has 985 code lines**, 1,348 physical lines a
 
 The **976-code-line conditional proof** weakens the arithmetic assumption further. Only an unbounded set of good factorial levels is needed. The entire 19-module source has 1,338 physical lines. Lean checked the explicit implication to all five original conclusions and all 19 modules passed kernel replay. [976-line project ZIP](https://github.com/DomTheDeveloper/LeanReducer/archive/ae21d67f172b180b660d9bfa2183e3f806ab0ef2.zip) · [Build, axiom audit and kernel replay](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45989759982)
 
-The sparse project has its own [reducer case](examples/grh/cofinal-case.json). Its contract spells out the prime inequality and every quantifier independently of `SampledGRH.Estimates`. The case fixes the original five statement definitions, the factorial modulus, and the four source modules defining the weighted prime error. This lets the reducer test changes to the endgame against the same arithmetic premise.
+The sparse project has its own [reducer case](examples/grh/cofinal-case.json). Its contract spells out the prime inequality and every quantifier independently of `SampledGRH.Estimates`. The case fixes the original five statement definitions, the factorial modulus, and the four source modules defining the weighted prime error. Running the reducer against this contract reproduced the 976-line count and the three permitted axioms. [Completed audit and downloadable verification record](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45991669828)
 
 ```sh
 git clone --single-branch --branch cofinal-sampled-grh https://github.com/DomTheDeveloper/LeanReducer.git cofinal-proof

@@ -42,6 +42,26 @@ The offline reducer was also checked on a Lean 4.35.0 proof of `Nat.succ` inject
 
 On the combined revision, removing the import path through `New.Endgame.LongForms` removes **58,867 code lines** used exclusively on that path and leaves **17,205**. A new proof and its additional local imports could use at most **32,795 code lines** to finish under the inclusive 50,000-line limit. Using physical lines leaves 28,261 and a replacement budget of 21,739. These are budgets for a replacement that still proves all five endpoints. The module itself uses the upper covolume bound, enough independent forms and the lower bound for integral forms. A shorter derivation of the weighted prime estimate could bypass that comparison. [Exact import cut](combined-metrics.json) · [Upstream proof guide](https://github.com/lsernau/grh-lean/blob/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact/GUIDE.md)
 
+### Keeping the final covolume comparison
+
+There are 791 possible module cuts after setting aside the entry `Main`, its immediate proof `New.Main`, and the covolume comparison `New.Endgame.LongForms`. Across **all 312,445 unordered pairs** of these modules, the smallest surviving source contains **53,195 code lines**. The best pair is `Lib.GaloisRep.Main.AvatarCompatibility` and `New.Selmer.FitTwistsExist`. Even a free replacement for that pair would exceed 50,000 by 3,195. This lower bound applies to this import-graph operation on this revision.
+
+Three specific modules release enough code while retaining all three top-level modules. These are `New.Endgame.ShortAndEnough`, `New.Selmer.FitTwistsExist`, and `New.Rows.LiftVolumeHeight`. Among the retained modules, only `New.Endgame.LongForms` directly imports any of the three. Their roles are to construct enough short forms with the needed heights and indices, construct a family of twists satisfying the congruences, and bound the heights of lift-volume ratios. The replacement also needs every declaration their imports make available to the retained source and that source still uses.
+
+| Graph operation | Code removed | Code retained | Code available for a replacement under 50,000 |
+| --- | ---: | ---: | ---: |
+| Best eligible pair | 22,877 | 53,195 | Already 3,195 over |
+| Three named modules together | 38,183 | 37,889 | 12,111 |
+| Whole covolume comparison | 58,867 | 17,205 | 32,795 |
+
+Of the 38,183 lines, **30,576** survive each individual cut. Within that group, **25,457** survive every pair of the three and disappear only when all three are replaced. A second exhaustive computation directly traversed the full graph for each of the 312,445 candidate pairs and reproduced the 53,195-line minimum. The three-module cut leaves 59,618 physical lines, so the 12,111-line allowance applies to the code-line metric. [Machine-readable measurements](joint-cuts.json)
+
+```sh
+python3 -m leanreducer analyze /path/to/GRH-76072/src --entry Main --pair-audit \
+  --exclude-from-pairs New.Main --exclude-from-pairs New.Endgame.LongForms \
+  --cut New.Endgame.ShortAndEnough --cut New.Selmer.FitTwistsExist --cut New.Rows.LiftVolumeHeight
+```
+
 ## What would reach 1,000
 
 Lean checks a smaller target for the analytic endgame. Write `M(k) = 18480 × (k+1)!`. Nonvanishing for every Dirichlet character of every positive modulus on Re(s) > 1/2, with the principal pole excepted, is equivalent to nonvanishing for every character of modulus `M(k)` only on Re(s) > 1/2 + 1/(k+1), for every natural k. Given q and a point strictly right of 1/2, one factorial multiple is divisible by q and has a small enough margin. The Euler factors in change of level then transfer nonvanishing to q. The file compiles over the proof's pinned Lean 4.35.0 and Mathlib revision with axioms `propext`, `Classical.choice` and `Quot.sound`. [Complete Lean proof](FactorialLevels.lean)
@@ -97,6 +117,8 @@ The same $k$ must work for every eligible prime at that level. The threshold in 
 Specializing the old general equivalence to the forward implication actually used in the proof removes nine code lines while weakening the arithmetic premise. The complete standalone project and its import closure both contain **976 code lines, 1,338 physical lines and 19 modules**. The pinned Lean 4.35 workflow checked the explicit unbounded-level implication against all five original conclusions. Its axiom audit reported `propext`, `Classical.choice` and `Quot.sound`, and all 19 modules passed kernel replay. The cofinal-modulus lemma also compiled separately on the same toolchain.
 
 Holding these 976 lines fixed leaves **49,024 code lines** for the additional arithmetic proof and project-owned dependencies under 50,000, or **24** under 1,000. Proving every level good by the existing covolume argument supplies an unbounded set by taking $k=L$. Those original dependencies count toward the budget. [Standalone source](https://github.com/DomTheDeveloper/LeanReducer/tree/ae21d67f172b180b660d9bfa2183e3f806ab0ef2) · [Download ZIP](https://github.com/DomTheDeveloper/LeanReducer/archive/ae21d67f172b180b660d9bfa2183e3f806ab0ef2.zip) · [Clean build and kernel replay](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45989759982) · [Source changes against the 985-line edition](https://github.com/DomTheDeveloper/LeanReducer/compare/680cdffe8dca5e2f3de405a615318d0989f0f055...ae21d67f172b180b660d9bfa2183e3f806ab0ef2)
+
+The generic LeanReducer checker also audited the exact pinned project against a second test that expands all arithmetic quantifiers and the five conclusion types. It reproduced the source and closure counts, confirmed the three axioms, and published its verification record. [Expanded contract](cofinal-case.json) · [Audited run and verification record](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45991669828)
 
 ## Reproduce the combined source
 

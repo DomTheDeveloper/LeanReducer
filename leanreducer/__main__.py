@@ -9,6 +9,7 @@ import sys
 import tempfile
 
 from . import agents
+from .cuts import joint_cut, pair_audit
 from .inlining import straight_line
 from .planning import replacement_plan
 from .patches import apply_reviewed
@@ -169,6 +170,10 @@ def main():
     analysis.add_argument('--import-audit', action='store_true', help='report redundant direct module imports')
     analysis.add_argument('--repetitions', action='store_true', help='find repeated seal/unseal commands and shared imports')
     analysis.add_argument('--cut',action='append',default=[])
+    analysis.add_argument('--pair-audit', action='store_true',
+                          help='measure all pairs of module cuts below the entry')
+    analysis.add_argument('--exclude-from-pairs', metavar='MODULE', action='append', default=[],
+                          help='omit this module as a candidate for either cut')
     analysis.add_argument('--plan-cut', metavar='MODEL',
                           help='ask the architecture agent for an unverified mathematical replacement of one cut')
     analysis.add_argument('--target',type=int,default=50000)
@@ -193,6 +198,12 @@ def main():
     if args.command == 'analyze':
         corpus = Corpus(args.source.resolve(),args.external)
         report = corpus.report(args.entry,args.cut)
+        if len(set(args.cut)) > 1:
+            report['joint_cut'] = joint_cut(corpus, args.entry, args.cut)
+        if args.exclude_from_pairs and not args.pair_audit:
+            raise ValueError('--exclude-from-pairs requires --pair-audit')
+        if args.pair_audit:
+            report['pair_audit'] = pair_audit(corpus, args.entry, args.target, args.exclude_from_pairs)
         if args.plan_cut:
             if len(args.cut) != 1:
                 raise ValueError('--plan-cut requires exactly one --cut')

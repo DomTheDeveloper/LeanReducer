@@ -1,0 +1,162 @@
+{
+  "source_commit": "41bbac1c78e806eced8fd373f6cb55e77a045af5",
+  "entry": "Main",
+  "closure": {
+    "modules": 794,
+    "physical": 112770,
+    "code": 76072,
+    "code_chars": 4505864,
+    "bytes": 7414871
+  },
+  "target": 50000,
+  "cuts": {
+    "New.Endgame.ShortAndEnough": {
+      "own_closure": {
+        "modules": 710,
+        "physical": 101288,
+        "code": 67632,
+        "code_chars": 4004366,
+        "bytes": 6592939
+      },
+      "exclusive_to_cut": {
+        "modules": 4,
+        "physical": 684,
+        "code": 480,
+        "code_chars": 29183,
+        "bytes": 50804
+      },
+      "remaining_before_replacement": {
+        "modules": 790,
+        "physical": 112086,
+        "code": 75592,
+        "code_chars": 4476681,
+        "bytes": 7364067
+      }
+    },
+    "New.Selmer.FitTwistsExist": {
+      "own_closure": {
+        "modules": 738,
+        "physical": 102844,
+        "code": 68535,
+        "code_chars": 4059692,
+        "bytes": 6704406
+      },
+      "exclusive_to_cut": {
+        "modules": 61,
+        "physical": 8716,
+        "code": 6442,
+        "code_chars": 382902,
+        "bytes": 623344
+      },
+      "remaining_before_replacement": {
+        "modules": 733,
+        "physical": 104054,
+        "code": 69630,
+        "code_chars": 4122962,
+        "bytes": 6791527
+      }
+    },
+    "New.Rows.LiftVolumeHeight": {
+      "own_closure": {
+        "modules": 712,
+        "physical": 101508,
+        "code": 67837,
+        "code_chars": 4017127,
+        "bytes": 6608682
+      },
+      "exclusive_to_cut": {
+        "modules": 6,
+        "physical": 904,
+        "code": 685,
+        "code_chars": 41944,
+        "bytes": 66547
+      },
+      "remaining_before_replacement": {
+        "modules": 788,
+        "physical": 111866,
+        "code": 75387,
+        "code_chars": 4463920,
+        "bytes": 7348324
+      }
+    }
+  },
+  "joint_cut": {
+    "modules": [
+      "New.Endgame.ShortAndEnough",
+      "New.Rows.LiftVolumeHeight",
+      "New.Selmer.FitTwistsExist"
+    ],
+    "exclusive_to_joint_cut": {
+      "modules": 357,
+      "physical": 53152,
+      "code": 38183,
+      "code_chars": 2287664,
+      "bytes": 3677306
+    },
+    "released_by_no_single_cut": {
+      "modules": 286,
+      "physical": 42848,
+      "code": 30576,
+      "code_chars": 1833635,
+      "bytes": 2936611
+    },
+    "requiring_every_cut": {
+      "modules": 253,
+      "physical": 36277,
+      "code": 25457,
+      "code_chars": 1531816,
+      "bytes": 2469719
+    },
+    "remaining_before_replacement": {
+      "modules": 437,
+      "physical": 59618,
+      "code": 37889,
+      "code_chars": 2218200,
+      "bytes": 3737565
+    }
+  },
+  "pair_audit": {
+    "excluded": [
+      "Main",
+      "New.Endgame.LongForms",
+      "New.Main"
+    ],
+    "target_code_lines": 50000,
+    "pairs_examined": 312445,
+    "pairs_meeting_target_before_replacement": 0,
+    "best_pair": {
+      "modules": [
+        "Lib.GaloisRep.Main.AvatarCompatibility",
+        "New.Selmer.FitTwistsExist"
+      ],
+      "exclusive_to_joint_cut": {
+        "modules": 221,
+        "physical": 32504,
+        "code": 22877,
+        "code_chars": 1376367,
+        "bytes": 2234763
+      },
+      "released_by_no_single_cut": {
+        "modules": 43,
+        "physical": 6222,
+        "code": 4092,
+        "code_chars": 242126,
+        "bytes": 401095
+      },
+      "requiring_every_cut": {
+        "modules": 43,
+        "physical": 6222,
+        "code": 4092,
+        "code_chars": 242126,
+        "bytes": 401095
+      },
+      "remaining_before_replacement": {
+        "modules": 573,
+        "physical": 80266,
+        "code": 53195,
+        "code_chars": 3129497,
+        "bytes": 5180108
+      }
+    }
+  }
+}
