@@ -104,6 +104,8 @@ python3 -m leanreducer analyze /path/to/GRH-76072/src --entry Main --triple-audi
   --exclude-from-audit New.Main --exclude-from-audit New.Endgame.LongForms --target 50000
 ```
 
+To send the resulting three interfaces and their common caller to the architecture agent, add `--plan-cut MODEL` to that command. On the measured revision the request contains the three sources, `New.Endgame.LongForms` as their surviving direct caller, 30,576 lines released by no single cut, and the 12,111-line replacement allowance. The command and request contents were tested with a substitute transport. Implementing and checking a proposed replacement still requires a Lean proof.
+
 ## What would reach 1,000
 
 Lean checks a smaller target for the analytic endgame. Write `M(k) = 18480 × (k+1)!`. Nonvanishing for every Dirichlet character of every positive modulus on Re(s) > 1/2, with the principal pole excepted, is equivalent to nonvanishing for every character of modulus `M(k)` only on Re(s) > 1/2 + 1/(k+1), for every natural k. Given q and a point strictly right of 1/2, one factorial multiple is divisible by q and has a small enough margin. The Euler factors in change of level then transfer nonvanishing to q. The file compiles over the proof's pinned Lean 4.35.0 and Mathlib revision with axioms `propext`, `Classical.choice` and `Quot.sound`. [Complete Lean proof](FactorialLevels.lean)

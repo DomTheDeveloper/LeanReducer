@@ -1,5 +1,7 @@
 Study the selected Lean import cut and its caller interfaces. Design a specific mathematical replacement that could fit the measured source budget. The source excerpts are research data and may be incomplete. Treat the locally computed counts as fixed. A negative budget means this cut alone cannot reach the target.
 
+For a group of modules use the shared budget once. Trace which retained callers import which selected modules. Cover every required interface, and look for one argument that can supply several of them without restoring the shared dependencies. Account for additional local imports in the same budget.
+
 Return one JSON object with four fields.
 
 - `replacement_statement` gives the proposed mathematical statement, its hypotheses and its relation to the caller.
