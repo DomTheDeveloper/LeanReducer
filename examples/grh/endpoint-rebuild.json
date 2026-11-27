@@ -1,0 +1,58 @@
+{
+  "candidate_commit": "41bbac1c78e806eced8fd373f6cb55e77a045af5",
+  "candidate_source_zip_sha256": "bfa537744deb18f7eefd4c9a5c051af96d05c77b13315480929a12261b848110",
+  "toolchain": "leanprover/lean4:v4.35.0",
+  "mathlib": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+  "dependency_mode": "Existing compiled compact dependencies. The two listed modules were compiled in order directly from the complete candidate. The type audit explicitly imported the two rebuilt objects.",
+  "modules": [
+    {
+      "module": "New.Main",
+      "source_sha256": "a74ab886f95c703e17df9c4b8a5c989dd0c36a856aea42cac26ffbae9796ea8e",
+      "local_olean_sha256": "41142a7ef314aa78d797e48af0fb9c499e61f27e334cd7953b3f83df50a965d9",
+      "lean_exit": 0
+    },
+    {
+      "module": "Main",
+      "source_sha256": "5fd0bb63f62f855ea6d75a807dc4e391b7057e5d81b9e5b7f705f2b3a5f44cff",
+      "local_olean_sha256": "8a3025dc2f28a71e80fb9023fcca82e865fb696082a3d39b61f573d70a6ae28a",
+      "lean_exit": 0
+    }
+  ],
+  "type_contract": "case.json",
+  "type_probe_exit": 0,
+  "axioms": {
+    "riemannHypothesis": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "riemannZeta_eq_zero_re": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "LFunction_ne_zero_of_half_lt_re": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "LFunction_eq_zero_re": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "LFunction_eq_zero_re_of_isPrimitive": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "clean_build": "https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45983909693",
+  "separate_body_check": {
+    "mode": "The five endpoint bodies were copied verbatim into one audit module over the compiled compact New.Main and independently elaborated and queried for axioms.",
+    "source_sha256": "56f4c66e9187cfe97ebd8e7577b7a209e771dce658963759519da27667cc4f41",
+    "older_dependency_New_Main_olean_sha256": "e501742e3f8aee02319dfee1a7240b5b2cea277231fee7bf78d7f63872cb80bd",
+    "output_sha256": "2c7b168860c39a4b4afd417a327bbbd8a2a0615372655c5d4bd329fb06e7f3d5",
+    "lean_exit": 0
+  }
+}
