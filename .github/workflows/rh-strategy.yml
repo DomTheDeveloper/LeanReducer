@@ -46,7 +46,7 @@ jobs:
         if: '!cancelled()'
         run: |
           cd "$RUNNER_TEMP/GRH-76072"
-          bash "$GITHUB_WORKSPACE/examples/grh/strategy/check.sh" RHNormalized RHNormalizedSupply
+          bash "$GITHUB_WORKSPACE/examples/grh/strategy/check.sh" RHNormalized RHNormalizedSupply RHFiniteGain
       - name: Check the shorter unconditional ordinary RH entry
         if: '!cancelled()'
         run: |
@@ -60,7 +60,7 @@ jobs:
           import os
           from pathlib import Path
           from leanreducer.verify import check_axioms
-          names = ['Cutoff.exists_auxiliary_data', 'Cutoff.exists_data_of_cutoff', 'estimate_of_window', 'ofWindow', 'window_of_covolume', 'fromCovolumeWindow', 'ofNormalized', 'fromNormalizedCovolume', 'ordinaryRH']
+          names = ['Cutoff.exists_auxiliary_data', 'Cutoff.exists_data_of_cutoff', 'estimate_of_window', 'ofWindow', 'window_of_covolume', 'fromCovolumeWindow', 'ofNormalized', 'fromNormalizedCovolume', 'ordinaryRH', 'finiteGain_iff_normalized', 'ofFiniteGain', 'lower_bound_from_subset']
           print(check_axioms(Path(os.environ['RUNNER_TEMP'], 'strategy-axioms.log').read_text(),
               {'FixedClassRH.' + name: '' for name in names}, ['propext','Quot.sound','Classical.choice']))
           PY

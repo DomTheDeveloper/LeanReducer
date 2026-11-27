@@ -2,12 +2,14 @@ import RHCutoffCompatibility
 import RHWindowSupply
 import RHNormalizedSupply
 import RHOnly
+import RHFiniteGain
 
 example : FixedClassRH.WindowComparison → RiemannHypothesis := FixedClassRH.ofWindow
 example : RiemannHypothesis := FixedClassRH.fromCovolumeWindow
 example : FixedClassRH.NormalizedEstimate → RiemannHypothesis := FixedClassRH.ofNormalized
 example : RiemannHypothesis := FixedClassRH.fromNormalizedCovolume
 example : RiemannHypothesis := FixedClassRH.ordinaryRH
+example : FixedClassRH.FiniteGainEstimate → RiemannHypothesis := FixedClassRH.ofFiniteGain
 
 #print axioms FixedClassRH.Cutoff.exists_auxiliary_data
 #print axioms FixedClassRH.Cutoff.exists_data_of_cutoff
@@ -18,3 +20,6 @@ example : RiemannHypothesis := FixedClassRH.ordinaryRH
 #print axioms FixedClassRH.ofNormalized
 #print axioms FixedClassRH.fromNormalizedCovolume
 #print axioms FixedClassRH.ordinaryRH
+#print axioms FixedClassRH.finiteGain_iff_normalized
+#print axioms FixedClassRH.ofFiniteGain
+#print axioms FixedClassRH.lower_bound_from_subset

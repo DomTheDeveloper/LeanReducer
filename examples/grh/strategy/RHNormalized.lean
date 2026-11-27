@@ -27,8 +27,9 @@ private theorem eventually_absorb (K ε : ℝ) (hε : 0 < ε) : ∀ᶠ x : ℝ i
   have xpos : 0 < x := zero_lt_one.trans_le hx
   have tiny : exp (-(1e6 * log x)) ≤ x ^ (6 * ε - 1 / 2) := by
     rw [rpow_def_of_pos xpos]
-    exact exp_le_exp.mpr (by nlinarith only [mul_nonneg (log_nonneg hx)
-      (show 0 ≤ 6 * ε - 1 / 2 + 1e6 by linarith)])
+    have slope : 0 ≤ 6 * ε - 1 / 2 + 1e6 := by linarith
+    apply exp_le_exp.mpr
+    nlinarith only [mul_nonneg (log_nonneg hx) slope]
   calc
     _ ≤ (K + 1) * x ^ (6 * ε - 1 / 2) := by linarith only [tiny]
     _ ≤ x ^ (2 * ε) * x ^ (6 * ε - 1 / 2) :=
@@ -47,7 +48,8 @@ private theorem budget_le {x ε K weight L m : ℝ} (hx : 0 < x) (hK : 0 ≤ K)
     _ = K * (x ^ ε * (x ^ ε) ^ 5 / x ^ (1 / 2 : ℝ)) := by ring
     _ = _ := by
       rw [← pow_succ' (x ^ ε) 5, ← rpow_natCast, ← rpow_mul hx.le, ← rpow_sub hx]
-      congr 2 <;> ring
+      congr 2
+      ring
 
 theorem window_of_normalized (boundAt : NormalizedEstimate) : WindowComparison := by
   intro ε hε d hd
@@ -55,7 +57,8 @@ theorem window_of_normalized (boundAt : NormalizedEstimate) : WindowComparison :
   let P : Parameters := ⟨18480, d.val, dvd_refl _, d.property, by omega⟩
   obtain ⟨cutoff, boundAt⟩ := boundAt P rfl
   filter_upwards [exists_auxiliary_data P cutoff hε.1 hε.2, eventually_gt_atTop (1 : ℝ),
-    eventually_absorb P.N₀.totient ε (by linarith [hε.1])] with x ⟨D, rfl, _, upper, hlog, mass⟩ hx absorb
+    eventually_absorb P.N₀.totient ε (by linarith [hε.1])] with x ⟨D, scale, _, upper, hlog, mass⟩ hx absorb
+  subst x
   simp only [log_exp] at *
   obtain ⟨base, first, low, high, sixth⟩ := D.scale
   have hxpos : 0 < D.logX := by simpa using hx
