@@ -1,3 +1,4 @@
+-- Modified by LeanReducer to allow any admissible family with divergent prime mass.
 import Lib.Analytic.Primes.AuxiliaryPrimes
 
 /-! Known result: Zero density for quadratic twists by mean values over real characters. This file
@@ -186,21 +187,29 @@ lemma zero_density_quadTwist (hη : 0 < η) (y : ℝ) : (fun x : ℕ ↦ (#{d �
   simp_all [quadTwist, dvd_prime Fact.out, mul_comm, h.dvd_mul_left, eq_one_iff_conductor_eq_one,
     h.symm.dvd_mul_left, conductor_inv, h.mul_dvd_of_dvd_of_dvd, conductor_changeLevel, IsPrimitive]
 
-/-- Let β > 1/2, y real, and a a unit mod N whose primes are ≡ 7 mod 8 and prime to N. For some
-prime d ≡ a, no L̃(s, ξ·(·/d)), ξ mod N, vanishes on re s ≥ β, |im s| ≤ y; L̃ is `entireL`.
+/-- Divergence of the logarithmically weighted reciprocal sum on a set of natural numbers. -/
+noncomputable def DivergentPrimeMass (S : Set ℕ) : Prop := by
+  classical
+  exact ¬ Summable fun n : ℕ ↦ if n ∈ S then Real.log n / n else 0
 
-Known result: Zero density for quadratic twists by mean values over real characters. -/
-lemma exists_entireL_quadTwist_ne_zero {β} y {a : ZMod N} (hβ : 1 / 2 < β) (ha : IsUnit a) (H :
-  ∀ d : Primes, d = a → d.1 % 8 = 7 ∧ N.Coprime d) : ∃ d : Primes, d = a ∧ ∀ ξ s,
-  β ≤ re s → |im s| ≤ y → entireL (@quadTwist
-  N ξ d _) s ≠ 0 := (exists_pos_mul_lt (lt_min one_pos (sub_pos.2 hβ)) 9).elim fun η ⟨hη, h⟩ ↦ by
+/-- A set of admissible primes with divergent mass contains a twist that is
+zero-free up to the chosen height. The exceptional twists have power-saving density. -/
+lemma exists_entireL_quadTwist_ne_zero_of_mass {β} y {S : Set ℕ} (hβ : 1 / 2 < β)
+    (mass : DivergentPrimeMass S) (primes : ∀ n ∈ S, n.Prime)
+    (H : ∀ d : Primes, d.val ∈ S → d.val % 8 = 7 ∧ N.Coprime d.val) :
+    ∃ d : Primes, d.val ∈ S ∧ ∀ ξ s, β ≤ re s → |im s| ≤ y →
+      entireL (@quadTwist N ξ d _) s ≠ 0 := by
+  classical
+  obtain ⟨η, hη, h⟩ := exists_pos_mul_lt (lt_min one_pos (sub_pos.2 hβ)) 9
   by_contra!
-  refine not_summable_residueClass_prime_div ha ((LSeriesSummable_logMul_of_lt_re (s := 1)
-    ((LSeriesSummable_of_sum_norm_bigO (s := 1 - η / 2 / 2) (f := fun n ↦ ite (n.Prime ∧ n = a) 1 0)
+  apply mass
+  refine (LSeriesSummable_logMul_of_lt_re (s := 1)
+    ((LSeriesSummable_of_sum_norm_bigO (s := 1 - η / 2 / 2) (f := fun n ↦ ite (n ∈ S) 1 0)
     (.trans (.of_norm_le fun x ↦ ?_) (.fun_sum (s := ⊤) fun ξ _ ↦ @zero_density_quadTwist N _ ξ _ hη
     y)) (by grind) (by simpa)).abscissaOfAbsConv_le.trans_lt (mod_cast by simpa))
-    ).norm.of_norm_bounded (by simp +contextual [Set.indicator, term, apply_ite, ite_and,
-    ← natCast_log, vonMangoldt_apply_prime]))
+    ).norm.of_norm_bounded (by
+      intro n
+      by_cases hn : n ∈ S <;> simp [hn, term, Real.log_natCast_nonneg])
   simp [apply_ite norm, ← cast_sum]
   grw [← card_biUnion_le, card_le_card]
   simp_all [Primes, subset_iff]; grind

@@ -1,7 +1,7 @@
-name: Verify the unbounded-level conditional RH and GRH proof
+name: Verify the divergent-prime conditional RH and GRH proof
 on:
   push:
-    branches: [cofinal-sampled-grh]
+    branches: [divergent-primes-grh]
   workflow_dispatch:
 permissions:
   contents: read
@@ -27,6 +27,15 @@ jobs:
           lake build
           cat > "$RUNNER_TEMP/ConditionalAudit.lean" <<'LEAN'
           import SampledGRH
+          open Filter Real
+          example (S : Set ℕ) : DivergentPrimeMass S ↔
+              ¬ Summable (fun n : ℕ ↦ @ite ℝ (n ∈ S) (Classical.propDecidable _) (Real.log n / n) 0) := Iff.rfl
+          example (k : ℕ) : SampledGRH.EstimateAt k ↔
+              ∃ S : Set ℕ, DivergentPrimeMass S ∧ (∀ n ∈ S, n.Prime) ∧
+                ∀ d : Nat.Primes, d.val ∈ S →
+                  (d.val % 8 = 7 ∧ (LeanReducer.factorialLevel k).Coprime d.val) ∧
+                  ∀ᶠ n : ℕ in atTop, primeError d.val (LeanReducer.factorialLevel k) ((n:ℝ)^4) ≤
+                    ((n:ℝ)^4)^(-(1/2:ℝ) + (1/((k:ℝ)+1))/4) := Iff.rfl
           example : (∀ lower : ℕ, ∃ k, lower ≤ k ∧ SampledGRH.EstimateAt k) → RiemannHypothesis ∧ RiemannZetaZerosOnLine ∧
               DirichletLNonvanishingRightOfHalf ∧ DirichletLZerosOnLine ∧
               PrimitiveDirichletLZerosOnLine := SampledGRH.five_endpoints

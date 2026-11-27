@@ -192,3 +192,5 @@ Each declaration below adapts or closely follows, in whole or in part and with c
 | `Mathlib/Topology/Algebra/Valued/WithZeroMulInt.lean` | Copyright (c) 2025 Salvatore Mercuri. All rights reserved. | Authors: Salvatore Mercuri |
 | `Mathlib/Topology/DenseEmbedding.lean` | Copyright (c) 2019 Reid Barton. All rights reserved. | Authors: Johannes Hölzl, Mario Carneiro, Patrick Massot |
 | `Mathlib/Topology/Maps/Proper/Basic.lean` | Copyright (c) 2023 Anatole Dedecker. All rights reserved. | Authors: Anatole Dedecker, Etienne Marion |
+
+The divergent-prime project adapts the zero-density step from the original compact proof. It replaces the use of a complete residue class with the divergent-mass hypothesis and specializes the one-sided criterion accordingly.

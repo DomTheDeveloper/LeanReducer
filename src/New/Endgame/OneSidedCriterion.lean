@@ -21,15 +21,13 @@ This file: One-sided bound gives a zero-free half-plane; small value in every lo
 
 open Complex Filter Nat Real Set MeasureTheory Topology
 
-/-- One-sided criterion: let β > 1/2 and a be a unit mod M such that every prime d ≡ a is ≡ 7 mod 8,
-prime to M, with R_M(x) ≤ x^{β−1} for large x (`primeError`). Then `entireL` χ has no zero in Re
-s > β for any χ mod M.
-
-One-sided bound for non-split primes gives a zero-free half-plane. -/
-lemma entireL_ne_zero_of_primeError_le {M} [NeZero M] {a : ZMod M} {β} (hβ : 1 / 2 < β)
-  (ha : IsUnit a) (h : ∀ d : Primes, d = a → (d.1 % 8 = 7 ∧ M.Coprime d) ∧ ∀ᶠ x in atTop, primeError
-  d M x ≤ x ^ (β - 1)) ρ (hρ : β < ρ.re) (χ : DirichletCharacter ℂ M) : entireL χ ρ ≠ 0 := by
-  let ⟨d, e, hZ⟩ := exists_entireL_quadTwist_ne_zero |ρ.im| hβ ha (by grind)
+/-- A divergent family of admissible auxiliary primes with the one-sided
+error bound suffices for a zero-free half-plane. -/
+lemma entireL_ne_zero_of_primeError_le {M} [NeZero M] {S : Set ℕ} {β} (hβ : 1 / 2 < β)
+    (mass : DivergentPrimeMass S) (primes : ∀ n ∈ S, n.Prime)
+    (h : ∀ d : Primes, d.val ∈ S → (d.1 % 8 = 7 ∧ M.Coprime d) ∧ ∀ᶠ x in atTop, primeError
+      d M x ≤ x ^ (β - 1)) ρ (hρ : β < ρ.re) (χ : DirichletCharacter ℂ M) : entireL χ ρ ≠ 0 := by
+  let ⟨d, e, hZ⟩ := exists_entireL_quadTwist_ne_zero_of_mass |ρ.im| hβ mass primes (by grind)
   use by_cases (entireL_ne_zero χ) (flip ?_ (((h d e).1.elim isPolar_primeError).landau (by bound)
     (le_total · 1 |>.rec ?_ ?_) (.mono (tendsto_exp_atTop (h d e).2) (by simp [exp_mul, mul_comm]))
     hρ)) <;> simp +contextual (maxDischargeDepth := 3) [le_of_lt, div_re,
