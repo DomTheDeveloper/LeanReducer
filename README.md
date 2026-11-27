@@ -38,6 +38,8 @@ The complete candidate has **76,072 code lines** across 794 modules (**112,770 p
 
 The study tracks the original 17.37 million lines, the compact rewrite, and the remaining arithmetic obstacle. It includes a Lean-checked theorem reducing the half-plane goal for all Dirichlet characters to one bound at each factorial modulus. [Latest reduction and verification](examples/grh/REDUCTION-STUDY.md) · [Earlier measurements and fourth-power sampling](examples/grh/RESULTS.md)
 
+A standalone **998-code-line conditional proof** derives all five public conclusions from a specific arithmetic estimate on fourth powers at factorial levels. The complete checkout has 19 modules and 1,365 physical lines. Its Lean 4.35 build, axiom audit and kernel replays passed. [Source](https://github.com/DomTheDeveloper/LeanReducer/tree/e9e575e17cead892a1047ae30da86098ce967cc3) · [Verification](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45986092341)
+
 ## Tests
 
 ```sh

@@ -48,6 +48,21 @@ Lean checks a smaller target for the analytic endgame. Write `M(k) = 18480 × (k
 
 There are two concrete missing pieces on the prime-sum route. First, prove the arithmetic estimate at the selected levels, with enough strength to obtain the specified half-plane for every character there. The new fourth-power criterion specializes the interpolation result to the actual upstream prime error, using its finite-sum identity. Its complete project import closure has 849 code lines and 1,260 physical lines. It reduces the arithmetic target to fourth-power samples. The estimates at those samples are still required. [Lean specialization](PrimeErrorFourthPowers.lean) · [Verification status](https://github.com/DomTheDeveloper/LeanReducer/actions/workflows/sampling.yml) Second, replace or shorten the current one-sided analytic criterion. Its present closure already costs **1,251 code lines** before adding the arithmetic proof. Neither count is a lower bound on a different proof. [Fourth-power equivalence](WeightedFourthPowers.lean) · [Analytic and arithmetic interfaces](RESULTS.md)
 
+## A checked 998-line route from sampled estimates to all five conclusions
+
+The standalone project proves `SampledGRH.Estimates →` the conjunction of the five original RH and Dirichlet GRH statements. A clean build on the original Lean 4.35.0 and Mathlib pins passed. Lean checked the exact implication, reported only `propext`, `Classical.choice` and `Quot.sound`, and replayed every one of the 19 project modules. [Standalone source](https://github.com/DomTheDeveloper/LeanReducer/tree/e9e575e17cead892a1047ae30da86098ce967cc3) · [Download the 998-line project](https://github.com/DomTheDeveloper/LeanReducer/archive/e9e575e17cead892a1047ae30da86098ce967cc3.zip) · [Build, axiom audit and kernel replay](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45986092341)
+
+Let `q = (k+1)!` and `M = 18480q`. For each auxiliary prime `d ≡ 9240q−1 (mod M)` and each real exponent `−½ < a < 0`, the hypothesis requires the actual upstream prime error to satisfy `primeError d M (n⁴) ≤ (n⁴)^a` for all sufficiently large natural `n`. The threshold may depend on the level, prime and exponent. The proof transfers the estimate to real arguments, applies the one-sided analytic criterion and descends from the factorial levels to every positive conductor. The functional equations then give all five original conclusions. [Lean statement and proof](SampledGRH.lean)
+
+| Source used for this implication | Modules | Code lines | Physical lines |
+| --- | ---: | ---: | ---: |
+| Original analytic imports and new sampling argument | 26 | 1,582 | 2,288 |
+| Standalone analytic project | 19 | 998 | 1,365 |
+
+Seven unneeded modules contributed 380 code lines, including 135 for adelic valuations. Selecting the character definitions, the one-sided criterion and the applicable Lean settings removed a further 204 lines. Every project-owned source dependency is included. The revised project still contains the actual prime-weight definition, the analytic estimates and the functional-equation proofs. [Original-import verification](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45985738013) · [Source changes for the six retained upstream modules](conditional-slice.patch)
+
+The 998 lines prove the implication. The remaining arithmetic obligation is a derivation of the sampled inequalities. The present unconditional project obtains the estimates through the covolume argument. An unconditional proof at the 1,000-code-line budget has only two additional lines available if it keeps this analytic project intact. A shorter common argument may change that budget.
+
 ## Reproduce the combined source
 
 From the LeanReducer root, with both named repositories available locally:
