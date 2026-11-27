@@ -45,25 +45,43 @@ theorem nominal_primeSum_le {P} (D : Data P) (σ : D.Φ) :
          apply mul_le_mul_of_nonneg_left _ C0
          simpa [harmonic_eq_sum_Icc] using harmonic_floor_le_one_add_log D.x₁ D.le_of_hasLogBound
 
-/-- The logarithmic jet cost covers the prime loss at every infinite place. -/
-theorem dirCost_nonneg {P} (D : Data P) : 0 ≤ D.dirCost := by
-  unfold Data.dirCost
-  apply Finset.sum_nonneg
-  intro σ _
-  apply sub_nonneg.mpr
+/-- At every infinite place the logarithmic jet cost exceeds the prime loss by
+at least the nominal weight times log b. -/
+theorem nominal_gain_le_jet {P} (D : Data P) (σ : D.Φ) :
+    D.nominalWeight σ * D.logB ≤ D.jetSize (D.w 0 σ) - D.primeSum (D.nominalWeight σ) σ := by
   have W : D.nominalWeight σ ≤ D.w 0 σ :=
     (D.nominalWeight_le_w_sub 0 σ).trans (sub_le_self _ (by positivity))
+  have logBpos : 0 < D.logB := HasLogBound.pos D
   have coeff : 2 * D.logX₁ * (1 + D.logX₁) ≤ D.logB := D.le_of_hasLogBound
-  have period : D.logB ≤ -log (P.bigOmega D.s / D.gProd) := by
-    rw [← Real.log_inv, ← Real.log_exp D.logB]
-    exact Real.log_le_log D.logB.exp_pos (by simpa [inv_div] using (D.le_of_hasLogBound : D.b ≤ D.gProd / P.bigOmega D.s))
-  calc D.primeSum _ _ ≤ _ := nominal_primeSum_le D σ
-       _ = D.nominalWeight σ * (2 * D.logX₁ * (1 + D.logX₁)) := by ring
-       _ ≤ (D.w 0 σ : ℝ) * (-log (P.bigOmega D.s / D.gProd)) :=
-             mul_le_mul W (coeff.trans period) (by have : 0 < D.logX₁ := HasLogBound.pos D; positivity) (Nat.cast_nonneg _)
-       _ ≤ D.jetSize (D.w 0 σ) := by
-             unfold Data.jetSize
-             linarith [Real.log_nonneg (show (1 : ℝ) ≤ (D.w 0 σ).factorial by exact_mod_cast Nat.factorial_pos _)]
+  have prime : D.primeSum (D.nominalWeight σ) σ ≤ D.nominalWeight σ * D.logB := calc
+    _ ≤ _ := nominal_primeSum_le D σ
+    _ = D.nominalWeight σ * (2 * D.logX₁ * (1 + D.logX₁)) := by ring
+    _ ≤ _ := mul_le_mul_of_nonneg_left coeff (D.nominalWeight_nonneg σ)
+  have period : 2 * D.logB ≤ -log (P.bigOmega D.s / D.gProd) := by
+    rw [← Real.log_inv, ← Real.log_exp (2 * D.logB)]
+    apply Real.log_le_log (Real.exp_pos _)
+    simpa [two_mul, Real.exp_add, inv_div] using (D.le_of_hasLogBound : D.b * D.b ≤ D.gProd / P.bigOmega D.s)
+  have jet := mul_le_mul W period (by positivity : 0 ≤ 2 * D.logB) (Nat.cast_nonneg _)
+  unfold Data.jetSize
+  linarith only [prime, jet, Real.log_nonneg (show (1 : ℝ) ≤ (D.w 0 σ).factorial by exact_mod_cast Nat.factorial_pos _)]
+
+/-- Summing just the thick places gives an explicit lower bound for the direction cost. -/
+theorem thick_le_dirCost {P} (D : Data P) :
+    (#D.thick : ℝ) * (D.a / D.x * D.logB) ≤ D.dirCost := by
+  have hL : 0 < D.logB := HasLogBound.pos D
+  unfold Data.dirCost
+  calc _ = ∑ σ ∈ D.thick, D.nominalWeight σ * D.logB := by
+              symm
+              calc _ = ∑ _σ ∈ D.thick, (D.a : ℝ) / D.x * D.logB :=
+                         Finset.sum_congr rfl fun σ h ↦ by simp [Data.nominalWeight, h]
+                   _ = _ := by simp [nsmul_eq_mul]
+       _ ≤ ∑ σ, D.nominalWeight σ * D.logB :=
+              Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _) fun σ _ _ ↦ mul_nonneg (D.nominalWeight_nonneg σ) hL.le
+       _ ≤ _ := Finset.sum_le_sum fun σ _ ↦ nominal_gain_le_jet D σ
+
+theorem dirCost_nonneg {P} (D : Data P) : 0 ≤ D.dirCost := by
+  have hL : 0 < D.logB := HasLogBound.pos D
+  exact (show 0 ≤ (#D.thick : ℝ) * (D.a / D.x * D.logB) by positivity).trans (thick_le_dirCost D)
 
 /-- When the main height is nonnegative, a half-dimensional family suffices for the scalar
 comparison provided its adjusted covolume satisfies the displayed lower and upper bounds. -/
@@ -86,5 +104,13 @@ theorem half_rank_with_completion {d n h c r L B V : ℝ} (hd : 0 < d)
   apply half_rank_comparison (h := h - c) (V := V - n * c) hd hn nd (sub_nonneg.mpr hc) hL hB
   · linarith only [lower]
   · linarith only [upper]
+
+/-- Any positive retained rank suffices when the main height pays the normalized errors
+and the cost per missing row. -/
+theorem positive_rank_comparison {d n h c r L B V : ℝ} (hn : 0 < n) (nd : n ≤ d)
+    (margin : c + 3 * L + B ≤ h) (lower : d * (h - 3 * L) ≤ V + (d - n) * c)
+    (upper : V ≤ n * (h - r + L) + d * B) : r ≤ 4 * L + B := by
+  apply le_of_mul_le_mul_left _ hn
+  nlinarith only [lower, upper, mul_nonneg (sub_nonneg.mpr nd) (sub_nonneg.mpr margin)]
 
 end FixedClassRH

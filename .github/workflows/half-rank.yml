@@ -34,18 +34,23 @@ jobs:
           cat > "$RUNNER_TEMP/Audit.lean" <<'LEAN'
           import RankFromCovolume
           #print axioms FixedClassRH.nominal_primeSum_le
+          #print axioms FixedClassRH.nominal_gain_le_jet
+          #print axioms FixedClassRH.thick_le_dirCost
           #print axioms FixedClassRH.dirCost_nonneg
           #print axioms FixedClassRH.half_rank_comparison
           #print axioms FixedClassRH.half_rank_with_completion
           #print axioms FixedClassRH.mainHeight_nonneg
           #print axioms FixedClassRH.star_of_half_rank
+          #print axioms FixedClassRH.positive_rank_comparison
+          #print axioms FixedClassRH.mainHeight_margin
+          #print axioms FixedClassRH.star_of_positive_rank
           LEAN
           lake env lean "$RUNNER_TEMP/Audit.lean" | tee "$RUNNER_TEMP/axioms.log"
           PYTHONPATH=verification-tools python3 - <<'PY'
           import os
           from pathlib import Path
           from leanreducer.verify import check_axioms
-          names = ['nominal_primeSum_le', 'dirCost_nonneg', 'half_rank_comparison', 'half_rank_with_completion', 'mainHeight_nonneg', 'star_of_half_rank']
+          names = ['nominal_primeSum_le', 'dirCost_nonneg', 'half_rank_comparison', 'half_rank_with_completion', 'mainHeight_nonneg', 'star_of_half_rank', 'nominal_gain_le_jet', 'thick_le_dirCost', 'positive_rank_comparison', 'mainHeight_margin', 'star_of_positive_rank']
           print(check_axioms(Path(os.environ['RUNNER_TEMP'], 'axioms.log').read_text(),
               {'FixedClassRH.' + n: '' for n in names}, ['propext', 'Classical.choice', 'Quot.sound']))
           PY
