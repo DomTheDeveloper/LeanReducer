@@ -12,7 +12,9 @@ then use the exact cyclotomic count of infinite places. -/
 theorem normalized_of_covolume : NormalizedEstimate := by
   intro P _
   refine ⟨P.c, ?_⟩
-  intro raw mass _ _
+  intro raw mass window
+  dsimp only
+  intro good
   let D : Data P := raw.toData
   have density : (towerDeg D.s : ℝ) / D.logB ≤ #D.thick := mass
   have := D.hasLogLower_of_le density
