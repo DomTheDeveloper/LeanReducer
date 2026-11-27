@@ -54,3 +54,22 @@ jobs:
           print(c.size(c.walk('RHOnly')))
           print(check_axioms(Path(environ['RUNNER_TEMP'], 'axioms.log').read_text(), {'FixedClassRH.ordinaryRH': ''}, ['propext', 'Classical.choice', 'Quot.sound']))
           PY
+      - name: Locate unused statements and arguments in the checked proof
+        run: |
+          set -euo pipefail
+          lake env lean verification-tools/examples/grh/strategy/ProofFootprint.lean
+          lake env lean scripts/UnusedArguments.lean
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          reached = {row.split('\t')[1] for row in Path('ordinary-rh-reach.tsv').read_text().splitlines()}
+          print('Reached project constants', len(reached))
+          for row in Path('unused-arguments.tsv').read_text().splitlines():
+              if row.split('\t')[1] in reached:
+                  print('UNUSED_ARGUMENT', row)
+          for p in sorted(Path('.lake/build/lib/lean').rglob('*.ilean')):
+              info = json.loads(p.read_text())
+              for name, span in info['decls'].items():
+                  if name not in reached and span[2] - span[4] >= 3:
+                      print('UNREACHED_SOURCE', info['module'], name, span[4] + 1, span[2] + 1)
+          PY

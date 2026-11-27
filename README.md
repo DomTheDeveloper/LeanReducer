@@ -1,10 +1,12 @@
-# LeanReducer compact GRH edition
+# Ordinary Riemann Hypothesis in Lean
 
-The source contains all five public RH and Dirichlet GRH theorems in 76,072 project-owned code lines and 112,770 physical lines across 794 modules. It includes the original Lake and Mathlib pins, license and notices.
+The entry point is `FixedClassRH.ordinaryRH : RiemannHypothesis` in `src/RHOnly.lean`. Its complete project import closure has **76,046 code lines** and **112,721 physical lines** in 793 modules. The previous ordinary-RH entry used 76,054 code lines and 112,736 physical lines. The count includes all project dependencies above the pinned Lean and Mathlib toolchain, and excludes blank and comment-only lines.
 
-The edition shares a six-identifier Ext command and defines three public theorems at their underlying proofs. The private-facing names `New.grh`, `New.zeros_on_line` and `New.zeta_zeros_on_line` have been retired. The prior 76,075-line edition preserves those names. Compilation and kernel replay for the combined source are tracked separately from the independently checked upstream release.
+The proof takes a basis for the span of the chosen translates and applies the lower covolume bound to that basis directly. Its dimension bound is the usual subspace inequality. The original theorem packaging the family for other callers is still available in `New.Endgame.LongForms`. The five original public conclusions share the same prime-error bound.
 
-[Study and rebuild instructions](https://github.com/DomTheDeveloper/LeanReducer/blob/dc479f261042c78df71881d242eb9a29995b07a0/examples/grh/REDUCTION-STUDY.md) · [Build and kernel check](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45983909693) · [Edition preserving the intermediate names](https://github.com/DomTheDeveloper/LeanReducer/tree/30ee9e9c89c9fd7539251d86c7881d480ae0e677)
+Run `lake exe cache get` and `lake build RHOnly` to build the ordinary proof from source. The linked check rebuilt the changed modules over pinned compiled dependencies, checked the precise Mathlib theorem and its three standard axioms, and replayed the changed modules with Lean's kernel.
+
+[Verified reduction](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/46055096113) · [Previous ordinary-RH entry](https://github.com/DomTheDeveloper/LeanReducer/blob/817d82e311949408f8876d7b352df4d173776ec8/examples/grh/strategy/RHOnly.lean) · [Clean build of the 76,072-line five-theorem base](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45983909693)
 
 ## Upstream edition notes
 
