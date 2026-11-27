@@ -1,21 +1,16 @@
+-- Modified by LeanReducer. Module documentation is in SOURCE-NOTES.md.
 module
 public import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 public import Mathlib.Analysis.SpecificLimits.Basic
 public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.Positivity
 public import Mathlib.Tactic.Ring
-
 public section
 namespace FourthPowers
 open Filter Real
-
-/-- Endpoints of a fourth-power interval have a gap of at most 15 n³ once n ≥ 1. -/
 private theorem fourth_gap {n : ℝ} (hn : 1 ≤ n) : (n+1)^4-n^4 ≤ 15*n^3 := by
   have h₁ : 0 ≤ n - 1 := by linarith
   nlinarith [mul_nonneg (sq_nonneg n) h₁, mul_nonneg (by linarith : 0 ≤ n) h₁]
-
-/-- Quadratic reciprocal interpolation transfers fourth-power bounds to all large real inputs.
-The small loss from a to b absorbs fixed constants. -/
 theorem extend {R : ℝ → ℝ} {a b : ℝ}
     (step : ∀ {u x v : ℝ}, 0 < u → u ≤ x → x ≤ v → u < v →
       R x ≤ max (R u) (R v) + (x-u)*(v-x)/x^2)
@@ -75,7 +70,5 @@ theorem extend {R : ℝ → ℝ} {a b : ℝ}
     _ = x^a*241 := by ring
     _ ≤ x^a*x^(b-a) := mul_le_mul_of_nonneg_left hbig pos
     _ = x^b := by rw [← rpow_add hx0, show a+(b-a)=b by ring]
-
 end FourthPowers
-
 #print axioms FourthPowers.extend

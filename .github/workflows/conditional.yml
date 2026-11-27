@@ -1,7 +1,7 @@
-name: Verify the divergent-prime conditional RH and GRH proof
+name: Verify the physical-line divergent-prime conditional RH and GRH proof
 on:
   push:
-    branches: [divergent-primes-grh]
+    branches: [divergent-primes-physical]
   workflow_dispatch:
 permissions:
   contents: read
@@ -17,6 +17,14 @@ jobs:
         run: |
           set -euo pipefail
           sha256sum -c SOURCE.sha256
+          python3 - <<'PYTHON'
+          from pathlib import Path
+          import subprocess
+          files = subprocess.check_output(["git", "ls-files", "*.lean"], text=True).splitlines()
+          physical = sum(len(Path(f).read_bytes().splitlines()) for f in files)
+          print(f"{len(files)} Lean files contain {physical} physical lines")
+          assert physical == 1000 and physical <= 1000
+          PYTHON
           curl --proto '=https' -fsSL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
           "$HOME/.elan/bin/lean" --version

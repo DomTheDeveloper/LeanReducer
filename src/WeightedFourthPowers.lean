@@ -1,11 +1,9 @@
+-- Modified by LeanReducer. Module documentation is in SOURCE-NOTES.md.
 module
 public import ReciprocalInterpolation
-
 public section
 namespace WeightedFourthPowers
 open Filter Real
-
-/-- A common cutoff and nonnegative weights imply a quadratic interpolation bound. -/
 theorem step {ι : Type*} (R : ℝ → ℝ) (s : ℕ → Finset ι) (w a : ℕ → ι → ℝ)
     (scale : ℕ → ℝ) {φ c : ℝ} (hφ : 1 ≤ φ) (hw : ∀ A i, i ∈ s A → 0 ≤ w A i)
     (formula : ∀ A : ℕ, ∀ z : ℝ, 0 < z → z ≤ A →
@@ -23,7 +21,5 @@ theorem step {ι : Type*} (R : ℝ → ℝ) (s : ℕ → Finset ι) (w a : ℕ �
   apply add_le_add le_rfl
   rw [← div_div]
   exact div_le_self (div_nonneg (mul_nonneg (sub_nonneg.mpr hux) (sub_nonneg.mpr hxv)) (sq_nonneg x)) hφ
-
 end WeightedFourthPowers
-
 #print axioms WeightedFourthPowers.step

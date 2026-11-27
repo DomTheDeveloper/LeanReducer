@@ -1,7 +1,14 @@
-# Sufficient arithmetic estimates on a divergent family of primes
+# A conditional RH and Dirichlet GRH proof in 982 physical source lines
 
-The five original RH and Dirichlet GRH statements follow from the stated fourth-power bound on an unbounded sequence of factorial levels. At each good level one may choose any set of primes congruent to 7 modulo 8 and coprime to the current modulus, provided the sum of log(p)/p over that set diverges and each prime satisfies the eventual fourth-power estimate. The zero-density argument finds an appropriate quadratic twist inside any such set. The thresholds can depend on the level and the prime. The sample bounds and the divergence are arithmetic hypotheses.
+The five original conclusions follow from a one-sided bound on the weighted prime error at fourth powers. At arbitrarily large factorial levels, it suffices to find a set of primes that are 7 modulo 8, coprime to the modulus, satisfy the prescribed bound, and have divergent sum of log(p)/p. The sample bound is an arithmetic hypothesis. [Exact statement](src/SampledGRH.lean) · [Divergence and the twist argument](src/Lib/Analytic/QuadraticTwist/ZeroFreeTwist.lean)
 
-The complete project import closure has 957 code lines, 1,312 physical lines and 18 modules, above pinned Lean and Mathlib. See [the precise hypothesis and conclusions](src/SampledGRH.lean) and [the zero-density argument](src/Lib/Analytic/QuadraticTwist/ZeroFreeTwist.lean).
+| What is counted | Lines |
+| --- | ---: |
+| Project Lean code, including imports | 957 |
+| Physical lines in all 18 project source modules | 982 |
+| Physical lines in the separate compatibility test | 18 |
+| Physical lines in every checked-in Lean file | 1,000 |
 
-Run `sha256sum -c SOURCE.sha256`, `lake exe cache get`, and `lake build`. The [workflow](https://github.com/DomTheDeveloper/LeanReducer/actions?query=branch%3Adivergent-primes-grh) also checks the public implication and its axiom set, then replays each local module. [Earlier single-progression version](https://github.com/DomTheDeveloper/LeanReducer/tree/ae21d67f172b180b660d9bfa2183e3f806ab0ef2) · [Full unconditional source](https://github.com/DomTheDeveloper/LeanReducer/tree/41bbac1c78e806eced8fd373f6cb55e77a045af5)
+The counts include every project dependency and exclude the pinned Lean and Mathlib. This edition retains every code-containing line from the [annotated source](https://github.com/DomTheDeveloper/LeanReducer/tree/9da2cf4778e7345398270c5a463313ae313432c6). Explanatory comments appear in [the module notes](SOURCE-NOTES.md). The four definitions in `Statements.lean` are byte-identical to the source edition.
+
+Run `sha256sum -c SOURCE.sha256`, `lake exe cache get`, and `lake build`. The [verification workflow](https://github.com/DomTheDeveloper/LeanReducer/actions?query=branch%3Adivergent-primes-physical) checks the expanded arithmetic premise, all five conclusions, the three standard Lean axioms, every source module and the compatibility test against Dirichlet's theorem on primes in arithmetic progressions. [Full unconditional source](https://github.com/DomTheDeveloper/LeanReducer/tree/41bbac1c78e806eced8fd373f6cb55e77a045af5)

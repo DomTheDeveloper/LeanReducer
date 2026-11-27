@@ -1,19 +1,9 @@
+-- Modified by LeanReducer. Module documentation is in SOURCE-NOTES.md.
 import Lib.Analytic.DirichletTheta.MellinTheta
 import Lib.Analytic.Landau.PolarLandau
-
-/-! Known result: A prime in a long window (weak form of the Siegel-Walfisz theorem). From a small
-zero-free disc at 1, this file only finds one prime congruent to 1 modulo a power of a fixed
-multiple of 4, with its logarithm in a long window. It gives no asymptotic count. Source: Montgomery
-and Vaughan, Multiplicative Number Theory I, 2007, Cor. 11.19.
-
-This file: A prime 1 modulo M^k with logarithm in a long window; zero-free disc. -/
-
 attribute [-instance] IdemSemiring.toCanonicallyOrderedAdd IdemSemiring.toMulLeftMono
 open ArithmeticFunction DirichletCharacter Complex Set Filter MeasureTheory LSeries Finset Real
   Topology vonMangoldt Chebyshev Polynomial ZMod MulChar
-
-/-- For 0 < r < 1/9 there is C ≥ 0 with |L(s, χ)| ≤ C q^(2r) on the disc |s − 1| ≤ r, for every
-modulus q and every non-principal character χ mod q. -/
 lemma exists_norm_LFunction_le {r} (h0 : 0 < r) (_ : r < 9⁻¹) : ∃ C ≥ 0, ∀ {q} [NeZero q]
     {χ : DirichletCharacter ℂ q} {s}, χ ≠ 1 → dist s 1 ≤ r → ‖χ.LFunction s‖ ≤ C * q ^ (2 * r) := by
   have p s := by simpa [← dist_eq_norm] using abs_re_le_norm (s - 1)
@@ -29,10 +19,6 @@ lemma exists_norm_LFunction_le {r} (h0 : 0 < r) (_ : r < 9⁻¹) : ∃ C ≥ 0, 
       (norm_gaussianTheta_char_le hχ hp k), min_def]
     split <;> simp (disch := positivity) [← log_le_log_iff, abs_le] at * <;>
       nlinarith [p s, log_natCast_nonneg q]⟩
-
-/-- Let M > 0 be a multiple of 4 and A natural. For small η > 0, all k ≥ 2 with M^k ≤ η^{−A},
-all characters χ mod M^k and |s − 1| ≤ η, one has η|L̃′(s, χ)| < |L̃(s, χ)|, where L̃ is
-`entireL`. -/
 lemma eventually_mul_norm_deriv_entireL_lt A {M : ℕ} [NeZero M] (e : 4 ∣ M) : ∀ᶠ η : ℝ in 𝓝[>] 0,
   ∀ k > 1, ∀ χ s,
   M ^ k ≤ (η ^ A)⁻¹ → dist s 1 ≤ η → ¬‖entireL χ s‖ ≤ η * ‖deriv (@entireL (M ^ k) _ χ) s‖ := by
@@ -61,11 +47,6 @@ lemma eventually_mul_norm_deriv_entireL_lt A {M : ℕ} [NeZero M] (e : 4 ∣ M) 
   nth_grw 1 [norm_le_insert' (χ.LFunction _), h7, hd, (convex_closedBall
     ..).norm_image_sub_le_of_norm_deriv_le (by fun_prop) hd hs h1, ← dist_eq_norm,
     dist_triangle_right, hs, h1, hC h, ← hk] <;> grind
-
-/-- Let M > 0 be a multiple of 4 and A natural. For large W, all k ≥ 2 with M^k ≤ W^A and all U in
-[W, W^A], there is a prime p ≡ 1 mod M^k with U ≤ log p ≤ U + W.
-
-Known result: A prime in a long window (weak form of the Siegel-Walfisz theorem). -/
 lemma exists_prime_modEq_one_log_mem (M A : ℕ) [NeZero M] (hM : 4 ∣ M) : ∀ᶠ W : ℝ in atTop, ∀ k > 1,
   M ^
   k ≤ W ^ A → ∀ U ∈ Icc W (W ^ A), ∃ p, p.Prime ∧ p ≡ 1 [MOD M ^ k] ∧ .log p ∈ Icc U (U + W) := by

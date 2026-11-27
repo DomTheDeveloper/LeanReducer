@@ -1,22 +1,19 @@
+-- Modified by LeanReducer. Module documentation is in SOURCE-NOTES.md.
 import Statements
 import New.Endgame.OneSidedCriterion
 import PrimeErrorFourthPowers
 import FourthPowers
 import FactorialLevels
-
 open DirichletCharacter Filter Real
 
 namespace SampledGRH
 
-/-- A divergent family of admissible primes satisfies the one prescribed fourth-power bound. -/
 def EstimateAt (k : ℕ) : Prop :=
   ∃ S : Set ℕ, DivergentPrimeMass S ∧ (∀ n ∈ S, n.Prime) ∧
     ∀ d : Nat.Primes, d.val ∈ S →
       (d.val % 8 = 7 ∧ (LeanReducer.factorialLevel k).Coprime d.val) ∧
       ∀ᶠ n : ℕ in atTop, primeError d.val (LeanReducer.factorialLevel k) ((n:ℝ)^4) ≤
         ((n:ℝ)^4)^(-(1/2:ℝ) + (1/((k:ℝ)+1))/4)
-
-/-- The good levels can be arbitrarily sparse as long as they are unbounded. -/
 def Estimates : Prop := ∀ lower : ℕ, ∃ k, lower ≤ k ∧ EstimateAt k
 
 theorem nonvanishing (samples : Estimates) : DirichletLNonvanishingRightOfHalf := by
@@ -40,8 +37,6 @@ theorem nonvanishing (samples : Estimates) : DirichletLNonvanishingRightOfHalf :
     simp [LFunctionTrivChar₁, Function.update_of_ne hs1, LFunctionTrivChar, zero]
   · exact zero
 
-/-- The final functional-equation arguments are adapted from Alpöge and Claude,
-in Sernau and colleagues' Apache-2.0 compact edition, New/Main.lean. -/
 theorem five_endpoints (samples : Estimates) :
     RiemannHypothesis ∧ RiemannZetaZerosOnLine ∧ DirichletLNonvanishingRightOfHalf ∧
       DirichletLZerosOnLine ∧ PrimitiveDirichletLZerosOnLine := by
@@ -54,7 +49,5 @@ theorem five_endpoints (samples : Estimates) :
     grind [H N, Complex.one_re, Complex.sub_re, → LFunction_one_sub_eq_zero,
       Complex.ext_iff, DirichletCharacter.gammaFactor, Complex.Gammaℝ_ne_zero_of_re_pos]
   exact ⟨hz, hz, H, hd, fun N _ χ _ ↦ hd N χ⟩
-
 end SampledGRH
-
 #print axioms SampledGRH.five_endpoints

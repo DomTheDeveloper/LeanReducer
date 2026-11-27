@@ -1,11 +1,8 @@
+-- Modified by LeanReducer. Module documentation is in SOURCE-NOTES.md.
 import New.Endgame.PrimeError
 import WeightedFourthPowers
-
 open Filter Real
-
 namespace PrimeErrorFourthPowers
-
-/-- The actual upstream prime error satisfies quadratic reciprocal interpolation. -/
 theorem step (d M : ℕ) [Fact d.Prime] [NeZero M] :
     ∀ {u x v : ℝ}, 0 < u → u ≤ x → x ≤ v → u < v →
       primeError d M x ≤ max (primeError d M u) (primeError d M v) + (x-u)*(v-x)/x^2 := by
@@ -23,7 +20,5 @@ theorem step (d M : ℕ) [Fact d.Prime] [NeZero M] :
     intro n _
     change _ * max _ 0 / _ = _ / _ * max _ 0
     ring
-
 end PrimeErrorFourthPowers
-
 #print axioms PrimeErrorFourthPowers.step

@@ -1,32 +1,13 @@
+-- Modified by LeanReducer. Module documentation is in SOURCE-NOTES.md.
 import Lib.General.NumberTheory.ZeroSymmetry
-
-/-! Known result: the Pólya–Vinogradov inequality for sums of a non-principal Dirichlet character.
-It is proved here for initial intervals only, with the explicit bound 2√q(1+log q) for any
-non-principal character. The bound is obtained by sieving the inducing primitive character over
-divisors. Source: Pólya 1918, Vinogradov 1918; Davenport, Multiplicative Number Theory;
-Montgomery–Vaughan Thm 9.18.
-
-This file: Pólya–Vinogradov inequality for non-principal characters; modulus of primitive Gauss
-sums. -/
-
 open Complex Finset DirichletCharacter Real ZMod ArithmeticFunction Moebius NeZero Nat
-
 attribute [simp] Real.log_mul log_div log_rpow log_sqrt norm_le_one ne pos
   norm_cpow_eq_rpow_re_of_pos
-
-
 variable {q : ℕ} [NeZero q] {χ : DirichletCharacter ℂ q}
-
-/-- The Gauss sum of a primitive character mod q has absolute value √q. -/
 lemma norm_gaussSum_of_isPrimitive (hχ : χ.IsPrimitive) : ‖gaussSum χ stdAddChar‖ = √q := by
   simpa [funext hχ.fourierTransform_eq_inv_mul_gaussSum, dft_mul_const, dft_comp_neg,
     fourierTransform_eq_gaussSum_mulShift, ← AddChar.inv_mulShift, ← star_gaussSum_eq] using
     congr(√‖$(dft_dft χ) (-1)‖)
-
-/-- Pólya–Vinogradov inequality for a non-principal character χ mod q: |∑_{1 ≤ v ≤ X} χ(v)| ≤
-2√q (1 + log q) for all X.
-
-Known result: Pólya–Vinogradov inequality for sums of a non-principal Dirichlet character. -/
 lemma polya_vinogradov (h : χ ≠ 1) (X : ℕ) : ‖∑ v ∈ Ioc 0 X, χ v‖ ≤ 2 * √q * (1 + .log q) := by
   let ⟨M, ⟨r, hr⟩, ψ, _, hψ, E⟩ := exists_isPrimitive_changeLevel_eq χ
   have e (v : ℕ) : χ v = ∑ e ∈ (v.gcd r).divisors, μ e • ψ v := by
@@ -39,9 +20,7 @@ lemma polya_vinogradov (h : χ ≠ 1) (X : ℕ) : ‖∑ v ∈ Ioc 0 X, χ v‖ 
     (t := Ioc 0 r.sqrt ∪ (Ioc 0 r.sqrt).image (r / ·)) fun d he ↦ ?_, card_union_le,
     Finset.card_image_le, congr(√$hr)] <;> clear e <;> simp [zero_lt_iff] at *
   · grw [nat_sqrt_le_real_sqrt]; grind
-  -- of two complementary divisors one is at most `√r`
   · cases he.1; cases le_sqrt_of_eq_mul ‹_› <;> aesop
-  -- the primitive character: its sums are at most `√M (1 + log M)`
   simp [← mul_sum, ← Int.cast_abs, ne_zero_of_dvd_ne_zero he.2 he.1]
   let f (n : ℕ) := √M * M / 2 * ((↑n)⁻¹ + (↑(M - n))⁻¹)
   grw [norm_le_one, abs_moebius_le_one, ← dft.symm_apply_apply ψ]
@@ -51,7 +30,6 @@ lemma polya_vinogradov (h : χ ≠ 1) (X : ℕ) : ‖∑ v ∈ Ioc 0 X, χ v‖ 
     norm_sum_le_of_le _ (n := (f ·.val)) fun k hk ↦ ?_, ← sum_image (val_injective M).injOn,
     (by grind : image _ _ ⊆ range (M + 1)), ← le_of_dvd _ ⟨r, hr⟩, ← harmonic_le_one_add_log]
   iterate 3 simp [harmonic, field, sum_range_succ', two_mul, f, ↓sum_flip (·⁻¹ : ℕ → ℝ), ← mul_sum]
-  -- a geometric sum is at most `1 / sin (π x)`, `x = k / M`, and `sin (π x) ≥ 2 x (1 - x)`
   simp_all [norm_gaussSum_of_isPrimitive]
   obtain ⟨x, c, hx, d⟩ : ∃ x > (0 : ℝ), k.val = M * x ∧ 0 < 1 - x := ⟨k.val / M, by
     simp [field, val_lt, -natCast_val, *]⟩

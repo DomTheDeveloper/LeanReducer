@@ -1,3 +1,4 @@
+-- Modified by LeanReducer. Module documentation is in SOURCE-NOTES.md.
 module
 public import Mathlib.Analysis.SpecialFunctions.Log.Basic
 public import Mathlib.Algebra.Order.BigOperators.Group.Finset
@@ -5,19 +6,12 @@ public import Mathlib.Tactic.FieldSimp
 public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.Positivity
 public import Mathlib.Tactic.Ring
-
 public section
-
 namespace ReciprocalInterpolation
 open Finset Real
-
-/-- A single cutoff contains all terms needed at the two endpoints and the interior point.
-The weight can include the factor 1/A in the prime-error formula. -/
 @[expose] noncomputable def error {ι : Type*} (s : Finset ι) (w a : ι → ℝ)
     (scale φ c x : ℝ) : ℝ :=
   (∑ i ∈ s, w i * max (a i - scale / x) 0) - log x / φ - c
-
-/-- Interpolation in the variable 1/x. The explicit loss is quadratic in the mesh width. -/
 theorem bound {ι : Type*} (s : Finset ι) (w a : ι → ℝ) (hw : ∀ i ∈ s, 0 ≤ w i)
     {u x v scale φ c : ℝ} (hu : 0 < u) (hux : u ≤ x) (hxv : x ≤ v)
     (huv : u < v) (hφ : 0 < φ) :
@@ -69,7 +63,5 @@ theorem bound {ι : Type*} (s : Finset ι) (w a : ι → ℝ) (hw : ∀ i ∈ s,
         (p * (log u - log x) + q * (log v - log x)) / φ := by
       rw [show q = 1-p by linarith only [hpq]]; ring
     _ ≤ _ := add_le_add he hd
-
 end ReciprocalInterpolation
-
 #print axioms ReciprocalInterpolation.bound
