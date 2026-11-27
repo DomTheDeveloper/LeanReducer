@@ -24,14 +24,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for module in ReciprocalInterpolation FourthPowers WeightedFourthPowers PrimeErrorFourthPowers SharpInterpolation AuxiliaryResidue FactorialLevels SampledGRH; do
+          for module in ReciprocalInterpolation FourthPowers WeightedFourthPowers PrimeErrorFourthPowers SharpInterpolation AuxiliaryResidue FactorialLevels SampledGRH UpstreamEstimate; do
             cp "examples/grh/$module.lean" proof/src/
           done
           cat >> proof/lakefile.toml <<'TOML'
 
           [[lean_lib]]
           name = "Sampling"
-          roots = ["ReciprocalInterpolation", "FourthPowers", "WeightedFourthPowers", "PrimeErrorFourthPowers", "SharpInterpolation", "AuxiliaryResidue", "FactorialLevels", "SampledGRH"]
+          roots = ["ReciprocalInterpolation", "FourthPowers", "WeightedFourthPowers", "PrimeErrorFourthPowers", "SharpInterpolation", "AuxiliaryResidue", "FactorialLevels", "SampledGRH", "UpstreamEstimate"]
           TOML
           curl --proto '=https' -fsSL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
@@ -48,19 +48,21 @@ jobs:
           import PrimeErrorFourthPowers
           import SharpInterpolation
           import SampledGRH
+          import UpstreamEstimate
           #print axioms PrimeErrorFourthPowers.bounds_iff
           #print axioms SharpInterpolation.quadratic_gap
           #print axioms SampledGRH.five_endpoints
+          #print axioms UpstreamEstimate.samples_of_geometric
           LEAN
           lake env lean "$RUNNER_TEMP/SamplingAudit.lean" | tee "$RUNNER_TEMP/sampling-axioms.txt"
           PYTHONPATH="$GITHUB_WORKSPACE" python3 - <<'PY'
           import os
           from pathlib import Path
           from leanreducer.verify import check_axioms
-          names = dict.fromkeys(["PrimeErrorFourthPowers.bounds_iff", "SharpInterpolation.quadratic_gap", "SampledGRH.five_endpoints"])
+          names = dict.fromkeys(["PrimeErrorFourthPowers.bounds_iff", "SharpInterpolation.quadratic_gap", "SampledGRH.five_endpoints", "UpstreamEstimate.samples_of_geometric"])
           print(check_axioms((Path(os.environ["RUNNER_TEMP"])/"sampling-axioms.txt").read_text(),
                              names, ["propext", "Classical.choice", "Quot.sound"]))
           PY
-          for module in ReciprocalInterpolation FourthPowers WeightedFourthPowers PrimeErrorFourthPowers SharpInterpolation AuxiliaryResidue FactorialLevels SampledGRH; do
+          for module in ReciprocalInterpolation FourthPowers WeightedFourthPowers PrimeErrorFourthPowers SharpInterpolation AuxiliaryResidue FactorialLevels SampledGRH UpstreamEstimate; do
             lake env leanchecker "$module"
           done
