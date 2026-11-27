@@ -84,6 +84,20 @@ $$
 
 For a point below real part one, choose $k$ large enough to reach its height, get to the left of its real part, and ensure that its character's modulus divides $M_k$. Change of level transfers nonvanishing back to that character. Mathlib supplies nonvanishing for real part at least one. The criterion still has infinitely many levels and continuously many complex arguments at each nonempty level. Its **93 code lines and 115 physical lines** include the two local modules above pinned Mathlib. The Lean 4.35 workflow checked a separate consumer of the implication, printed its three axioms, and replayed both modules. The 985-line prime-error project has its own source budget. [Lean proof](FactorialBoxes.lean) · [Two-module project](https://github.com/DomTheDeveloper/LeanReducer/tree/b99cee1d137cda79aaccbc181ae0f4097a8398b4) · [Successful build and replay](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45988875281)
 
+## Arbitrarily sparse good levels in 976 code lines
+
+The 985-line version requires the sampled estimate at every factorial level. The new branch only requires an unbounded set of good levels. A level $k$ is good when every prime $d$ in the specified residue class satisfies the one-exponent bound at that level. Its exact premise is
+
+$$
+\forall L\in\mathbb{N},\quad \exists k\ge L,\quad \mathrm{EstimateAt}(k).
+$$
+
+The same $k$ must work for every eligible prime at that level. The threshold in $n$ can depend on both $k$ and $d$. The proof permits gaps of arbitrary size between good levels. For a proposed zero of a character of modulus $m$, choose a good level whose index exceeds $m$ and makes the reciprocal margin small enough. Then $m$ divides the factorial modulus, so the estimate for that level and change of character level suffice.
+
+Specializing the old general equivalence to the forward implication actually used in the proof removes nine code lines while weakening the arithmetic premise. The complete standalone project and its import closure both contain **976 code lines, 1,338 physical lines and 19 modules**. The pinned Lean 4.35 workflow checked the explicit unbounded-level implication against all five original conclusions. Its axiom audit reported `propext`, `Classical.choice` and `Quot.sound`, and all 19 modules passed kernel replay. The cofinal-modulus lemma also compiled separately on the same toolchain.
+
+Holding these 976 lines fixed leaves **49,024 code lines** for the additional arithmetic proof and project-owned dependencies under 50,000, or **24** under 1,000. Proving every level good by the existing covolume argument supplies an unbounded set by taking $k=L$; it brings its original dependencies back into the count. [Standalone source](https://github.com/DomTheDeveloper/LeanReducer/tree/ae21d67f172b180b660d9bfa2183e3f806ab0ef2) · [Download ZIP](https://github.com/DomTheDeveloper/LeanReducer/archive/ae21d67f172b180b660d9bfa2183e3f806ab0ef2.zip) · [Clean build and kernel replay](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45989759982) · [Source changes against the 985-line edition](https://github.com/DomTheDeveloper/LeanReducer/compare/680cdffe8dca5e2f3de405a615318d0989f0f055...ae21d67f172b180b660d9bfa2183e3f806ab0ef2)
+
 ## Reproduce the combined source
 
 From the LeanReducer root, with both named repositories available locally:
