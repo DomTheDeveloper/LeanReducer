@@ -38,6 +38,6 @@ jobs:
           PYTHONPATH="$GITHUB_WORKSPACE" python3 - <<'PY'
           from leanreducer.verify import check_axioms
           from pathlib import Path
-          print(check_axioms(Path('axioms.log').read_text(), ['FixedClassRH.unconditional'], ['propext','Quot.sound','Classical.choice']))
+          print(check_axioms(Path('axioms.log').read_text(), {'FixedClassRH.unconditional': 'RiemannHypothesis'}, ['propext','Quot.sound','Classical.choice']))
           PY
           for module in FixedClass RHCovolume FixedClassSupply; do lake env leanchecker "$module"; done
