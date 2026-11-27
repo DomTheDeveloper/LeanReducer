@@ -37,4 +37,21 @@ theorem weightedGain_eq_blocks (d M A : ℕ) [Fact d.Prime] {x y : ℝ}
   intro n hn
   exact gainTerm_eq_blocks d M A n hA (mem_Icc.mp hn).1 hx hxy
 
+/-- A finite set of inert primes in the selected residue class gives an explicit lower bound.
+The stage below x pays the same coefficient for every prime. -/
+theorem inertPrimeBlocks_le (d M A : ℕ) [Fact d.Prime] {x y : ℝ}
+    (hA : 0 < A) (hx : 0 < x) (hxy : x ≤ y) {S : Finset ℕ} (hS : S ⊆ Icc 1 A)
+    (selected : ∀ p ∈ S, p.Prime ∧ (p : ZMod M) = 1 ∧ chiK d p = -1) :
+    ∑ p ∈ S, 2 * Real.log p *
+      (if (p : ℝ) ≤ x then 1 / x - 1 / y else if (p : ℝ) ≤ y then 1 / (p : ℝ) - 1 / y else 0) ≤
+        weightedGain d M A x y := by
+  apply lower_bound_from_subset d M A hx hxy hS
+  intro p hp
+  obtain ⟨prime, residue, inert⟩ := selected p hp
+  rw [gainTerm_eq_blocks d M A p hA prime.pos hx hxy]
+  have value : lambdaClass d M p = 2 * Real.log p := by
+    simp [lambdaClass, ArithmeticFunction.vonMangoldt.residueClass, Set.indicator, residue,
+      inert, ArithmeticFunction.vonMangoldt_apply_prime prime] <;> ring
+  simp [value]
+
 end FixedClassRH

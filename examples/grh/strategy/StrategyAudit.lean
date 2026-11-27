@@ -28,3 +28,4 @@ example : RiemannHypothesis :=
 #print axioms FixedClassRH.ofFiniteGain
 #print axioms FixedClassRH.lower_bound_from_subset
 #print axioms FixedClassRH.weightedGain_eq_blocks
+#print axioms FixedClassRH.inertPrimeBlocks_le

@@ -28,7 +28,7 @@ theorem normalized_of_covolume : NormalizedEstimate := by
       (P.N₀.totient : ℝ) * (towerDeg D.s / #D.thick) * D.logB ^ 5 / D.m
   rw [cancel]
   grw [star_inequality]
-  simp [Data.budget, Data.f, card_infinitePlace_E, field, HasLogBound.pos D, ne_of_gt] <;> ring
+  simp [Data.budget, Data.f, card_infinitePlace_E, field]
 
 theorem fromNormalizedCovolume : RiemannHypothesis := ofNormalized normalized_of_covolume
 

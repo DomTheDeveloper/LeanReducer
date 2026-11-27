@@ -65,18 +65,21 @@ jobs:
           PYTHONPATH="$GITHUB_WORKSPACE" python3 "$GITHUB_WORKSPACE/examples/grh/strategy/footprint.py" \
             src ordinary-rh-reach.tsv "$GITHUB_WORKSPACE/examples/grh/verification-results.json"
       - name: Verify theorem types and axioms
+        if: '!cancelled()'
         run: |
+          set -euo pipefail
           cd "$RUNNER_TEMP/GRH-76072"
           lake env lean "$GITHUB_WORKSPACE/examples/grh/strategy/StrategyAudit.lean" | tee "$RUNNER_TEMP/strategy-axioms.log"
           PYTHONPATH="$GITHUB_WORKSPACE" python3 - <<'PY'
           import os
           from pathlib import Path
           from leanreducer.verify import check_axioms
-          names = ['Cutoff.exists_auxiliary_data', 'Cutoff.exists_data_of_cutoff', 'estimate_of_window', 'ofWindow', 'window_of_covolume', 'fromCovolumeWindow', 'ofNormalized', 'fromNormalizedCovolume', 'ordinaryRH', 'finiteGain_iff_normalized', 'ofFiniteGain', 'lower_bound_from_subset', 'weightedGain_eq_blocks']
+          names = ['Cutoff.exists_auxiliary_data', 'Cutoff.exists_data_of_cutoff', 'estimate_of_window', 'ofWindow', 'window_of_covolume', 'fromCovolumeWindow', 'ofNormalized', 'fromNormalizedCovolume', 'ordinaryRH', 'finiteGain_iff_normalized', 'ofFiniteGain', 'lower_bound_from_subset', 'weightedGain_eq_blocks', 'inertPrimeBlocks_le']
           print(check_axioms(Path(os.environ['RUNNER_TEMP'], 'strategy-axioms.log').read_text(),
               {'FixedClassRH.' + name: '' for name in names}, ['propext','Quot.sound','Classical.choice']))
           PY
       - name: Rebuild the finite-gain implication from its complete project source
+        if: '!cancelled()'
         run: |
           set -euo pipefail
           cd "$RUNNER_TEMP/GRH-76072"
