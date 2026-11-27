@@ -1,48 +1,21 @@
-# LeanReducer
+# A fourth-power sampling criterion for the Dirichlet weighted prime error
 
-LeanReducer shortens Lean proofs while retaining the public theorem statements and their permitted axioms. This repository hosts the reducer and its RH and Dirichlet GRH case study.
+This standalone Lean project proves `PrimeErrorFourthPowers.bounds_iff` for the actual `primeError d M` in the compact GRH formalization. For every prime d and every positive modulus M, the family of eventual upper bounds with exponents strictly between −½ and 0 holds on natural fourth powers exactly when it holds for all sufficiently large positive real inputs.
 
-The command-line tool counts the full local import closure, searches for shorter proof bodies, and outputs a Git patch and a verification record. Each accepted edit must reduce both code lines and non-whitespace code characters. The report gives physical lines, UTF-8 bytes and the complete source-tree count as well.
+The project contains **849 nonblank, noncomment code lines and 1,260 physical lines in 12 Lean modules**, above the pinned Lean 4.35.0 toolchain and Mathlib revision. Eight upstream modules (649 code lines) supply the prime-error definition, its finite-sum identity, and nonnegativity of its weights. Three modules (176 lines) prove the abstract interpolation and sampling results. One module (24 lines) applies them. The theorem gives a conditional analytic step. An unconditional RH or Dirichlet GRH proof also needs the arithmetic estimates.
 
-## Measure a project
+## Build and replay
 
-From this repository, run Python 3.10 or later. The analyzer uses the standard library.
-
-```sh
-python3 -m leanreducer analyze /path/to/project/src --entry Main
-python3 -m leanreducer analyze /path/to/grh-compact/src --entry Main --cut New.Endgame.LongForms
-```
-
-Add `--import-audit` to find direct imports available through another project dependency. Add `--repetitions` to find repeated `seal` or `unseal` commands and the nearest module their sites already share.
-
-A cut means removing that module and following all remaining import paths from the entry. The output counts the modules used exclusively through the cut. Any new code needed to prove a substitute theorem must be added back. Project-owned modules are counted before pinned external packages. The initial external namespaces are Mathlib, Lean, Std and Init. Add a package with `--external` if it belongs outside your source budget. Supply every project-owned dependency under the source root for a complete count.
-
-## Try a reduction
-
-A case file pins the public module, the expected theorem types and allowed axioms. The GRH case additionally pins a Git revision, Lean version, source directory, and protected files. Run against a trusted Lean project. Only the Git revision at HEAD is used. Uncommitted changes stay in the original checkout.
+Run these commands from the project root.
 
 ```sh
-git clone https://github.com/EllaZhangCA/grh-lean-astra.git proof
-git -C proof checkout --detach a57c37471c835968b1932a0f8347978b89ba7ab6
-python3 -m leanreducer reduce --repo proof --config examples/grh/case.json \
-  --output result --cache --target 50000 --rounds 3 --trials 4
+lake exe cache get
+lake build
+lake env lean src/PrimeErrorFourthPowers.lean
+lake env leanchecker PrimeErrorFourthPowers
+sha256sum -c SOURCE.sha256
 ```
 
-Add `--ai MODEL` and set `OPENAI_API_KEY` to use the OpenAI Responses API. The planner selects a declaration, the prover suggests tactic and lemma combinations, and the reviewer ranks them. Each round makes up to three requests. The model receives candidate statements and the selected proof excerpt. The prompts are in [agents](agents). Offline mode tries direct substitution of singly used local facts in simple proof chains and a bounded list of Lean tactics. Use `--module`, `--decl` and repeated `--tactic` options to narrow a run.
+The expected axioms are `propext`, `Classical.choice` and `Quot.sound`. The source inventory covers every Lean file under `src`. The build configuration retains the exact upstream Mathlib pin and library declarations needed for the twelve included modules.
 
-The checker builds a fresh checkout, verifies the endpoint types with Lean, reads each axiom report, and runs `leanchecker` on edited modules and the entry. It discards failing trials and publishes the patch only after checking the final state. A verified partial result records `target_met: false`. The optional `--paranoid` flag also runs the project’s installed Lake Comparator against its challenge. For broader, human-reviewed mathematical refactors, use `--patch PATH` with a unified Git diff. This mode can add lemmas and change several modules. The source boundary and protected paths still apply. Lean source and Lake builds execute code, so use trusted projects and review externally supplied patches before running them.
-
-## GRH case study
-
-The complete candidate has **76,072 code lines** across 794 modules (**112,770 physical lines**). The independently checked 347-module package contains four intermediate results in **49,230 physical lines**. The full proof still needs a reduction of 26,072 code lines to reach 50,000. [Browse the complete candidate](https://github.com/DomTheDeveloper/LeanReducer/tree/41bbac1c78e806eced8fd373f6cb55e77a045af5) · [Download the complete candidate](examples/grh/artifacts/GRH-76072.zip) · [Download the four intermediate results](examples/grh/artifacts/GRH-milestones.zip)
-
-The study tracks the original 17.37 million lines, the compact rewrite, and the remaining arithmetic obstacle. It includes a Lean-checked theorem reducing the half-plane goal for all Dirichlet characters to one bound at each factorial modulus. [Latest reduction and verification](examples/grh/REDUCTION-STUDY.md) · [Earlier measurements and fourth-power sampling](examples/grh/RESULTS.md)
-
-## Tests
-
-```sh
-python3 -m unittest discover -s tests -v
-python3 tests/integration.py
-```
-
-The integration test uses Lean 4.33.1, Lake, and leanchecker on PATH, or elan with that toolchain installed. It rejects an invalid tactic, accepts a shorter proof, applies the emitted patch to a clean checkout and checks the public theorem again. The GRH case uses Lean 4.35.0. The default limit is five hours per build or check. Supply `--timeout SECONDS` to override it.
+[Native build and check against the upstream declarations](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45984868143) · [Reduction study](https://github.com/DomTheDeveloper/LeanReducer/blob/595c94bd7d80764c31daffabb5f35d556f086f5a/examples/grh/RESULTS.md) · [Upstream compact proof](https://github.com/lsernau/grh-lean/tree/72fead102f663d5c7a407964a13dc0cf9d977207/grh-compact)
