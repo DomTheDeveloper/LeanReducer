@@ -122,6 +122,25 @@ Holding these 976 lines fixed leaves **49,024 code lines** for the additional ar
 
 The generic LeanReducer checker also audited the exact pinned project against a second test that expands all arithmetic quantifiers and the five conclusion types. It reproduced the source and closure counts, confirmed the three axioms, and published its verification record. [Expanded contract](cofinal-case.json) · [Audited run and verification record](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45991669828)
 
+## A divergent family of primes in 1,000 physical Lean lines
+
+At arbitrarily large natural levels (k), let (M = 18480(k+1)!). It suffices to find a set of primes (S) with the following three properties.
+
+1. Every (d) in (S) is congruent to 7 modulo 8 and is coprime to (M).
+2. The sum of `log(d)/d` over (S) diverges.
+3. For each (d) in (S), the actual weighted prime error at (n^4) is eventually at most `(n^4)^(-1/2 + 1/(4(k+1)))`. The threshold may depend on (d) and (k).
+
+The zero-density estimate for exceptional quadratic twists implies that such a family contains a suitable twist at every fixed height. Fourth-power interpolation supplies the real-variable estimate, and the factorial levels recover every conductor. The checked compatibility theorem derives the divergence condition for any unit residue class from Dirichlet's theorem. This explains why a complete progression as in the 976-line proof is sufficient, and why an arbitrary infinite set of primes would require a further argument. [Exact arithmetic premise and five conclusions](https://github.com/DomTheDeveloper/LeanReducer/blob/b95fc6679ddb55033c7d11a62bfbb832b7f1812b/src/SampledGRH.lean) · [Zero-density argument](https://github.com/DomTheDeveloper/LeanReducer/blob/b95fc6679ddb55033c7d11a62bfbb832b7f1812b/src/Lib/Analytic/QuadraticTwist/ZeroFreeTwist.lean) · [Compatibility proof](https://github.com/DomTheDeveloper/LeanReducer/blob/b95fc6679ddb55033c7d11a62bfbb832b7f1812b/verification/MassFromClass.lean)
+
+| Source | Modules | Code lines in the project | Physical lines in the project | Physical lines including the test |
+| --- | ---: | ---: | ---: | ---: |
+| Annotated | 18 | 957 | 1,312 | 1,330 |
+| Standalone comments moved to Markdown | 18 | 957 | **982** | **1,000** |
+
+Every code-containing line of all 18 published project modules matched between the two editions. The four definitions in `Statements.lean` also match the original compact file byte for byte. The remaining 18 physical lines are the compatibility test. Explanatory comments are available by source file and original line number. Lean 4.35 compiled the 982-line project, checked its expanded premise and the five conclusions with only `propext`, `Classical.choice` and `Quot.sound`, checked the compatibility theorem, and replayed all 18 project modules. [Complete 1,000-physical-line ZIP](https://github.com/DomTheDeveloper/LeanReducer/archive/b95fc6679ddb55033c7d11a62bfbb832b7f1812b.zip) · [Annotated edition](https://github.com/DomTheDeveloper/LeanReducer/tree/9419fe0c6392dc1eee7ae6e7f98007fccd6fdd82) · [Module notes](https://github.com/DomTheDeveloper/LeanReducer/blob/b95fc6679ddb55033c7d11a62bfbb832b7f1812b/SOURCE-NOTES.md) · [Documentation transformation](compact_notes.py) · [Build, axiom check and replay](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45994424273)
+
+The missing unconditional step is a short derivation of the sampled bound on a divergent admissible family at unbounded levels. Keeping the present proof uses 957 project code lines and leaves **49,043** further code lines for this step and its dependencies at 50,000, or **43** at 1,000. With source and documentation arranged as in the 982-physical-line project, the corresponding physical-line allowances are **49,018** and **18** before the independent compatibility test. The existing full source obtains the bound through the covolume comparison. [Frozen reducer contract](divergent-case.json)
+
 ## Reproduce the combined source
 
 From the LeanReducer root, with both named repositories available locally:

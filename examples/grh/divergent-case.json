@@ -1,0 +1,30 @@
+{
+  "project": ".",
+  "source": "src",
+  "entry": "SampledGRH",
+  "boundary": [
+    "Mathlib",
+    "Init",
+    "Std",
+    "Lean"
+  ],
+  "revision": "b95fc6679ddb55033c7d11a62bfbb832b7f1812b",
+  "toolchain": "leanprover/lean4:v4.35.0",
+  "lean_version": "4.35.0",
+  "protected": [
+    "src/Statements.lean",
+    "src/FactorialLevels.lean",
+    "src/New/Endgame/PrimeError.lean",
+    "src/Lib/Analytic/Landau/PolarLandau.lean",
+    "src/Lib/General/NumberTheory/QuadField.lean",
+    "src/Lib/General/LinearAlgebra/Base.lean"
+  ],
+  "endpoints": {
+    "SampledGRH.five_endpoints": "(∀ lower : ℕ, ∃ k : ℕ, lower ≤ k ∧ ∃ S : Set ℕ, (¬ Summable (fun n : ℕ => @ite ℝ (n ∈ S) (Classical.propDecidable _) (Real.log n / n) 0)) ∧ (∀ n ∈ S, n.Prime) ∧ ∀ d : Nat.Primes, d.val ∈ S → (d.val % 8 = 7 ∧ (LeanReducer.factorialLevel k).Coprime d.val) ∧ Filter.Eventually (fun n : ℕ => primeError d.val (LeanReducer.factorialLevel k) ((n : ℝ)^4) ≤ ((n : ℝ)^4)^(-(1/2 : ℝ) + (1 / ((k : ℝ) + 1)) / 4)) Filter.atTop) → RiemannHypothesis ∧ RiemannZetaZerosOnLine ∧ DirichletLNonvanishingRightOfHalf ∧ DirichletLZerosOnLine ∧ PrimitiveDirichletLZerosOnLine"
+  },
+  "axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ]
+}
