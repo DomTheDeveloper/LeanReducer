@@ -23,7 +23,7 @@ A cut means removing that module and following all remaining import paths from t
 
 ## Try a reduction
 
-A case file pins the public module, the expected theorem types and allowed axioms. The GRH case additionally pins a Git revision, Lean version, source directory, and protected files. Run against a trusted Lean project. Only the Git revision at HEAD is used. Uncommitted changes stay in the original checkout.
+A case file pins the public module, the expected theorem types and allowed axioms. Its optional `open_scoped` list makes Lean notation and instances such as `Classical` available in the independent statement check. The GRH case additionally pins a Git revision, Lean version, source directory, and protected files. Run against a trusted Lean project. Only the Git revision at HEAD is used. Uncommitted changes stay in the original checkout.
 
 ```sh
 git clone https://github.com/EllaZhangCA/grh-lean-astra.git proof

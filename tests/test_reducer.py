@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
@@ -5,10 +6,22 @@ import unittest
 from leanreducer import agents
 from leanreducer.patterns import import_audit, repeated_commands
 from leanreducer.source import Corpus, bodies, imports, metrics
-from leanreducer.verify import CheckError, check_axioms
+from leanreducer.verify import CheckError, check_axioms, read_spec
 
 
 class SourceAndContracts(unittest.TestCase):
+    def test_reference_statement_scopes(self):
+        with TemporaryDirectory() as temp:
+            case = Path(temp) / 'case.json'
+            spec = {'entry': 'Main', 'endpoints': {'publicResult': 'True'}}
+            for scopes in [[], ['Classical'], ['CategoryTheory.MonoidalCategory']]:
+                case.write_text(json.dumps({**spec, 'open_scoped': scopes}))
+                self.assertEqual(read_spec(case)['open_scoped'], scopes)
+            for invalid in ['Classical', ['Classical\nsection'], [None]]:
+                case.write_text(json.dumps({**spec, 'open_scoped': invalid}))
+                with self.assertRaisesRegex(ValueError, 'scope names'):
+                    read_spec(case)
+
     def test_lean_literals_and_nested_comments(self):
         source = '/- outer /- inner -/\n-/ import Init\ndef a := "--"\ndef b := r##"/-hi-/"##\n-- end'
         self.assertEqual((metrics(source)['physical'], metrics(source)['code']),(5,3))

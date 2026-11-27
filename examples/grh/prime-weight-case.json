@@ -20,11 +20,14 @@
     "src/Lib/General/LinearAlgebra/Base.lean"
   ],
   "endpoints": {
-    "SampledGRH.five_endpoints": "(by classical; exact ((∀ lower : ℕ, ∃ k : ℕ, lower ≤ k ∧ ∃ S : Set ℕ, (¬ Summable fun n : ℕ => (if n.Prime ∧ n ∈ S then Real.log (n : ℝ) else 0) / (n : ℝ)) ∧ ∀ d : Nat.Primes, d.val ∈ S → (d.val % 8 = 7 ∧ (LeanReducer.factorialLevel k).Coprime d.val) ∧ Filter.Eventually (fun n : ℕ => primeError d.val (LeanReducer.factorialLevel k) ((n : ℝ)^4) ≤ ((n : ℝ)^4)^(-(1/2 : ℝ) + (1 / ((k : ℝ) + 1)) / 4)) Filter.atTop) → RiemannHypothesis ∧ RiemannZetaZerosOnLine ∧ DirichletLNonvanishingRightOfHalf ∧ DirichletLZerosOnLine ∧ PrimitiveDirichletLZerosOnLine))"
+    "SampledGRH.five_endpoints": "(∀ lower : ℕ, ∃ k : ℕ, lower ≤ k ∧ ∃ S : Set ℕ, (¬ Summable fun n : ℕ => (if n.Prime ∧ n ∈ S then Real.log (n : ℝ) else 0) / (n : ℝ)) ∧ ∀ d : Nat.Primes, d.val ∈ S → (d.val % 8 = 7 ∧ (LeanReducer.factorialLevel k).Coprime d.val) ∧ Filter.Eventually (fun n : ℕ => primeError d.val (LeanReducer.factorialLevel k) ((n : ℝ)^4) ≤ ((n : ℝ)^4)^(-(1/2 : ℝ) + (1 / ((k : ℝ) + 1)) / 4)) Filter.atTop) → RiemannHypothesis ∧ RiemannZetaZerosOnLine ∧ DirichletLNonvanishingRightOfHalf ∧ DirichletLZerosOnLine ∧ PrimitiveDirichletLZerosOnLine"
   },
   "axioms": [
     "propext",
     "Classical.choice",
     "Quot.sound"
+  ],
+  "open_scoped": [
+    "Classical"
   ]
 }

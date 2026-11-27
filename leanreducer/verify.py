@@ -50,6 +50,11 @@ def read_spec(path):
     spec = json.loads(path.read_text())
     if not spec.get('endpoints') or not re.fullmatch(IDENT,spec['entry']):
         raise ValueError('a module and at least one reference theorem type are required')
+    scopes = spec.get('open_scoped', [])
+    if not isinstance(scopes, list) or any(
+        not isinstance(scope, str) or not re.fullmatch(IDENT, scope) for scope in scopes
+    ):
+        raise ValueError('open_scoped must contain Lean scope names')
     for name, ty in spec['endpoints'].items():
         if not re.fullmatch(IDENT, name) or not isinstance(ty, str) or not ty.strip() or '\n' in ty:
             raise ValueError('invalid endpoint or reference type')
@@ -103,6 +108,7 @@ class Checker:
         # The Lake project may omit the public module from its default targets.
         self.run(['lake', 'build', '+' + self.spec['entry']])
         lines = ['import ' + self.spec['entry']]
+        lines.extend('open scoped ' + scope for scope in self.spec.get('open_scoped', []))
         for name, ty in self.spec['endpoints'].items():
             lines.extend([f'example : {ty} := @{name}', f'#print axioms {name}'])
         with tempfile.NamedTemporaryFile(mode='w', suffix='.lean', prefix='LeanReducerAudit',
