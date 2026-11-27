@@ -1,0 +1,56 @@
+name: Verify the ordinary RH source reduction
+on:
+  push:
+    branches: [ordinary-rh-source-reduction]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      LEAN_NUM_THREADS: 2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: DomTheDeveloper/LeanReducer
+          ref: 817d82e311949408f8876d7b352df4d173776ec8
+          path: verification-tools
+      - name: Restore pinned dependencies
+        run: |
+          set -euo pipefail
+          curl -fsSL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          export PATH="$HOME/.elan/bin:$PATH"
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          lake exe cache get
+          export PATH="$(lean --print-prefix)/bin:$PATH"
+          python3 verification-tools/examples/grh/fixed-class/restore.py
+      - name: Rebuild changed proofs and replay their Lean objects
+        run: |
+          set -euo pipefail
+          for module in New.Endgame.IntegralForms New.Endgame.LongForms RHCovolume RHOnly Statements New.Main Main; do
+            path="${module//.//}"
+            lake env lean -R src -DautoImplicit=false -DrelaxedAutoImplicit=false -DmaxHeartbeats=4000000 -DmaxSynthPendingDepth=3 --tstack=400000 -o ".lake/build/lib/lean/$path.olean" "src/$path.lean"
+            lake env leanchecker "$module"
+          done
+      - name: Check the ordinary RH statement, axioms and complete source closure
+        run: |
+          set -euo pipefail
+          cat > "$RUNNER_TEMP/Audit.lean" <<'LEAN'
+          import Main
+          import RHOnly
+          example : RiemannHypothesis := FixedClassRH.ordinaryRH
+          #print axioms FixedClassRH.ordinaryRH
+          LEAN
+          lake env lean "$RUNNER_TEMP/Audit.lean" | tee "$RUNNER_TEMP/axioms.log"
+          PYTHONPATH=verification-tools python3 - <<'PY'
+          from pathlib import Path
+          from os import environ
+          from leanreducer.source import Corpus
+          from leanreducer.verify import check_axioms
+          c = Corpus(Path('src'), ['Mathlib', 'Lean', 'Std', 'Init'])
+          print(c.size(c.walk('RHOnly')))
+          print(check_axioms(Path(environ['RUNNER_TEMP'], 'axioms.log').read_text(), {'FixedClassRH.ordinaryRH': ''}, ['propext', 'Classical.choice', 'Quot.sound']))
+          PY

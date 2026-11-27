@@ -28,5 +28,9 @@ name = "Main"
 roots = ["Statements", "Main"]
 
 [[lean_lib]]
+name = "RHOnly"
+roots = ["RHCovolume", "RHOnly"]
+
+[[lean_lib]]
 name = "Challenge"
 srcDir = ".."
