@@ -57,13 +57,6 @@ jobs:
         run: |
           cd "$RUNNER_TEMP/GRH-76072"
           bash "$GITHUB_WORKSPACE/examples/grh/strategy/check.sh" RHOnly
-      - name: Measure which declarations the ordinary RH proof uses
-        if: '!cancelled()'
-        run: |
-          cd "$RUNNER_TEMP/GRH-76072"
-          lake env lean "$GITHUB_WORKSPACE/examples/grh/strategy/ProofFootprint.lean"
-          PYTHONPATH="$GITHUB_WORKSPACE" python3 "$GITHUB_WORKSPACE/examples/grh/strategy/footprint.py" \
-            src ordinary-rh-reach.tsv "$GITHUB_WORKSPACE/examples/grh/verification-results.json"
       - name: Verify theorem types and axioms
         if: '!cancelled()'
         run: |
@@ -78,6 +71,13 @@ jobs:
           print(check_axioms(Path(os.environ['RUNNER_TEMP'], 'strategy-axioms.log').read_text(),
               {'FixedClassRH.' + name: '' for name in names}, ['propext','Quot.sound','Classical.choice']))
           PY
+      - name: Measure which declarations the ordinary RH proof uses
+        if: '!cancelled()'
+        run: |
+          cd "$RUNNER_TEMP/GRH-76072"
+          lake env lean "$GITHUB_WORKSPACE/examples/grh/strategy/ProofFootprint.lean"
+          PYTHONPATH="$GITHUB_WORKSPACE" python3 "$GITHUB_WORKSPACE/examples/grh/strategy/footprint.py" \
+            src ordinary-rh-reach.tsv "$GITHUB_WORKSPACE/examples/grh/verification-results.json"
       - name: Rebuild the finite-gain implication from its complete project source
         if: '!cancelled()'
         run: |
