@@ -1,7 +1,0 @@
-name = "reducerFixture"
-srcDir = "src"
-defaultTargets = ["Main"]
-
-[[lean_lib]]
-name = "Main"
-roots = ["Results", "Main"]

@@ -1,44 +1,52 @@
-# LeanReducer
+# LeanReducer compact GRH edition
 
-LeanReducer shortens Lean proofs while retaining the public theorem statements and their permitted axioms. This repository hosts the reducer and its RH and Dirichlet GRH case study.
+This branch contains all 794 project-owned Lean modules of the 76,075-code-line candidate. It includes the five public RH and Dirichlet GRH endpoints, the original dependency pins and the upstream license and notices. The one change shares a repeated list of six Ext declarations. Expanding that command reconstructs the pinned Astra source byte for byte. The full-build workflow records compiler and kernel results for this revision.
 
-The command-line tool counts the full local import closure, searches for shorter proof bodies, and outputs a Git patch and a verification record. Each accepted edit must reduce both code lines and non-whitespace code characters. The report gives physical lines, UTF-8 bytes and the complete source-tree count as well.
+[Reduction study](https://github.com/DomTheDeveloper/LeanReducer/blob/2392d6eda972c2fdfc80fe22dd96d9e55208cc47/examples/grh/RESULTS.md) · [Build and kernel check](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45981813632) · [Astra source](https://github.com/EllaZhangCA/grh-lean-astra/tree/a57c37471c835968b1932a0f8347978b89ba7ab6/grh-compact)
 
-## Measure a project
+## Upstream edition notes
 
-From this repository, run Python 3.10 or later. The analyzer uses the standard library.
+# The Generalized Riemann Hypothesis for Dirichlet L-functions, in Lean 4
 
-```sh
-python3 -m leanreducer analyze /path/to/project/src --entry Main
-python3 -m leanreducer analyze /path/to/grh-compact/src --entry Main --cut New.Endgame.LongForms
-```
+Modified from the compact edition of lsernau/grh-lean with **GPT-6.2 Astra**. See the [repository README](../README.md) for the measured changes and verification of this edition.
 
-A cut means removing that module and following all remaining import paths from the entry. The output counts the modules used exclusively through the cut. Any new code needed to prove a substitute theorem must be added back. Project-owned modules are counted before pinned external packages. The initial external namespaces are Mathlib, Lean, Std and Init. Add a package with `--external` if it belongs outside your source budget. Supply every project-owned dependency under the source root for a complete count.
+The proof is Levent Alpöge's, with Claude.
+Claude (AI) wrote the Lean text and documentation in the upstream edition.
 
-## Try a reduction
+This project holds a Lean 4 proof of the Riemann Hypothesis. It also proves the Generalized Riemann Hypothesis for Dirichlet L-functions. The proof builds on Mathlib. It uses only the axioms `propext`, `Classical.choice` and `Quot.sound`.
 
-A case file pins the public module, the expected theorem types and allowed axioms. The GRH case additionally pins a Git revision, Lean version, source directory, and protected files. Run against a trusted Lean project. Only the Git revision at HEAD is used. Uncommitted changes stay in the original checkout.
+This project is a shorter rewriting of Levent Alpöge's Lean proof (see <https://alpo.ge/remark.pdf>). It follows that proof's method; many steps are proved by other arguments, and parts of it, mostly background material, were ported from there and then rewritten.
 
-```sh
-git clone https://github.com/EllaZhangCA/grh-lean-astra.git proof
-git -C proof checkout --detach a57c37471c835968b1932a0f8347978b89ba7ab6
-python3 -m leanreducer reduce --repo proof --config examples/grh/case.json \
-  --output result --cache --target 50000 --rounds 3 --trials 4
-```
+This is the compact edition, about 76,000 lines of code. A readable edition, about 300,000 lines, is in [../grh](../grh/); some of its steps use other arguments.
 
-Add `--ai MODEL` and set `OPENAI_API_KEY` to use the OpenAI Responses API. The planner selects a declaration, the prover suggests tactic and lemma combinations, and the reviewer ranks them. Each round makes up to three requests. The model receives candidate statements and the selected proof excerpt. The prompts are in [agents](agents). Offline mode tries a bounded list of Lean tactics. Use `--module`, `--decl` and repeated `--tactic` options to narrow a run.
+## Theorems
+`src/Statements.lean` states the theorems in Mathlib's terms. `src/Main.lean` proves five theorems:
+- `riemannHypothesis`: Mathlib's `RiemannHypothesis`.
+- `riemannZeta_eq_zero_re`: every zero s ≠ 1 of ζ other than −2, −4, … has real part 1/2 (s = 1 is the pole).
+- `LFunction_ne_zero_of_half_lt_re`: L(s, χ) ≠ 0 for re s > 1/2, except at s = 1 for the principal character of each modulus (the pole).
+- `LFunction_eq_zero_re`: every zero of L(s, χ) with 0 < re s < 1 has real part 1/2.
+- `LFunction_eq_zero_re_of_isPrimitive`: the special case of primitive χ.
 
-The checker builds a fresh checkout, verifies the endpoint types with Lean, reads each axiom report, and runs `leanchecker` on edited modules and the entry. It discards failing trials and publishes the patch only after checking the final state. A verified partial result records `target_met: false`. The optional `--paranoid` flag also runs the project’s installed Lake Comparator against its challenge. For broader, human-reviewed mathematical refactors, use `--patch PATH` with a unified Git diff. This mode can add lemmas and change several modules. The source boundary and protected paths still apply. Lean source and Lake builds execute code, so use trusted projects and review externally supplied patches before running them.
+All moduli N ≥ 1 and all characters are covered, primitive or not. The last three theorems say nothing about zeros with re s ≤ 0. To trust the result, read `src/Statements.lean`, which imports only Mathlib, the five statements in `src/Main.lean`, and the list of axioms, and build or replay the files. All other definitions occur only inside the proof.
 
-## GRH case study
+## Build
+The build needs Lean v4.35.0, set in `lean-toolchain`. It needs Mathlib at commit 56a005855ea17e0b0958f73ec801ae140b0a1679, set in `lake-manifest.json`. Run `lake exe cache get`, then `lake build`. If the cache is missing, Lake builds Mathlib from source (about 85 minutes on 12 cores). A build takes one to two hours on 12 cores; allow 24 GB of memory. The build prints some linter and deprecation warnings. `lakefile.toml` raises the heartbeat limit and the stack size. To list the axioms, run `lake env lean scripts/PrintAxioms.lean`. The first of its five results is `'riemannHypothesis' depends on axioms: [propext, Classical.choice, Quot.sound]`.
 
-The full candidate has **76,075 code lines**. It shares the same Ext transparency settings across 21 call sites. Expanding the new command restores all 794 source files byte for byte. The case study gives the independent verification status of each edition and the exact gap to both size targets. [Measurements, proofs and reproduction instructions](examples/grh/RESULTS.md)
+## Checks recorded by the upstream authors
 
-## Tests
+Every file in `src` compiles with the pinned Lean and Mathlib, without errors or `sorry`, and was replayed through the kernel of Lean. The first theorem has Mathlib's type `RiemannHypothesis`, the other four have the types fixed in `src/Statements.lean`, and all five depend only on the three axioms above. These checks show that Lean accepts the proof of the stated theorems.
 
-```sh
-python3 -m unittest discover -s tests -v
-python3 tests/integration.py
-```
+`Challenge.lean` states the five theorems with `sorry` in place of proofs, and `comparator.json` sets up the tool [Comparator](https://github.com/leanprover/comparator), which compares them with `src/Main.lean` and checks the proofs again. Nothing imports `Challenge.lean`, and `lake build` does not build it. We ran Comparator v4.35.0 on this folder (Linux, with a stand-in for its sandbox and `ulimit -s unlimited`), and it accepted the proofs; allow 64 GB of memory and a few hours.
 
-The integration test uses Lean 4.33.1, Lake, and leanchecker on PATH, or elan with that toolchain installed. It rejects an invalid tactic, accepts a shorter proof, applies the emitted patch to a clean checkout and checks the public theorem again. The GRH case uses Lean 4.35.0.
+## Layout
+The proofs are written to be short, not to be easy to read. About 76,000 lines of code; 95,000 non-blank lines with comments; 113,000 lines in all.
+- `src/Lib` (573 files): background results, classed as known in the literature, that Mathlib lacks, with the steps of their proofs. It imports nothing from `src/New`.
+- `src/New` (219 files): the set-up and the steps of the argument. Start at `GUIDE.md`, which gives the reading order and the letters, and at `src/New/Main.lean`. A comment near the top of that file lists the inputs, what cancels, the scales and the errors. It proves the main inequality `star_inequality`, the one-sided bound `eventually_primeError_le_rpow` and `New.grh`.
+- `src/Lib/General/LinearAlgebra/Base.lean` holds settings that apply to all of `src/Lib` and `src/New`: instance priorities, classical decidability, and `simp` lemmas taken out of the default set or added to it. They add no axiom, and `src/Statements.lean` does not import them.
+- `REFERENCES.md` lists the citations and says which were compared with their sources.
+
+## Acknowledgements
+We thank the colleagues at Anthropic whose direction and suggestions shaped this rewriting.
+
+## License
+Apache 2.0; see `LICENSE`, `NOTICE` and `ATTRIBUTION.md`. The project depends on Mathlib (Apache 2.0), which it does not include; some declarations are adapted from it.
