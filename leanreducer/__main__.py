@@ -9,6 +9,7 @@ import sys
 import tempfile
 
 from . import agents
+from .inlining import straight_line
 from .patches import apply_reviewed
 from .source import Corpus, bodies, metrics
 from .verify import CheckError, Checker, git, read_spec, safe_path
@@ -124,6 +125,10 @@ def run(args):
                 tactics = agents.suggestions((body.header + ''.join(text[body.start:body.stop]))[:24000], args.ai)
             else:
                 tactics = list(dict.fromkeys(args.tactic or agents.BASIC))
+                if not args.tactic:
+                    direct = straight_line(text[body.start:body.stop])
+                    if direct:
+                        tactics.insert(0, direct)
             trial(checker,corpus,body,tactics,args.trials,changes,history)
         # Rebuild even after rejected trials and check the exact emitted tree.
         axioms = checker.audit(sorted(changes),comparator=args.paranoid)

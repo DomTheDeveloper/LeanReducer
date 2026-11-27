@@ -1,0 +1,77 @@
+{
+  "entry": "Main",
+  "tree": {
+    "modules": 794,
+    "physical": 112770,
+    "code": 76072,
+    "code_chars": 4505864,
+    "bytes": 7414871
+  },
+  "closure": {
+    "modules": 794,
+    "physical": 112770,
+    "code": 76072,
+    "code_chars": 4505864,
+    "bytes": 7414871
+  },
+  "groups": {
+    "Lib": {
+      "modules": 573,
+      "physical": 77827,
+      "code": 51231,
+      "code_chars": 3045741,
+      "bytes": 5022094
+    },
+    "Main": {
+      "modules": 1,
+      "physical": 8,
+      "code": 4,
+      "code_chars": 185,
+      "bytes": 342
+    },
+    "New": {
+      "modules": 219,
+      "physical": 34919,
+      "code": 24825,
+      "code_chars": 1459414,
+      "bytes": 2391652
+    },
+    "Statements": {
+      "modules": 1,
+      "physical": 16,
+      "code": 12,
+      "code_chars": 524,
+      "bytes": 783
+    }
+  },
+  "external_imports": [
+    "Mathlib"
+  ],
+  "cuts": {
+    "New.Endgame.LongForms": {
+      "own_closure": {
+        "modules": 785,
+        "physical": 111776,
+        "code": 75436,
+        "code_chars": 4468908,
+        "bytes": 7345459
+      },
+      "exclusive_to_cut": {
+        "modules": 582,
+        "physical": 84509,
+        "code": 58867,
+        "code_chars": 3495313,
+        "bytes": 5698446
+      },
+      "remaining_before_replacement": {
+        "modules": 212,
+        "physical": 28261,
+        "code": 17205,
+        "code_chars": 1010551,
+        "bytes": 1716425
+      }
+    }
+  },
+  "target": 50000,
+  "gap": 26072
+}

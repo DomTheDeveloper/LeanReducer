@@ -1,0 +1,58 @@
+--- a/grh-compact/src/Main.lean
++++ b/grh-compact/src/Main.lean
+@@ -1,13 +1,8 @@
+ import New.Main
+ -- The proof is Levent Alpöge's, with Claude.
+ 
+-theorem riemannHypothesis : RiemannHypothesis := New.zeta_zeros_on_line New.grh
+-
+-theorem riemannZeta_eq_zero_re : RiemannZetaZerosOnLine := riemannHypothesis
+-
+-theorem LFunction_ne_zero_of_half_lt_re : DirichletLNonvanishingRightOfHalf := New.grh
+-
+-theorem LFunction_eq_zero_re : DirichletLZerosOnLine := New.zeros_on_line New.grh
++-- LeanReducer change: use the public zeta and Dirichlet results from New.Main.
++theorem riemannHypothesis : RiemannHypothesis := riemannZeta_eq_zero_re
+ 
+ theorem LFunction_eq_zero_re_of_isPrimitive : PrimitiveDirichletLZerosOnLine :=
+   fun N _ χ _ ↦ LFunction_eq_zero_re N χ
+--- a/grh-compact/src/New/Main.lean
++++ b/grh-compact/src/New/Main.lean
+@@ -1,3 +1,4 @@
++-- LeanReducer change: expose the three public conclusions at their proofs.
+ -- Modified from lsernau/grh-lean with GPT-6.2 Astra.
+ import Statements
+ import New.Data.DataExist
+@@ -164,7 +165,7 @@
+ principal character excepted.
+ 
+ No Dirichlet L-function vanishes in Re s > 1/2. -/
+-lemma New.grh : DirichletLNonvanishingRightOfHalf := fun q _ χ ρ hρ pole zero ↦ by
++theorem LFunction_ne_zero_of_half_lt_re : DirichletLNonvanishingRightOfHalf := fun q _ χ ρ hρ pole zero ↦ by
+   -- `51` gives `ε < 1 / 100` and `8 ε + 1 / 2 < re ρ`
+   set ε := (ρ.re ⊓ 1 - 2⁻¹) / 51
+   -- pass to the modulus `N₀ = 18480 q` and the class `N₀ / 2 - 1`, whose square is `1`
+@@ -182,16 +183,15 @@
+   exact ⟨⟨P.instHeegD.2, (P.coprime_N₁_d 0).coprime_mul_right⟩,
+     eventually_primeError_le_rpow P (by grind)⟩
+ 
+-/-- Assume h: no Dirichlet L-function vanishes in Re s > 1/2 (the pole at s = 1 excepted). Then GRH
++/-- Using nonvanishing in Re s > 1/2 (the pole at s = 1 excepted), GRH
+ holds: for χ of any modulus, every zero of L(s, χ) with 0 < Re s < 1 has Re s = 1/2. -/
+-lemma New.zeros_on_line (h : DirichletLNonvanishingRightOfHalf) : DirichletLZerosOnLine :=
+-  fun N _ ↦ by grind [h N, Complex.one_re, Complex.sub_re, → LFunction_one_sub_eq_zero,
++theorem LFunction_eq_zero_re : DirichletLZerosOnLine := fun N _ ↦ by
++  grind [LFunction_ne_zero_of_half_lt_re N, Complex.one_re, Complex.sub_re, → LFunction_one_sub_eq_zero,
+   Complex.ext_iff, DirichletCharacter.gammaFactor, Complex.Gammaℝ_ne_zero_of_re_pos]
+ 
+-/-- Assume h: no Dirichlet L-function vanishes in Re s > 1/2 (the pole at s = 1 excepted). Then
+-the Riemann hypothesis holds: every zero s ≠ 1 of ζ other than −2, −4, … has Re s = 1/2. -/
+-lemma New.zeta_zeros_on_line (h : DirichletLNonvanishingRightOfHalf) :
+-    RiemannZetaZerosOnLine := fun s ↦ by
+-  obtain _ := h 1 1 s, h 1 1 (1 - s), @Nat.or_exists_add_one, riemannZeta_zero
++/-- By the zeta functional equation and nonvanishing in Re s > 1/2, every zero s ≠ 1 of ζ other than −2, −4, … has Re s = 1/2. -/
++theorem riemannZeta_eq_zero_re : RiemannZetaZerosOnLine := fun s ↦ by
++  obtain _ := LFunction_ne_zero_of_half_lt_re 1 1 s, LFunction_ne_zero_of_half_lt_re 1 1 (1 - s),
++    @Nat.or_exists_add_one, riemannZeta_zero
+   simp_all
+   grind [riemannZeta_def_of_ne_zero, completedRiemannZeta_one_sub, Complex.Gammaℝ_eq_zero_iff]

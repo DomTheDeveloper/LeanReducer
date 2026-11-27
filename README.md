@@ -26,13 +26,15 @@ python3 -m leanreducer reduce --repo proof --config examples/grh/case.json \
   --output result --cache --target 50000 --rounds 3 --trials 4
 ```
 
-Add `--ai MODEL` and set `OPENAI_API_KEY` to use the OpenAI Responses API. The planner selects a declaration, the prover suggests tactic and lemma combinations, and the reviewer ranks them. Each round makes up to three requests. The model receives candidate statements and the selected proof excerpt. The prompts are in [agents](agents). Offline mode tries a bounded list of Lean tactics. Use `--module`, `--decl` and repeated `--tactic` options to narrow a run.
+Add `--ai MODEL` and set `OPENAI_API_KEY` to use the OpenAI Responses API. The planner selects a declaration, the prover suggests tactic and lemma combinations, and the reviewer ranks them. Each round makes up to three requests. The model receives candidate statements and the selected proof excerpt. The prompts are in [agents](agents). Offline mode tries direct substitution of singly used local facts in simple proof chains and a bounded list of Lean tactics. Use `--module`, `--decl` and repeated `--tactic` options to narrow a run.
 
 The checker builds a fresh checkout, verifies the endpoint types with Lean, reads each axiom report, and runs `leanchecker` on edited modules and the entry. It discards failing trials and publishes the patch only after checking the final state. A verified partial result records `target_met: false`. The optional `--paranoid` flag also runs the project’s installed Lake Comparator against its challenge. For broader, human-reviewed mathematical refactors, use `--patch PATH` with a unified Git diff. This mode can add lemmas and change several modules. The source boundary and protected paths still apply. Lean source and Lake builds execute code, so use trusted projects and review externally supplied patches before running them.
 
 ## GRH case study
 
-The full candidate has **76,075 code lines**. It shares the same Ext transparency settings across 21 call sites. Expanding the new command restores all 794 source files byte for byte. The case study gives the independent verification status of each edition and the exact gap to both size targets. [Measurements, proofs and reproduction instructions](examples/grh/RESULTS.md)
+The complete candidate has **76,072 code lines** across 794 modules (**112,770 physical lines**). The independently checked 347-module package contains four intermediate results in **49,230 physical lines**. The full proof still needs a reduction of 26,072 code lines to reach 50,000. [Download the complete candidate](examples/grh/artifacts/GRH-76072.zip) · [Download the four intermediate results](examples/grh/artifacts/GRH-milestones.zip)
+
+The study tracks the original 17.37 million lines, the compact rewrite, and the remaining arithmetic obstacle. It includes a Lean-checked theorem reducing the half-plane goal for all Dirichlet characters to one bound at each factorial modulus. [Latest reduction and verification](examples/grh/REDUCTION-STUDY.md) · [Earlier measurements and fourth-power sampling](examples/grh/RESULTS.md)
 
 ## Tests
 

@@ -1,5 +1,7 @@
 # How much of the RH and Dirichlet GRH proof is left?
 
+This page records the shared-command experiment. The [combined reduction](REDUCTION-STUDY.md) also simplifies the public endpoints and gives the latest counts.
+
 A shared four-line Lean command reduces the Astra source from **76,113 to 76,075 code lines**. The five public statements and the mathematical proofs remain byte-identical after expanding the command. The new source is **26,075 code lines above 50,000** and **75,075 above 1,000**. For physical lines those gaps are 62,775 and 111,775.
 
 ## Comparison

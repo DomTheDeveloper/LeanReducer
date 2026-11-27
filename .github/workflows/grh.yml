@@ -5,6 +5,10 @@ on:
     branches: [main]
     paths:
       - examples/grh/share-ext.patch
+      - examples/grh/public-endpoints.patch
+      - examples/grh/FactorialLevels.lean
+      - examples/grh/check_ext.py
+      - examples/grh/case.json
       - .github/workflows/grh.yml
 permissions:
   contents: read
@@ -26,6 +30,7 @@ jobs:
           git -C "$RUNNER_TEMP/proof" checkout -q --detach FETCH_HEAD
           git -C "$RUNNER_TEMP/proof" apply "$GITHUB_WORKSPACE/examples/grh/share-ext.patch"
           python3 examples/grh/check_ext.py "$RUNNER_TEMP/proof"
+          git -C "$RUNNER_TEMP/proof" apply "$GITHUB_WORKSPACE/examples/grh/public-endpoints.patch"
       - name: Install the pinned Lean toolchain
         shell: bash
         run: |
@@ -41,16 +46,28 @@ jobs:
           cd "$RUNNER_TEMP/proof/grh-compact"
           lake exe cache get
           lake build
-          lake env lean scripts/PrintAxioms.lean | tee "$RUNNER_TEMP/axioms.txt"
-          PYTHONPATH="$GITHUB_WORKSPACE" python3 - <<'PY'
+          python3 - <<'PYTHON'
+          from pathlib import Path
+          import json, os
+          root = Path(os.environ["GITHUB_WORKSPACE"])
+          case = json.loads((root / "examples/grh/case.json").read_text())
+          lines = ["import Main"]
+          for name, statement in case["endpoints"].items():
+              lines += [f"example : {statement} := @{name}", f"#print axioms {name}"]
+          Path("LeanReducerEndpoints.lean").write_text("\n".join(lines) + "\n")
+          PYTHON
+          lake env lean LeanReducerEndpoints.lean | tee "$RUNNER_TEMP/axioms.txt"
+          PYTHONPATH="$GITHUB_WORKSPACE" python3 - <<'PYTHON'
           from pathlib import Path
           import json, os
           from leanreducer.verify import check_axioms
           root = Path(os.environ["GITHUB_WORKSPACE"])
-          case = json.loads((root/"examples/grh/case.json").read_text())
-          output = (Path(os.environ["RUNNER_TEMP"])/"axioms.txt").read_text()
+          case = json.loads((root / "examples/grh/case.json").read_text())
+          output = (Path(os.environ["RUNNER_TEMP"]) / "axioms.txt").read_text()
           print(check_axioms(output, case["endpoints"], case["axioms"]))
-          PY
-          git -C "$RUNNER_TEMP/proof" diff --name-only HEAD -- grh-compact/src |             sed -e 's|^grh-compact/src/||' -e 's|\.lean$||' -e 's|/|.|g' |
+          PYTHON
+          git -C "$RUNNER_TEMP/proof" diff --name-only HEAD -- grh-compact/src |
+            sed -e 's|^grh-compact/src/||' -e 's|\.lean$||' -e 's|/|.|g' |
             while IFS= read -r module; do lake env leanchecker "$module"; done
           lake env leanchecker Main
+          lake env lean "$GITHUB_WORKSPACE/examples/grh/FactorialLevels.lean"
