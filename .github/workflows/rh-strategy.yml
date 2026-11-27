@@ -78,14 +78,30 @@ jobs:
           lake env lean "$GITHUB_WORKSPACE/examples/grh/strategy/ProofFootprint.lean"
           PYTHONPATH="$GITHUB_WORKSPACE" python3 "$GITHUB_WORKSPACE/examples/grh/strategy/footprint.py" \
             src ordinary-rh-reach.tsv "$GITHUB_WORKSPACE/examples/grh/verification-results.json"
-      - name: Rebuild the finite-gain implication from its complete project source
-        if: '!cancelled()'
+  clean:
+    name: Build the finite-gain implication from source
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    env:
+      LEAN_NUM_THREADS: 2
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare the exact proof source
+        run: |
+          set -euo pipefail
+          unzip -q examples/grh/artifacts/GRH-76072.zip -d "$RUNNER_TEMP"
+          cd "$RUNNER_TEMP/GRH-76072"
+          rm src/Main.lean src/New/Main.lean src/Statements.lean
+          cp "$GITHUB_WORKSPACE"/examples/grh/fixed-class/FixedClass.lean "$GITHUB_WORKSPACE"/examples/grh/strategy/RH*.lean src/
+          sed -i '/^name = "Main"$/,+1c\name = "RHGainBlocks"\nroots = ["FixedClass", "RHCutoffData", "RHWindow", "RHNormalized", "RHFiniteGain", "RHGainBlocks"]' lakefile.toml
+          sed -i 's/"Lib", "New", "Main"/"RHGainBlocks"/' lakefile.toml
+          curl -fsSL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Compile, replay and check the exact type
         run: |
           set -euo pipefail
           cd "$RUNNER_TEMP/GRH-76072"
-          mv .lake/build .lake/strategy-prebuilt
-          sed -i '/^name = "Main"$/,+1c\name = "RHGainBlocks"\nroots = ["FixedClass", "RHCutoffData", "RHWindow", "RHNormalized", "RHFiniteGain", "RHGainBlocks"]' lakefile.toml
-          sed -i 's/"Lib", "New", "Main"/"RHGainBlocks"/' lakefile.toml
+          lake exe cache get
           lake build +RHGainBlocks
           lake env leanchecker RHGainBlocks
           printf '%s\n' 'import RHGainBlocks' 'example : FixedClassRH.FiniteGainEstimate → RiemannHypothesis := FixedClassRH.ofFiniteGain' '#print axioms FixedClassRH.ofFiniteGain' > RebuiltAudit.lean
