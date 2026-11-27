@@ -1,0 +1,43 @@
+name: Replay the RH specialization over pinned compact objects
+on:
+  push:
+    branches: [ordinary-rh-incremental-check]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    env:
+      LEAN_NUM_THREADS: 2
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare RH-only source
+        run: |
+          unzip -q examples/grh/artifacts/GRH-76072.zip -d "$RUNNER_TEMP"
+          cd "$RUNNER_TEMP/GRH-76072"
+          rm src/Main.lean src/New/Main.lean src/Statements.lean
+          cp "$GITHUB_WORKSPACE"/examples/grh/fixed-class/*.lean src/
+          sed -i '/^name = "Main"$/,+1c\name = "FixedClassSupply"\nroots = ["FixedClass", "RHCovolume", "FixedClassSupply"]' lakefile.toml
+          sed -i 's/"Lib", "New", "Main"/"FixedClassSupply"/' lakefile.toml
+          curl -fsSL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Check the specialized proof and its supplied estimate
+        run: |
+          set -eo pipefail
+          cd "$RUNNER_TEMP/GRH-76072"
+          lake exe cache get
+          export PATH="$(lean --print-prefix)/bin:$PATH"
+          python3 "$GITHUB_WORKSPACE/examples/grh/fixed-class/restore.py"
+          for module in FixedClass RHCovolume FixedClassSupply; do
+            lake env lean -R src -DmaxHeartbeats=4000000 -DmaxSynthPendingDepth=3 --tstack=400000 -o ".lake/build/lib/lean/$module.olean" "src/$module.lean"
+          done
+          printf '%s\n' 'import FixedClassSupply' 'example : RiemannHypothesis := FixedClassRH.unconditional' '#print axioms FixedClassRH.unconditional' > Audit.lean
+          lake env lean Audit.lean | tee axioms.log
+          PYTHONPATH="$GITHUB_WORKSPACE" python3 - <<'PY'
+          from leanreducer.verify import check_axioms
+          from pathlib import Path
+          print(check_axioms(Path('axioms.log').read_text(), {'FixedClassRH.unconditional': 'RiemannHypothesis'}, ['propext','Quot.sound','Classical.choice']))
+          PY
+          for module in FixedClass RHCovolume FixedClassSupply; do lake env leanchecker "$module"; done
