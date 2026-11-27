@@ -36,11 +36,13 @@ The checker builds a fresh checkout, verifies the endpoint types with Lean, read
 
 ## GRH case study
 
-The complete candidate has **76,072 code lines** across 794 modules (**112,770 physical lines**). The independently checked 347-module package contains four intermediate results in **49,230 physical lines**. The full proof still needs a reduction of 26,072 code lines to reach 50,000. [Browse the complete candidate](https://github.com/DomTheDeveloper/LeanReducer/tree/41bbac1c78e806eced8fd373f6cb55e77a045af5) · [Download the complete candidate](examples/grh/artifacts/GRH-76072.zip) · [Download the four intermediate results](examples/grh/artifacts/GRH-milestones.zip)
+The complete candidate has **76,072 code lines** across 794 modules (**112,770 physical lines**). Four intermediate results and their dependencies occupy **49,230 physical lines**. All 347 modules match the independently checked upstream replay. The full proof still needs a reduction of 26,072 code lines to reach 50,000. [Browse the complete candidate](https://github.com/DomTheDeveloper/LeanReducer/tree/41bbac1c78e806eced8fd373f6cb55e77a045af5) · [Download the complete candidate](examples/grh/artifacts/GRH-76072.zip) · [Download the four intermediate results](examples/grh/artifacts/GRH-milestones.zip)
 
 The study tracks the original 17.37 million lines, the compact rewrite, and the remaining arithmetic obstacle. It includes a Lean-checked theorem reducing the half-plane goal for all Dirichlet characters to one bound at each factorial modulus. [Latest reduction and verification](examples/grh/REDUCTION-STUDY.md) · [Earlier measurements and fourth-power sampling](examples/grh/RESULTS.md)
 
 The smallest **conditional proof has 985 code lines**, 1,348 physical lines and 19 modules. One eventual weighted-prime estimate at a prescribed exponent for each factorial level implies all five public conclusions. The pinned Lean 4.35.0 build, axiom audit and all 19 module replays passed. [Complete project](https://github.com/DomTheDeveloper/LeanReducer/tree/680cdffe8dca5e2f3de405a615318d0989f0f055) · [Verification](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45988169144)
+
+A separate two-module project proves an equivalent bounded-height test for nonvanishing. Its 93 code lines restrict the remaining zero search to one bounded region in the critical strip per factorial level. [Bounded-height criterion](examples/grh/FactorialBoxes.lean) · [Pinned build and kernel replay](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45988875281)
 
 ## Tests
 

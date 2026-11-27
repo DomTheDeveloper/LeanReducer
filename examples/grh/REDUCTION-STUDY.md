@@ -46,7 +46,7 @@ On the combined revision, removing the import path through `New.Endgame.LongForm
 
 Lean checks a smaller target for the analytic endgame. Write `M(k) = 18480 × (k+1)!`. Nonvanishing for every Dirichlet character of every positive modulus on Re(s) > 1/2, with the principal pole excepted, is equivalent to nonvanishing for every character of modulus `M(k)` only on Re(s) > 1/2 + 1/(k+1), for every natural k. Given q and a point strictly right of 1/2, one factorial multiple is divisible by q and has a small enough margin. The Euler factors in change of level then transfer nonvanishing to q. The file compiles over the proof's pinned Lean 4.35.0 and Mathlib revision with axioms `propext`, `Classical.choice` and `Quot.sound`. [Complete Lean proof](FactorialLevels.lean)
 
-There are two concrete missing pieces on the prime-sum route. First, prove the arithmetic estimate at the selected levels, with enough strength to obtain the specified half-plane for every character there. The new fourth-power criterion specializes the interpolation result to the actual upstream prime error, using its finite-sum identity. Its complete project import closure has 849 code lines and 1,260 physical lines. It reduces the arithmetic target to fourth-power samples. The estimates at those samples are still required. [Lean specialization](PrimeErrorFourthPowers.lean) · [Verification status](https://github.com/DomTheDeveloper/LeanReducer/actions/workflows/sampling.yml) Second, replace or shorten the current one-sided analytic criterion. Its present closure already costs **1,251 code lines** before adding the arithmetic proof. Neither count is a lower bound on a different proof. [Fourth-power equivalence](WeightedFourthPowers.lean) · [Analytic and arithmetic interfaces](RESULTS.md)
+The original one-sided analytic criterion imports 1,251 code lines, and the fourth-power specialization for the actual prime error imports 849. These two sets of imports overlap. The standalone reductions below keep the required declarations and bring the full conditional implication below 1,000 code lines. A shorter arithmetic argument must still prove its sampled prime-error hypothesis. [Original analytic and arithmetic interfaces](RESULTS.md) · [Fourth-power specialization](PrimeErrorFourthPowers.lean)
 
 ## A checked 998-line route from sampled estimates to all five conclusions
 
@@ -73,6 +73,17 @@ The arithmetic premise has a formal connection to the full proof. `UpstreamEstim
 
 Counting each dependency once, the 985-line route leaves **49,015 further code lines** for a proof of the sampled estimates at a 50,000-line budget, or **15** at a 1,000-line budget. Any source restored to establish those estimates uses that allowance. Under a physical-line budget, the corresponding project already uses 1,348 lines. The original covolume route supplies a proof at the larger line count.
 
+## Bounded height at each factorial level
+
+There is also a direct target in the complex plane. The two-module project proves `LeanReducer.factorial_critical_boxes_iff`. For each natural $k$, let $M_k=18480(k+1)!$. Nonvanishing for every Dirichlet character of every positive modulus on the half-plane to the right of $1/2$, apart from the usual pole exception, is equivalent to testing every character of modulus $M_k$ only in the region
+
+$$
+\tfrac12 + \tfrac{1}{k+1} \leq \operatorname{Re}(s) < 1,
+\qquad |\operatorname{Im}(s)| \leq k.
+$$
+
+For a point below real part one, choose $k$ large enough to reach its height, get to the left of its real part, and ensure that its character's modulus divides $M_k$. Change of level transfers nonvanishing back to that character. Mathlib supplies nonvanishing for real part at least one. The criterion still has infinitely many levels and continuously many complex arguments at each nonempty level. Its **93 code lines and 115 physical lines** include the two local modules above pinned Mathlib. The Lean 4.35 workflow checked a separate consumer of the implication, printed its three axioms, and replayed both modules. The 985-line prime-error project has its own source budget. [Lean proof](FactorialBoxes.lean) · [Two-module project](https://github.com/DomTheDeveloper/LeanReducer/tree/b99cee1d137cda79aaccbc181ae0f4097a8398b4) · [Successful build and replay](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45988875281)
+
 ## Reproduce the combined source
 
 From the LeanReducer root, with both named repositories available locally:
@@ -98,4 +109,4 @@ The milestone script expects the compact upstream commit above. The candidate sc
 | `GRH-76072.zip` | `bfa537744deb18f7eefd4c9a5c051af96d05c77b13315480929a12261b848110` |
 | `GRH-milestones.zip` | `3374140e77769502688302b0f60b5ea93c98b733a6fab05389c5e74e579b7b07` |
 
-Sutherland's independent multi-kernel verification applies to the upstream compact revision at 76,149 code lines. The fork authors report a full build and axiom check of the 76,113-line Astra base. The combined candidate's own full build, endpoint checks and kernel replays have a separate status in the workflow. [Independent upstream checks](https://math.mit.edu/~drew/shortgrh/) · [Candidate workflow status](https://github.com/DomTheDeveloper/LeanReducer/actions/workflows/grh.yml)
+Sutherland's independent multi-kernel verification applies to the upstream compact revision at 76,149 code lines. The fork authors report a full build and axiom check of the 76,113-line Astra base. A local recheck of the changed arithmetic module stopped when available host memory fell to about 1.1 GiB. The combined candidate’s full build, five public type and axiom checks, and kernel replays have a separate [workflow run](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45983909693). [Independent upstream checks](https://math.mit.edu/~drew/shortgrh/) · [Candidate workflow status](https://github.com/DomTheDeveloper/LeanReducer/actions/workflows/grh.yml)
