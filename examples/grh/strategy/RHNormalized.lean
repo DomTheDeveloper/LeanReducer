@@ -66,8 +66,7 @@ theorem window_of_normalized (boundAt : NormalizedEstimate) : WindowComparison :
   have L_eq : D.logB = D.logX.exp ^ ε := by
     rw [rpow_def_of_pos (exp_pos _), log_exp, mul_comm, ← hlog, exp_log hL]
   have totalPos : 0 < (towerDeg D.s : ℝ) := by
-    first | exact_mod_cast Nat.pos_of_ne_zero (NeZero.ne (towerDeg D.s))
-          | exact_mod_cast (show 0 < towerDeg D.s by unfold towerDeg; positivity)
+    exact_mod_cast Nat.pos_of_ne_zero (NeZero.ne (towerDeg D.s))
   have thickPos : 0 < (#D.thick : ℝ) := (div_pos totalPos hL).trans_le mass
   have weight_le : D.weight ≤ D.logB :=
     (div_le_iff₀ thickPos).2 (by simpa [mul_comm] using (div_le_iff₀ hL).1 mass)

@@ -55,7 +55,7 @@ theorem normalized_iff_gain {P : Parameters} {cutoff : ℝ} (D : AuxiliaryData P
         P.N₀.totient * D.weight * D.logB ^ 5 / D.m) ↔
     (0 < D.requiredGain → D.requiredGain ≤
       weightedGain P.d P.N₀ ⌈exp D.logX₁⌉₊ (exp D.logX) (exp D.logX₁)) := by
-  have hx : 0 ≤ D.logX := by linarith only [D.s_le, Nat.cast_nonneg D.s]
+  have hx : 0 ≤ D.logX := by linarith only [D.s_le, (Nat.cast_nonneg D.s : (0 : ℝ) ≤ D.s)]
   have hxy : exp D.logX ≤ exp D.logX₁ :=
     exp_le_exp.mpr (by linarith only [hx, D.scale.2.2.1])
   have h := primeError_sub_eq_gain P.d P.N₀ _ (exp_pos D.logX) hxy (Nat.le_ceil _)

@@ -1,4 +1,4 @@
-import all RHOnly
+import RHOnly
 import Lean
 
 open Lean Elab Command

@@ -23,7 +23,8 @@ theorem window_of_covolume : WindowComparison := by
   have cancel : primeError P.d P.N₀ D.x -
       (primeError P.d P.N₀ D'.x₁ - towerDeg D.s / #D.thick * primeError P.d 1 D'.x₁) =
       D'.m * D'.remainder / D'.m / D'.a / #D.thick := by
-    simp [remainder_eq, tops, card_placeClass_eq, field, HasLogBound.pos D', ne_of_gt] <;> ring
+    simp [remainder_eq, tops, card_placeClass_eq, field, HasLogBound.pos D', ne_of_gt]
+    ring
   change primeError P.d P.N₀ D.x -
       (primeError P.d P.N₀ D'.x₁ - towerDeg D.s / #D.thick * primeError P.d 1 D'.x₁) +
       exp (-(1e6 * D.logX)) ≤ _

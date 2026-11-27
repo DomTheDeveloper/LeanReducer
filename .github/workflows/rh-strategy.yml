@@ -76,3 +76,14 @@ jobs:
           print(check_axioms(Path(os.environ['RUNNER_TEMP'], 'strategy-axioms.log').read_text(),
               {'FixedClassRH.' + name: '' for name in names}, ['propext','Quot.sound','Classical.choice']))
           PY
+      - name: Rebuild the finite-gain implication from its complete project source
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/GRH-76072"
+          mv .lake/build .lake/strategy-prebuilt
+          sed -i '/^name = "Main"$/,+1c\name = "RHGainBlocks"\nroots = ["FixedClass", "RHCutoffData", "RHWindow", "RHNormalized", "RHFiniteGain", "RHGainBlocks"]' lakefile.toml
+          sed -i 's/"Lib", "New", "Main"/"RHGainBlocks"/' lakefile.toml
+          lake build +RHGainBlocks
+          lake env leanchecker RHGainBlocks
+          printf '%s\n' 'import RHGainBlocks' 'example : FixedClassRH.FiniteGainEstimate → RiemannHypothesis := FixedClassRH.ofFiniteGain' '#print axioms FixedClassRH.ofFiniteGain' > RebuiltAudit.lean
+          lake env lean RebuiltAudit.lean
