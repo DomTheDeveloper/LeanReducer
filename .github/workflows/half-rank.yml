@@ -35,6 +35,8 @@ jobs:
           cat > "$RUNNER_TEMP/Audit.lean" <<'LEAN'
           import RankFromCovolume
           import CompletionHeight
+          #print axioms FixedClassRH.lower_of_relaxed_rank
+          #print axioms FixedClassRH.relaxed_rank_of_original
           #print axioms FixedClassRH.lower_with_completion
           #print axioms FixedClassRH.nominal_primeSum_le
           #print axioms FixedClassRH.nominal_gain_le_jet
@@ -53,7 +55,7 @@ jobs:
           import os
           from pathlib import Path
           from leanreducer.verify import check_axioms
-          names = ['lower_with_completion', 'nominal_primeSum_le', 'dirCost_nonneg', 'half_rank_comparison', 'half_rank_with_completion', 'mainHeight_nonneg', 'star_of_half_rank', 'nominal_gain_le_jet', 'thick_le_dirCost', 'positive_rank_comparison', 'mainHeight_margin', 'star_of_positive_rank']
+          names = ['lower_of_relaxed_rank', 'relaxed_rank_of_original', 'lower_with_completion', 'nominal_primeSum_le', 'dirCost_nonneg', 'half_rank_comparison', 'half_rank_with_completion', 'mainHeight_nonneg', 'star_of_half_rank', 'nominal_gain_le_jet', 'thick_le_dirCost', 'positive_rank_comparison', 'mainHeight_margin', 'star_of_positive_rank']
           print(check_axioms(Path(os.environ['RUNNER_TEMP'], 'axioms.log').read_text(),
               {'FixedClassRH.' + n: '' for n in names}, ['propext', 'Classical.choice', 'Quot.sound']))
           PY

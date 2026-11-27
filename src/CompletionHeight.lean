@@ -1,6 +1,6 @@
 import New.Endgame.LongForms
 
-open Finset LinearMap Real Submodule LevelPlaces.LevelForm
+open Data Finset LinearMap Real Submodule LevelPlaces.LevelForm
 
 namespace FixedClassRH
 
@@ -35,8 +35,7 @@ theorem heightLe_with_completion {θ} (o : D.IsFitFamily θ) :
     rw [dim, add_sub_cancel_left]
     push_cast
     unfold completionCost
-    ring_nf
-    exact le_rfl) fun _ ↦ le_rfl
+    ring_nf <;> exact le_rfl) fun _ ↦ le_rfl
   simpa using (norm_inner_le_one _ _ ⟨j⟩
     (fun g ↦ by erw [D.classAut_eq_bot_of_le_chosenLevel (Subgroup.map_mono fun _ h ↦
     funext fun _ ↦ (h (.inl _) ⟨⟩).2) (by bound [D.card_Y_le .refl])]) a b :)
@@ -46,8 +45,48 @@ theorem lower_with_completion :
     D.rowDim * (D.mainHeight - 2 * (D.logB * D.budget)) ≤
       V + 2 * δ + (D.rowDim - (n : ℝ)) * completionCost D := by
   obtain ⟨⟨θ, o⟩, _, -, Z⟩ := exists_isFitFamily D, D.volume_iota_eq_prod_liftVolume
-  have formula := ((((heightLe_with_completion i I hV o).pow 2).mul
+  have formula : 0 ≤ 2 * (V + 2 * δ + (D.rowDim - (n : ℝ)) * completionCost D) + _ :=
+    ((((heightLe_with_completion i I hV o).pow 2).mul
     (Data.heightLe_volume_ratio_sq o)).mono le_rfl (by simp [field]; simp [(Z _).1])).nonneg
   linarith only [formula]
+
+/-- The existing completion construction pays at most twice the squared crude-row size per
+missing dimension. -/
+omit i I hV in
+theorem completionCost_le (D : Data P) : completionCost D ≤ 2 * (D.x₁ ^ 2 * D.b ^ 2) := by
+  have rest : D.x ^ 99 + (2 * (D.m : ℝ) * D.m) * (2 * D.t * D.x ^ 999) ≤
+      D.x₁ ^ 2 * D.b ^ 2 := D.le_of_hasLogBound
+  unfold completionCost
+  linarith only [rest]
+
+/-- The same covolume lower bound holds whenever the missing fraction is at most
+`1 / (x₁² b)`. No almost-spanning premise from the original theorem is used. -/
+theorem lower_of_relaxed_rank
+    (rank : (D.rowDim - (n : ℝ)) * (D.x₁ ^ 2 * D.b) ≤ D.rowDim) :
+    D.rowDim * (D.mainHeight - 3 * (D.logB * D.budget)) ≤ V + 2 * δ := by
+  have nd : (n : ℝ) ≤ D.rowDim := by
+    exact_mod_cast Fintype.card_fin n ▸ i.fintype_card_le_finrank
+  have charge : (D.rowDim - (n : ℝ)) * completionCost D ≤ D.rowDim * (2 * D.b) := calc
+    _ ≤ (D.rowDim - (n : ℝ)) * (2 * (D.x₁ ^ 2 * D.b ^ 2)) :=
+        mul_le_mul_of_nonneg_left (completionCost_le D) (sub_nonneg.mpr nd)
+    _ = ((D.rowDim - (n : ℝ)) * (D.x₁ ^ 2 * D.b)) * (2 * D.b) := by ring
+    _ ≤ _ := mul_le_mul_of_nonneg_right rank (by positivity)
+  have budget := mul_le_mul_of_nonneg_left (D.le_of_hasLogBound : 2 * D.b ≤ D.logB * D.budget)
+    (Nat.cast_nonneg D.rowDim : (0 : ℝ) ≤ D.rowDim)
+  linarith only [lower_with_completion i I hV, charge, budget]
+
+/-- The original filling estimate implies the relaxed rank requirement on the admissible scales. -/
+omit i I hV in
+theorem relaxed_rank_of_original {n : ℕ}
+    (rank : (1 - 4 / D.b ^ 2) * D.rowDim ≤ n) :
+    (D.rowDim - (n : ℝ)) * (D.x₁ ^ 2 * D.b) ≤ D.rowDim := by
+  have b : 0 < D.b := D.logB.exp_pos
+  have scales : 4 * D.x₁ ^ 2 ≤ D.b := D.le_of_hasLogBound
+  have deficit : (D.rowDim - (n : ℝ)) * D.b ^ 2 ≤ 4 * D.rowDim := by
+    field_simp at rank
+    linarith only [rank]
+  apply le_of_mul_le_mul_right _ b
+  nlinarith only [mul_le_mul_of_nonneg_right deficit (sq_nonneg D.x₁),
+    mul_le_mul_of_nonneg_right scales (Nat.cast_nonneg D.rowDim : (0 : ℝ) ≤ D.rowDim)]
 
 end FixedClassRH
