@@ -1,6 +1,7 @@
+# LeanReducer selects the conditional proof and its local libraries.
 name = "GRH"
 srcDir = "src"
-defaultTargets = ["Lib", "New", "Main"]
+defaultTargets = ["ConditionalGRH"]
 moreLeanArgs = ["--tstack=400000"]
 
 [leanOptions]
@@ -24,9 +25,5 @@ name = "New"
 globs = ["New.+"]
 
 [[lean_lib]]
-name = "Main"
-roots = ["Statements", "Main"]
-
-[[lean_lib]]
-name = "Challenge"
-srcDir = ".."
+name = "ConditionalGRH"
+roots = ["AuxiliaryResidue", "FactorialLevels", "FourthPowers", "PrimeErrorFourthPowers", "ReciprocalInterpolation", "SampledGRH", "Statements", "WeightedFourthPowers"]

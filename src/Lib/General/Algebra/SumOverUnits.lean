@@ -1,4 +1,5 @@
-import Lib.General.NumberTheory.ClassNumberBound
+-- Modified by LeanReducer to retain only the conditional analytic argument.
+import Lib.General.LinearAlgebra.Base
 
 /-! General lemmas of commutative and general algebra (textbook or folklore).
 

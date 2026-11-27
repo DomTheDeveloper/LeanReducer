@@ -1,4 +1,5 @@
-import Lib.General.NumberTheory.QuadFieldSplitting
+-- Modified by LeanReducer to retain only the conditional analytic argument.
+import Lib.General.NumberTheory.QuadField
 
 /-! Known result: Landau's lemma on Dirichlet integrals of one sign. The form here allows real
 simple poles of non-negative residue. It concludes that no pole lies right of the exponent of the

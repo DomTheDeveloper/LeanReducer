@@ -1,0 +1,41 @@
+name: Verify the standalone conditional RH and GRH proof
+on:
+  push:
+    branches: [compact-sampled-grh]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      LEAN_NUM_THREADS: 2
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install the pinned Lean toolchain
+        run: |
+          set -euo pipefail
+          sha256sum -c SOURCE.sha256
+          curl --proto '=https' -fsSL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          "$HOME/.elan/bin/lean" --version
+      - name: Build and replay the conditional proof
+        run: |
+          set -euo pipefail
+          lake exe cache get
+          lake build
+          cat > "$RUNNER_TEMP/ConditionalAudit.lean" <<'LEAN'
+          import SampledGRH
+          example : SampledGRH.Estimates → RiemannHypothesis ∧ RiemannZetaZerosOnLine ∧
+              DirichletLNonvanishingRightOfHalf ∧ DirichletLZerosOnLine ∧
+              PrimitiveDirichletLZerosOnLine := SampledGRH.five_endpoints
+          #print axioms SampledGRH.five_endpoints
+          LEAN
+          lake env lean "$RUNNER_TEMP/ConditionalAudit.lean" | tee "$RUNNER_TEMP/axioms.txt"
+          grep -Fx "'SampledGRH.five_endpoints' depends on axioms: [propext, Classical.choice, Quot.sound]" "$RUNNER_TEMP/axioms.txt"
+          while IFS= read -r f; do
+            module="${f#src/}"
+            module="${module%.lean}"
+            lake env leanchecker "${module//\//.}"
+          done < <(find src -name '*.lean' | sort)

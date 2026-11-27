@@ -1,3 +1,4 @@
+-- Modified by LeanReducer to retain only the conditional analytic argument.
 import Lib.Analytic.Landau.PolarLandau
 
 /-! The remainder `primeError` written as an exact finite prime sum. For an integer a and 0 < z ≤ a,
@@ -46,12 +47,6 @@ lemma abs_lambdaSum_exp_le r v : |lambdaSum d M r (rexp v)| ≤ 2 * rexp v := by
   grw [lambdaSum, abs_div, abs_sum_le_sum_abs, sum_le_card_nsmul _ _ (2 * v.exp ^ r)] <;> simp
     +contextual [abs_div, le_floor_iff, exp_nonneg, mul_le_mul, div_le_of_le_mul₀, field,
     lambdaClass_nonneg_and_abs_le, pow_le_pow_left₀, floor_le]
-
-/-- For a prime d, the real part of `logDerivMean` for modulus M = 1 at s = 1 is −1 − ℓ, where ℓ =
-`chowlaSelbergConst` d = γ − Re L′/L(1, (·/d)) and γ is Euler's constant. -/
-lemma re_logDerivMean_one : (logDerivMean d 1 1).re = -1 - chowlaSelbergConst d := by
-  simp [logDerivMean, chowlaSelbergConst, logDeriv, level_one, show @entireL 1 _ 1 = riemannZeta₁ by
-    simp_all [entireL, Function.update_eq_iff, riemannZeta_eq_inv_sub_mul]]; ring
 
 variable [NeZero M] {d M}
 
