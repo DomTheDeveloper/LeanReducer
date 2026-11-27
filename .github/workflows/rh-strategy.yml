@@ -1,0 +1,52 @@
+name: Check the ordinary RH reduction strategy
+on:
+  push:
+    branches: [ordinary-rh-50k-strategy]
+    paths:
+      - examples/grh/strategy/**
+      - .github/workflows/rh-strategy.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    env:
+      LEAN_NUM_THREADS: 2
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore pinned dependencies
+        run: |
+          set -euo pipefail
+          unzip -q examples/grh/artifacts/GRH-76072.zip -d "$RUNNER_TEMP"
+          cd "$RUNNER_TEMP/GRH-76072"
+          rm src/Main.lean src/New/Main.lean src/Statements.lean
+          cp "$GITHUB_WORKSPACE"/examples/grh/{fixed-class,strategy}/*.lean src/
+          curl -fsSL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          export PATH="$HOME/.elan/bin:$PATH"
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          lake exe cache get
+          export PATH="$(lean --print-prefix)/bin:$PATH"
+          python3 "$GITHUB_WORKSPACE/examples/grh/fixed-class/restore.py"
+      - name: Check auxiliary data without the theta input
+        run: |
+          cd "$RUNNER_TEMP/GRH-76072"
+          bash "$GITHUB_WORKSPACE/examples/grh/strategy/check.sh" RHCutoffData RHCutoffCompatibility
+      - name: Check the fixed-class comparison and its covolume proof
+        if: '!cancelled()'
+        run: |
+          cd "$RUNNER_TEMP/GRH-76072"
+          bash "$GITHUB_WORKSPACE/examples/grh/strategy/check.sh" FixedClass RHCovolume RHWindow RHWindowSupply
+      - name: Verify theorem types and axioms
+        run: |
+          cd "$RUNNER_TEMP/GRH-76072"
+          lake env lean "$GITHUB_WORKSPACE/examples/grh/strategy/StrategyAudit.lean" | tee "$RUNNER_TEMP/strategy-axioms.log"
+          PYTHONPATH="$GITHUB_WORKSPACE" python3 - <<'PY'
+          import os
+          from pathlib import Path
+          from leanreducer.verify import check_axioms
+          names = ['Cutoff.exists_auxiliary_data', 'Cutoff.exists_data_of_cutoff', 'estimate_of_window', 'ofWindow', 'window_of_covolume', 'fromCovolumeWindow']
+          print(check_axioms(Path(os.environ['RUNNER_TEMP'], 'strategy-axioms.log').read_text(),
+              {'FixedClassRH.' + name: '' for name in names}, ['propext','Quot.sound','Classical.choice']))
+          PY
