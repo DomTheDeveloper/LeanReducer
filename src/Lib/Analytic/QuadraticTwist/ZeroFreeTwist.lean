@@ -166,7 +166,7 @@ lemma exists_entireL_quadTwist_ne_zero_of_mass {β} y {S : Set ℕ} (hβ : 1 / 2
     ).norm.of_norm_bounded (by
       intro n
       by_cases hn : n ∈ S
-      · simp [hn, term, (primes n hn).ne_zero, ← Complex.natCast_log, norm_div]
+      · simp [hn, term, (primes n hn).ne_zero, ← Complex.natCast_log]
       · simp [hn, term])
   simp [apply_ite norm, ← cast_sum]
   grw [← card_biUnion_le, card_le_card]
