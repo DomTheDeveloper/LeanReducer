@@ -5,13 +5,11 @@ open Filter Real
 
 namespace PrimeErrorFourthPowers
 
-/-- Tests of the upstream weighted prime error on fourth powers suffice for the
-entire family of pointwise upper bounds, for every prime d and nonzero modulus. -/
-theorem bounds_iff (d M : ℕ) [Fact d.Prime] [NeZero M] :
-    (∀ a : ℝ, -(1/2 : ℝ) < a → a < 0 → ∀ᶠ n : ℕ in atTop,
-      primeError d M ((n:ℝ)^4) ≤ ((n:ℝ)^4)^a) ↔
-      ∀ b : ℝ, -(1/2 : ℝ) < b → b < 0 → ∀ᶠ x : ℝ in atTop, primeError d M x ≤ x^b := by
-  apply WeightedFourthPowers.bounds_iff (primeError d M) (fun A ↦ Finset.Icc 1 A)
+/-- The actual upstream prime error satisfies quadratic reciprocal interpolation. -/
+theorem step (d M : ℕ) [Fact d.Prime] [NeZero M] :
+    ∀ {u x v : ℝ}, 0 < u → u ≤ x → x ≤ v → u < v →
+      primeError d M x ≤ max (primeError d M u) (primeError d M v) + (x-u)*(v-x)/x^2 := by
+  apply WeightedFourthPowers.step (primeError d M) (fun A ↦ Finset.Icc 1 A)
     (fun A n ↦ lambdaClass d M n / (A : ℝ)) (fun A n ↦ (A : ℝ) / (n : ℝ))
     (fun A ↦ (A : ℝ)) (φ := (M.totient : ℝ)) (c := (logDerivMean d M 1).re)
   · exact_mod_cast (Nat.succ_le_of_lt (Nat.totient_pos.mpr (NeZero.pos M)))
@@ -28,4 +26,4 @@ theorem bounds_iff (d M : ℕ) [Fact d.Prime] [NeZero M] :
 
 end PrimeErrorFourthPowers
 
-#print axioms PrimeErrorFourthPowers.bounds_iff
+#print axioms PrimeErrorFourthPowers.step

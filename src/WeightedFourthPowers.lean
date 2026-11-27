@@ -1,20 +1,17 @@
 module
 public import ReciprocalInterpolation
-public import FourthPowers
 
 public section
 namespace WeightedFourthPowers
 open Filter Real
 
-/-- A common finite cutoff and nonnegative weights suffice to transfer the entire
-family of upper bounds from fourth powers to all large positive real arguments. -/
-theorem bounds_iff {ι : Type*} (R : ℝ → ℝ) (s : ℕ → Finset ι) (w a : ℕ → ι → ℝ)
+/-- A common cutoff and nonnegative weights imply a quadratic interpolation bound. -/
+theorem step {ι : Type*} (R : ℝ → ℝ) (s : ℕ → Finset ι) (w a : ℕ → ι → ℝ)
     (scale : ℕ → ℝ) {φ c : ℝ} (hφ : 1 ≤ φ) (hw : ∀ A i, i ∈ s A → 0 ≤ w A i)
     (formula : ∀ A : ℕ, ∀ z : ℝ, 0 < z → z ≤ A →
       R z = ReciprocalInterpolation.error (s A) (w A) (a A) (scale A) φ c z) :
-    (∀ a : ℝ, -(1/2 : ℝ) < a → a < 0 → ∀ᶠ n : ℕ in atTop, R ((n:ℝ)^4) ≤ ((n:ℝ)^4)^a) ↔
-      ∀ b : ℝ, -(1/2 : ℝ) < b → b < 0 → ∀ᶠ x : ℝ in atTop, R x ≤ x^b := by
-  apply FourthPowers.bounds_iff
+    ∀ {u x v : ℝ}, 0 < u → u ≤ x → x ≤ v → u < v →
+      R x ≤ max (R u) (R v) + (x-u)*(v-x)/x^2 := by
   intro u x v hu hux hxv huv
   let A := ⌈v⌉₊
   have hvA : v ≤ (A : ℝ) := Nat.le_ceil v
@@ -29,4 +26,4 @@ theorem bounds_iff {ι : Type*} (R : ℝ → ℝ) (s : ℕ → Finset ι) (w a :
 
 end WeightedFourthPowers
 
-#print axioms WeightedFourthPowers.bounds_iff
+#print axioms WeightedFourthPowers.step

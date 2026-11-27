@@ -1,6 +1,7 @@
 import Statements
 import New.Endgame.OneSidedCriterion
 import PrimeErrorFourthPowers
+import FourthPowers
 import AuxiliaryResidue
 import FactorialLevels
 
@@ -9,12 +10,12 @@ open DirichletCharacter Filter Real
 namespace SampledGRH
 
 /-- One arithmetic hypothesis at factorial moduli, for a single residue class of
-auxiliary primes at each level, and only at fourth powers of natural numbers. -/
+auxiliary primes and one prescribed exponent at each level, only at fourth powers. -/
 def Estimates : Prop :=
   ∀ (k : ℕ) (d : Nat.Primes),
     d.val % LeanReducer.factorialLevel k = 9240 * (k+1).factorial - 1 →
-    ∀ a : ℝ, -(1/2 : ℝ) < a → a < 0 → ∀ᶠ n : ℕ in atTop,
-      primeError d.val (LeanReducer.factorialLevel k) ((n:ℝ)^4) ≤ ((n:ℝ)^4)^a
+    ∀ᶠ n : ℕ in atTop, primeError d.val (LeanReducer.factorialLevel k) ((n:ℝ)^4) ≤
+      ((n:ℝ)^4)^(-(1/2:ℝ) + (1/((k:ℝ)+1))/4)
 
 theorem nonvanishing (samples : Estimates) : DirichletLNonvanishingRightOfHalf := by
   change ∀ (q : ℕ) [NeZero q], LeanReducer.ZeroFreeAt q (1/2)
@@ -27,22 +28,22 @@ theorem nonvanishing (samples : Estimates) : DirichletLNonvanishingRightOfHalf :
   have unit : IsUnit (r : ZMod (LeanReducer.factorialLevel k)) :=
     (ZMod.isUnit_iff_coprime _ _).mpr
       (AuxiliaryResidue.class_properties q r hq (Nat.mod_eq_of_lt hr)).2.symm
-  have right : (1/2 : ℝ) < s.re :=
-    lt_of_le_of_lt (le_add_of_nonneg_right (by positivity)) hs
-  obtain ⟨β, hβ, hb⟩ := exists_between (lt_min right (by norm_num : (1/2 : ℝ) < 1))
+  let δ : ℝ := 1 / ((k:ℝ)+1)
+  have hδ : 0 < δ := by dsimp [δ]; positivity
+  have h1 : δ ≤ 1 := by dsimp [δ]; rw [div_le_iff₀ (by positivity)]; simp
   have bounds (d : Nat.Primes) (hc : (d.val : ZMod (LeanReducer.factorialLevel k)) = r) :
       (d.val % 8 = 7 ∧ (LeanReducer.factorialLevel k).Coprime d.val) ∧
-      ∀ᶠ x : ℝ in atTop, primeError d.val (LeanReducer.factorialLevel k) x ≤ x^(β-1) := by
+      ∀ᶠ x : ℝ in atTop, primeError d.val (LeanReducer.factorialLevel k) x ≤ x^(1/2+δ-1) := by
     have congruent := ((ZMod.natCast_eq_natCast_iff' _ _ _).mp hc).trans (Nat.mod_eq_of_lt hr)
     refine ⟨AuxiliaryResidue.class_properties q d.val hq congruent, ?_⟩
-    apply (PrimeErrorFourthPowers.bounds_iff d.val (LeanReducer.factorialLevel k)).mp
-      (samples k d congruent) (β-1) (by linarith) (sub_neg.mpr (lt_min_iff.mp hb).2)
-  apply entireL_ne_zero_of_primeError_le hβ unit bounds s (lt_min_iff.mp hb).1 χ
+    exact FourthPowers.extend (PrimeErrorFourthPowers.step d.val (LeanReducer.factorialLevel k))
+      (a := -(1/2:ℝ)+δ/4) (by linarith) (by linarith) (by linarith) (samples k d congruent)
+  apply entireL_ne_zero_of_primeError_le (β := 1/2+δ) (by linarith) unit bounds s hs χ
   rw [entireL]
   split_ifs with h
   · subst χ
     have hs1 := pole.resolve_left (fun h ↦ h rfl)
-    simpa [LFunctionTrivChar₁, Function.update_of_ne hs1, LFunctionTrivChar, zero]
+    simp [LFunctionTrivChar₁, Function.update_of_ne hs1, LFunctionTrivChar, zero]
   · exact zero
 
 /-- The final functional-equation arguments are adapted from Alpöge and Claude,

@@ -76,19 +76,6 @@ theorem extend {R : ℝ → ℝ} {a b : ℝ}
     _ ≤ x^a*x^(b-a) := mul_le_mul_of_nonneg_left hbig pos
     _ = x^b := by rw [← rpow_add hx0, show a+(b-a)=b by ring]
 
-/-- Restriction and interpolation give an equivalence for the entire open interval of exponents. -/
-theorem bounds_iff {R : ℝ → ℝ}
-    (step : ∀ {u x v : ℝ}, 0 < u → u ≤ x → x ≤ v → u < v →
-      R x ≤ max (R u) (R v) + (x-u)*(v-x)/x^2) :
-    (∀ a : ℝ, -(1/2 : ℝ) < a → a < 0 → ∀ᶠ n : ℕ in atTop, R ((n:ℝ)^4) ≤ ((n:ℝ)^4)^a) ↔
-      ∀ b : ℝ, -(1/2 : ℝ) < b → b < 0 → ∀ᶠ x : ℝ in atTop, R x ≤ x^b := by
-  constructor
-  · intro H b hb hb0
-    obtain ⟨a, ha, hab⟩ := exists_between hb
-    exact extend step ha.le (hab.trans hb0).le hab (H a ha (hab.trans hb0))
-  · intro H a ha ha0
-    exact ((tendsto_pow_atTop (by decide : 4 ≠ 0)).comp tendsto_natCast_atTop_atTop).eventually (H a ha ha0)
-
 end FourthPowers
 
-#print axioms FourthPowers.bounds_iff
+#print axioms FourthPowers.extend

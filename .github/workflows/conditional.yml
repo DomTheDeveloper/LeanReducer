@@ -1,7 +1,7 @@
-name: Verify the standalone conditional RH and GRH proof
+name: Verify the one-exponent conditional RH and GRH proof
 on:
   push:
-    branches: [compact-sampled-grh]
+    branches: [one-exponent-grh]
   workflow_dispatch:
 permissions:
   contents: read
