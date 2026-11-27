@@ -1,3 +1,4 @@
+-- Modified by LeanReducer to select twists from a set of primes of divergent weight.
 import Lib.Analytic.Primes.AuxiliaryPrimes
 
 /-! Known result: Zero density for quadratic twists by mean values over real characters. This file
@@ -186,17 +187,20 @@ lemma zero_density_quadTwist (hη : 0 < η) (y : ℝ) : (fun x : ℕ ↦ (#{d �
   simp_all [quadTwist, dvd_prime Fact.out, mul_comm, h.dvd_mul_left, eq_one_iff_conductor_eq_one,
     h.symm.dvd_mul_left, conductor_inv, h.mul_dvd_of_dvd_of_dvd, conductor_changeLevel, IsPrimitive]
 
-/-- Let β > 1/2, y real, and a a unit mod N whose primes are ≡ 7 mod 8 and prime to N. For some
-prime d ≡ a, no L̃(s, ξ·(·/d)), ξ mod N, vanishes on re s ≥ β, |im s| ≤ y; L̃ is `entireL`.
+open scoped Classical
 
-Known result: Zero density for quadratic twists by mean values over real characters. -/
-lemma exists_entireL_quadTwist_ne_zero {β} y {a : ZMod N} (hβ : 1 / 2 < β) (ha : IsUnit a) (H :
-  ∀ d : Primes, d = a → d.1 % 8 = 7 ∧ N.Coprime d) : ∃ d : Primes, d = a ∧ ∀ ξ s,
-  β ≤ re s → |im s| ≤ y → entireL (@quadTwist
-  N ξ d _) s ≠ 0 := (exists_pos_mul_lt (lt_min one_pos (sub_pos.2 hβ)) 9).elim fun η ⟨hη, h⟩ ↦ by
+/-- The sum of log(p)/p over the primes in S diverges. -/
+def DivergentPrimes (S : Set ℕ) : Prop :=
+  ¬ Summable fun n : ℕ ↦ (if n.Prime ∧ n ∈ S then Real.log n else 0) / n
+
+/-- Some prime in S has all twisted L-functions nonvanishing on the specified box. -/
+lemma exists_dense_twist {β} y {S : Set ℕ} (hβ : 1 / 2 < β)
+    (hMass : DivergentPrimes S) (H : ∀ d : Primes, d.val ∈ S → d.1 % 8 = 7 ∧ N.Coprime d) :
+    ∃ d : Primes, d.val ∈ S ∧ ∀ ξ s, β ≤ re s → |im s| ≤ y →
+      entireL (@quadTwist N ξ d _) s ≠ 0 := (exists_pos_mul_lt (lt_min one_pos (sub_pos.2 hβ)) 9).elim fun η ⟨hη, h⟩ ↦ by
   by_contra!
-  refine not_summable_residueClass_prime_div ha ((LSeriesSummable_logMul_of_lt_re (s := 1)
-    ((LSeriesSummable_of_sum_norm_bigO (s := 1 - η / 2 / 2) (f := fun n ↦ ite (n.Prime ∧ n = a) 1 0)
+  refine hMass ((LSeriesSummable_logMul_of_lt_re (s := 1)
+    ((LSeriesSummable_of_sum_norm_bigO (s := 1 - η / 2 / 2) (f := fun n ↦ ite (n.Prime ∧ n ∈ S) 1 0)
     (.trans (.of_norm_le fun x ↦ ?_) (.fun_sum (s := ⊤) fun ξ _ ↦ @zero_density_quadTwist N _ ξ _ hη
     y)) (by grind) (by simpa)).abscissaOfAbsConv_le.trans_lt (mod_cast by simpa))
     ).norm.of_norm_bounded (by simp +contextual [Set.indicator, term, apply_ite, ite_and,

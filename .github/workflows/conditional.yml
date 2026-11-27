@@ -1,7 +1,7 @@
-name: Verify the unbounded-level conditional RH and GRH proof
+name: Verify conditional RH and GRH from divergent prime sets
 on:
   push:
-    branches: [cofinal-sampled-grh]
+    branches: [divergent-prime-grh]
   workflow_dispatch:
 permissions:
   contents: read
@@ -27,9 +27,13 @@ jobs:
           lake build
           cat > "$RUNNER_TEMP/ConditionalAudit.lean" <<'LEAN'
           import SampledGRH
-          example : (∀ lower : ℕ, ∃ k, lower ≤ k ∧ SampledGRH.EstimateAt k) → RiemannHypothesis ∧ RiemannZetaZerosOnLine ∧
-              DirichletLNonvanishingRightOfHalf ∧ DirichletLZerosOnLine ∧
-              PrimitiveDirichletLZerosOnLine := SampledGRH.five_endpoints
+          open Filter in
+          example : (∀ lower : ℕ, ∃ k, lower ≤ k ∧ ∃ S : Set ℕ, DivergentPrimes S ∧
+              ∀ d : Nat.Primes, d.val ∈ S → (d.val % 8 = 7 ∧ (LeanReducer.factorialLevel k).Coprime d.val) ∧
+              ∀ᶠ n : ℕ in atTop, primeError d.val (LeanReducer.factorialLevel k) ((n:ℝ)^4) ≤
+                ((n:ℝ)^4)^(-(1/2:ℝ) + (1/((k:ℝ)+1))/4)) →
+              RiemannHypothesis ∧ RiemannZetaZerosOnLine ∧ DirichletLNonvanishingRightOfHalf ∧
+              DirichletLZerosOnLine ∧ PrimitiveDirichletLZerosOnLine := SampledGRH.five_endpoints
           #print axioms SampledGRH.five_endpoints
           LEAN
           lake env lean "$RUNNER_TEMP/ConditionalAudit.lean" | tee "$RUNNER_TEMP/axioms.txt"

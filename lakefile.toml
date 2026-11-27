@@ -26,4 +26,4 @@ globs = ["New.+"]
 
 [[lean_lib]]
 name = "ConditionalGRH"
-roots = ["AuxiliaryResidue", "FactorialLevels", "FourthPowers", "PrimeErrorFourthPowers", "ReciprocalInterpolation", "SampledGRH", "Statements", "WeightedFourthPowers"]
+roots = ["FactorialLevels", "FourthPowers", "PrimeErrorFourthPowers", "ReciprocalInterpolation", "SampledGRH", "Statements", "WeightedFourthPowers"]
