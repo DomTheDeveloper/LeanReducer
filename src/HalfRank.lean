@@ -14,8 +14,10 @@ theorem nominal_primeSum_le {P} (D : Data P) (σ : D.Φ) :
   let C := 2 * D.logX₁ * y
   have C0 : 0 ≤ C := by dsimp [C]; positivity
   have weight (n : ℕ) : lambdaClass P.d 1 n ≤ 2 * Real.log (n : ℝ) := by
-    simp [lambdaClass, chiK, Set.indicator, quadraticCharFun, sub_ite] <;>
-      grind [vonMangoldt_nonneg, vonMangoldt_le_log]
+    have log_nonneg := Real.log_natCast_nonneg n
+    have mangoldt := @ArithmeticFunction.vonMangoldt_le_log n
+    simp [lambdaClass, chiK, Set.indicator, quadraticCharFun, sub_ite]
+    split_ifs <;> linarith
   have bound (n : ℕ) (hn : n ∈ Icc 1 D.a) :
       lambdaClass P.d 1 n * (y / n - D.nominalWeight (D.placeOfInt (-n) * σ))⁺ ≤
         if n ≤ ⌊D.x₁⌋₊ then C * (n : ℝ)⁻¹ else 0 := by
