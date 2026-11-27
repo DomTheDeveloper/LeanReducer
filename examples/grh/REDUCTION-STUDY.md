@@ -63,6 +63,16 @@ Seven unneeded modules contributed 380 code lines, including 135 for adelic valu
 
 The 998 lines prove the implication. The remaining arithmetic obligation is a derivation of the sampled inequalities. The present unconditional project obtains the estimates through the covolume argument. An unconditional proof at the 1,000-code-line budget has only two additional lines available if it keeps this analytic project intact. A shorter common argument may change that budget.
 
+## One exponent per level in 985 code lines
+
+A further standalone proof requires just one exponent at each factorial level. Given a natural `k`, set `q = (k+1)!`, `M = 18480q` and `aₖ = −½ + 1/(4(k+1))`. For every prime `d ≡ 9240q−1 (mod M)`, assume `primeError d M (n⁴) ≤ (n⁴)^aₖ` for all sufficiently large natural `n`. The threshold may depend on `k` and `d`. These bounds imply all five original conclusions. The proof transfers the sample bound to the real exponent `−½ + 1/(k+1)` and uses the available margin to reach each required zero-free half-plane. The whole source is **985 code lines, 1,348 physical lines and 19 modules**. [Lean theorem](https://github.com/DomTheDeveloper/LeanReducer/blob/680cdffe8dca5e2f3de405a615318d0989f0f055/src/SampledGRH.lean) · [Complete project ZIP](https://github.com/DomTheDeveloper/LeanReducer/archive/680cdffe8dca5e2f3de405a615318d0989f0f055.zip) · [Lean 4.35 build, axiom check and replay](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45988169144)
+
+Factoring the interpolation proof into a single transfer inequality allows the proof to discard the reverse implications and the quantified family of exponents. This saves thirteen source lines relative to the 998-line edition and weakens the arithmetic premise. Lean checked the public implication on the pinned Mathlib revision and `leanchecker` replayed every local module. The reported axioms are `propext`, `Classical.choice` and `Quot.sound`. [Source changes from 998 to 985](https://github.com/DomTheDeveloper/LeanReducer/compare/e9e575e17cead892a1047ae30da86098ce967cc3...680cdffe8dca5e2f3de405a615318d0989f0f055)
+
+The arithmetic premise has a formal connection to the full proof. `UpstreamEstimate.samples_of_geometric` takes the exact statement of the upstream `eventually_primeError_le_rpow` theorem and proves all the fourth-power upper bounds in the 998-line edition. Each exponent prescribed in the 985-line edition lies in that family. The adapter builds against the original `Parameters` and `primeError` declarations. [Lean adapter](UpstreamEstimate.lean) · [Completed verification](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45987549345)
+
+Counting each dependency once, the 985-line route leaves **49,015 further code lines** for a proof of the sampled estimates at a 50,000-line budget, or **15** at a 1,000-line budget. Any source restored to establish those estimates uses that allowance. Under a physical-line budget, the corresponding project already uses 1,348 lines. The original covolume route supplies a proof at the larger line count.
+
 ## Reproduce the combined source
 
 From the LeanReducer root, with both named repositories available locally:

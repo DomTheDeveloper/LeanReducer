@@ -38,6 +38,14 @@ class SourceAndContracts(unittest.TestCase):
         self.assertEqual((body.start, body.stop, body.lines),(1,3,2))
         self.assertFalse(list(bodies('A','theorem x : True := by\n  trivial\n')))
 
+    def test_import_audit_reports_a_cycle(self):
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root/'A.lean').write_text('import B')
+            (root/'B.lean').write_text('import A')
+            with self.assertRaisesRegex(ValueError, 'cyclic Lean imports'):
+                import_audit(Corpus(root, []), 'A')
+
     def test_repeated_command_scope_and_host(self):
         with TemporaryDirectory() as tmp:
             root = Path(tmp)

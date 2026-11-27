@@ -1,6 +1,7 @@
 """Find exact repeated Lean seal/unseal commands and their common project imports."""
 from collections import defaultdict
-from functools import cache
+from functools import lru_cache
+from graphlib import CycleError, TopologicalSorter
 import re
 
 from .source import IDENT, imports, lexical_lines
@@ -50,15 +51,32 @@ def import_audit(corpus, entry):
     """Identify direct imports also available through other declared local imports."""
     direct = {m: imports(corpus.paths[m].read_text()) for m in corpus.walk(entry)}
 
-    @cache
-    def loaded(module):
-        dependencies = direct.get(module, [])
-        return {module}.union(*(loaded(dep) for dep in dependencies))
+    try:
+        position = {name: i for i, name in enumerate(TopologicalSorter(direct).static_order())}
+    except CycleError as exc:
+        raise ValueError(f"cyclic Lean imports: {exc.args[1]}") from exc
+
+    @lru_cache(maxsize=8192)
+    def available_through(start, target):
+        # A dependency is earlier in the topological order. Visit only modules
+        # that can still reach the target, without retaining every ancestor set.
+        pending, seen = [start], {start}
+        while pending:
+            current = pending.pop()
+            if current == target:
+                return True
+            if position[current] <= position[target]:
+                continue
+            for dependency in direct.get(current, ()):
+                if dependency not in seen and position[dependency] >= position[target]:
+                    seen.add(dependency)
+                    pending.append(dependency)
+        return False
 
     redundant = []
     for module, deps in sorted(direct.items()):
         for i, dep in enumerate(deps):
-            alternatives = [n for j, n in enumerate(deps) if i != j and dep in loaded(n)]
+            alternatives = [n for j, n in enumerate(deps) if i != j and available_through(n, dep)]
             if alternatives:
                 redundant.append({'module': module, 'import': dep, 'also_via': alternatives})
     return {'direct_edges': sum(map(len, direct.values())), 'redundant': redundant}
