@@ -1,8 +1,10 @@
 # LeanReducer compact GRH edition
 
-This branch contains all 794 project-owned Lean modules of the 76,075-code-line candidate. It includes the five public RH and Dirichlet GRH endpoints, the original dependency pins and the upstream license and notices. The one change shares a repeated list of six Ext declarations. Expanding that command reconstructs the pinned Astra source byte for byte. The full-build workflow records compiler and kernel results for this revision.
+The source contains all five public RH and Dirichlet GRH theorems in 76,072 project-owned code lines and 112,770 physical lines across 794 modules. It includes the original Lake and Mathlib pins, license and notices.
 
-[Reduction study](https://github.com/DomTheDeveloper/LeanReducer/blob/2392d6eda972c2fdfc80fe22dd96d9e55208cc47/examples/grh/RESULTS.md) · [Build and kernel check](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45981813632) · [Astra source](https://github.com/EllaZhangCA/grh-lean-astra/tree/a57c37471c835968b1932a0f8347978b89ba7ab6/grh-compact)
+The edition shares a six-identifier Ext command and defines three public theorems at their underlying proofs. The private-facing names `New.grh`, `New.zeros_on_line` and `New.zeta_zeros_on_line` have been retired. The prior 76,075-line edition preserves those names. Compilation and kernel replay for the combined source are tracked separately from the independently checked upstream release.
+
+[Study and rebuild instructions](https://github.com/DomTheDeveloper/LeanReducer/blob/dc479f261042c78df71881d242eb9a29995b07a0/examples/grh/REDUCTION-STUDY.md) · [Build and kernel check](https://github.com/DomTheDeveloper/LeanReducer/actions/runs/45983909693) · [Edition preserving the intermediate names](https://github.com/DomTheDeveloper/LeanReducer/tree/30ee9e9c89c9fd7539251d86c7881d480ae0e677)
 
 ## Upstream edition notes
 
