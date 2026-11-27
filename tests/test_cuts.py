@@ -3,7 +3,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
 
-from leanreducer.cuts import joint_cut, pair_audit
+from leanreducer.cuts import combination_audit, joint_cut, pair_audit
 from leanreducer.source import Corpus
 
 
@@ -50,3 +50,22 @@ class CutTest(unittest.TestCase):
         no_pairs = pair_audit(c, "Base", 0)
         self.assertEqual(no_pairs["pairs_examined"], 0)
         self.assertIsNone(no_pairs["best_pair"])
+
+    def test_triples_match_direct_traversals_including_ties(self):
+        c = self.corpus
+        for excluded in [[], ["A", "B"], ["Base", "A", "B", "C", "X"]]:
+            eligible = sorted(c.walk("Main") - {"Main", *excluded})
+            brute = sorted((c.size(c.walk("Main", group))["code"], group)
+                          for group in combinations(eligible, 3))
+            for target in range(0, 60, 5):
+                report = combination_audit(c, "Main", target, excluded, size=3)
+                passing = {group for lines, group in brute if lines <= target}
+                examples = {tuple(item["modules"]) for item in report["first_matching_triples"]}
+                self.assertEqual(report["triples_examined"], len(brute))
+                self.assertEqual(report["triples_meeting_target_before_replacement"], len(passing))
+                self.assertEqual(len(examples), min(10, len(passing)))
+                self.assertLessEqual(examples, passing)
+                if brute:
+                    self.assertEqual(report["best_triple"]["modules"], list(brute[0][1]))
+                else:
+                    self.assertIsNone(report["best_triple"])

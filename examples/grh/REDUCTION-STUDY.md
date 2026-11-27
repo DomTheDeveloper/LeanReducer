@@ -86,6 +86,24 @@ python3 -m leanreducer analyze /path/to/GRH-76072/src --entry Main --pair-audit 
   --cut New.Endgame.ShortAndEnough --cut New.Selmer.FitTwistsExist --cut New.Rows.LiftVolumeHeight
 ```
 
+### Exhausting the three-module choices
+
+Under the same exclusions, exactly **two of all 82,173,035 unordered triples** leave at most 50,000 code lines before writing substitute proofs. The first row is the unique minimum. The second combines twist existence with the filling theorem and compatibility of the Galois representations. Both still need proofs of the results that the surviving source uses.
+
+| Modules selected for replacement | Lines of retained code | Code available for replacements | Physical lines retained |
+| --- | ---: | ---: | ---: |
+| `New.Endgame.ShortAndEnough`, `New.Rows.LiftVolumeHeight`, `New.Selmer.FitTwistsExist` | 37,889 | **12,111** | 59,618 |
+| `Lib.GaloisRep.Main.AvatarCompatibility`, `New.Filling.FillingTheorem`, `New.Selmer.FitTwistsExist` | 49,452 | **548** | 75,577 |
+
+Every project has at least as many physical lines as code lines. Since both qualifying triples retain more than 50,000 physical lines, none of these triples can reach a 50,000-physical-line target on its own, even with zero replacement cost. This conclusion applies to removing whole modules from the given import graph while retaining its three top-level modules. Rewriting individual declarations or reorganizing the retained modules is outside this calculation.
+
+The published Python routine intersects the sets of dominators of each module's reachable importers. A separately implemented native calculation found their nearest common dominator by walking up the dominator tree. Both exhausted all triples and identified the same two choices. Direct import traversal reproduced every size in the table. [Machine-readable census](triple-cuts.json)
+
+```sh
+python3 -m leanreducer analyze /path/to/GRH-76072/src --entry Main --triple-audit \
+  --exclude-from-audit New.Main --exclude-from-audit New.Endgame.LongForms --target 50000
+```
+
 ## What would reach 1,000
 
 Lean checks a smaller target for the analytic endgame. Write `M(k) = 18480 × (k+1)!`. Nonvanishing for every Dirichlet character of every positive modulus on Re(s) > 1/2, with the principal pole excepted, is equivalent to nonvanishing for every character of modulus `M(k)` only on Re(s) > 1/2 + 1/(k+1), for every natural k. Given q and a point strictly right of 1/2, one factorial multiple is divisible by q and has a small enough margin. The Euler factors in change of level then transfer nonvanishing to q. The file compiles over the proof's pinned Lean 4.35.0 and Mathlib revision with axioms `propext`, `Classical.choice` and `Quot.sound`. [Complete Lean proof](FactorialLevels.lean)

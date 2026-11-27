@@ -9,7 +9,7 @@ import sys
 import tempfile
 
 from . import agents
-from .cuts import joint_cut, pair_audit
+from .cuts import combination_audit, joint_cut, pair_audit
 from .inlining import straight_line
 from .planning import replacement_plan
 from .patches import apply_reviewed
@@ -172,8 +172,10 @@ def main():
     analysis.add_argument('--cut',action='append',default=[])
     analysis.add_argument('--pair-audit', action='store_true',
                           help='measure all pairs of module cuts below the entry')
-    analysis.add_argument('--exclude-from-pairs', metavar='MODULE', action='append', default=[],
-                          help='omit this module as a candidate for either cut')
+    analysis.add_argument('--triple-audit', action='store_true',
+                          help='measure all triples of module cuts below the entry')
+    analysis.add_argument('--exclude-from-pairs', '--exclude-from-audit', metavar='MODULE',
+                          action='append', default=[], help='omit this module as a candidate in the audit')
     analysis.add_argument('--plan-cut', metavar='MODEL',
                           help='ask the architecture agent for an unverified mathematical replacement of one cut')
     analysis.add_argument('--target',type=int,default=50000)
@@ -200,10 +202,13 @@ def main():
         report = corpus.report(args.entry,args.cut)
         if len(set(args.cut)) > 1:
             report['joint_cut'] = joint_cut(corpus, args.entry, args.cut)
-        if args.exclude_from_pairs and not args.pair_audit:
-            raise ValueError('--exclude-from-pairs requires --pair-audit')
+        if args.exclude_from_pairs and not (args.pair_audit or args.triple_audit):
+            raise ValueError('cut exclusions require --pair-audit or --triple-audit')
         if args.pair_audit:
             report['pair_audit'] = pair_audit(corpus, args.entry, args.target, args.exclude_from_pairs)
+        if args.triple_audit:
+            report['triple_audit'] = combination_audit(
+                corpus, args.entry, args.target, args.exclude_from_pairs, size=3)
         if args.plan_cut:
             if len(args.cut) != 1:
                 raise ValueError('--plan-cut requires exactly one --cut')
